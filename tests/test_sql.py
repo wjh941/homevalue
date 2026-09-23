@@ -18,7 +18,7 @@ def test_all_queries_loaded(queries):
         "districts_rank", "city_price_trend", "top_bizcircle_per_district",
         "price_deciles", "layout_crosstab", "price_change_summary",
         "biggest_price_drops", "city_compare", "pareto_value",
-        "districts_rank_all", "city_price_trend_all",
+        "districts_rank_all", "city_price_trend_all", "district_price_trend",
     }
     assert expected == set(queries)
 

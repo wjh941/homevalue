@@ -172,3 +172,13 @@ SELECT city, snapshot_date, n_listings, avg_unit_price,
            / LAG(avg_unit_price) OVER (PARTITION BY city ORDER BY snapshot_date), 2) AS mom_pct
 FROM t
 ORDER BY city, snapshot_date;
+
+-- 12. 北京各区均价随快照变化(区对比折线的数据源)
+-- name: district_price_trend
+SELECT district, snapshot_date,
+       COUNT(*)                  AS n_listings,
+       ROUND(AVG(unit_price), 0) AS avg_unit_price
+FROM listings_all
+WHERE city = 'bj' AND district != '其他'
+GROUP BY district, snapshot_date
+ORDER BY district, snapshot_date;

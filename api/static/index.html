@@ -113,14 +113,37 @@
     </div>
     <div class="kpi-cards" id="city-cards"></div>
     <div class="grid-2">
-      <div class="card"><h2 id="trend-title">挂牌均价走势(快照间环比)</h2><div id="chart-trend"></div>
-        <p class="hint" id="trend-note">悬浮数据点可查看当期均价与环比;2024-09 快照为部分抓取,仅供参考。</p></div>
-      <div class="card"><h2 id="district-title">各区挂牌均价排名</h2><div id="chart-districts"></div>
-        <p class="hint" id="district-note">点击条形可一键带入估值表单。</p></div>
+      <div class="card">
+        <h2 id="trend-title">挂牌均价走势(快照间环比)</h2>
+        <div class="seg small" id="year-switch">
+          <button data-year="all" class="active">全部</button>
+          <button data-year="2022">2022</button>
+          <button data-year="2023">2023</button>
+          <button data-year="2024">2024</button>
+        </div>
+        <div id="chart-trend"></div>
+        <p class="hint" id="trend-note">悬浮数据点查看当期均价;快照为不定期抓取(约每月 1 期),无日内粒度。2024-09 为部分抓取仅作参考。</p>
+      </div>
+      <div class="card">
+        <h2>各区均价走势对比(北京)</h2>
+        <div class="seg small" id="district-switch"></div>
+        <div id="chart-district-trend"></div>
+        <p class="hint">点击区名切换显示/隐藏;悬浮查看当期均价。</p>
+      </div>
+    </div>
+    <div class="card" id="conclusion-card">
+      <h2>自动结论</h2>
+      <ul id="conclusion-list" class="conclusions"></ul>
+      <p class="hint">结论由当前筛选范围内的数据自动计算。</p>
     </div>
     <div class="grid-2">
       <div class="card"><h2>单价十分位画像(北京)</h2><div id="table-deciles"></div></div>
       <div class="card"><h2>挂牌价变动与多城市对比</h2><div id="price-changes"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><h2 id="district-title">各区挂牌均价排名(当前城市)</h2><div id="chart-districts"></div>
+        <p class="hint" id="district-note">点击条形可一键带入估值表单(模型基于北京数据)。</p></div>
+      <div class="card"><h2>城市速览</h2><div id="city-mini-cards" class="kpi-cards"></div></div>
     </div>
   </section>
 

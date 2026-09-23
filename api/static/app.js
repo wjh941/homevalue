@@ -76,8 +76,8 @@ function barChart(items, opts = {}) {
 }
 
 function lineChart(points, opts = {}) {
-  if (!points || points.length < 2) return document.createTextNode("仅 1 期快照,趋势需多期数据");
-  const width = opts.width || 480, height = opts.height || 210;
+  if (!points || points.length < 2) return document.createTextNode("该年份窗口内快照不足 2 期,切回「全部」查看完整走势");
+  const width = opts.width || 520, height = opts.height || 280;
   const padL = 62, padR = 14, padT = 14, padB = 34;
   const vals = points.map((p) => p.value);
   const min = Math.min(...vals) * 0.96, max = Math.max(...vals) * 1.02;
@@ -91,22 +91,89 @@ function lineChart(points, opts = {}) {
     t.textContent = (v / 10000).toFixed(2) + "万";
     svg.appendChild(t);
   }
+  const every = Math.ceil(points.length / 12); // 标签抽稀,保证可读
   const path = points.map((p, i) => (i ? "L" : "M") + xs(i).toFixed(1) + "," + ys(p.value).toFixed(1)).join(" ");
   svg.appendChild(svgEl("path", { d: path, fill: "none", stroke: "#34d399", "stroke-width": 2 }));
   points.forEach((p, i) => {
-    const dot = svgEl("circle", { cx: xs(i), cy: ys(p.value), r: 3, fill: "#34d399" });
-    dot.appendChild(svgTitle(p.label + " · " + fmt(p.value) + " 元/㎡" + (p.extra ? " · 环比 " + p.extra : "")));
+    const dot = svgEl("circle", { cx: xs(i), cy: ys(p.value), r: 3.5, fill: "#34d399" });
+    dot.appendChild(svgTitle(p.label + " · " + fmt(p.value) + " 元/㎡" + (p.mom != null ? " · 环比 " + p.mom + "%" : "")));
     svg.appendChild(dot);
-    const t = svgEl("text", { x: xs(i), y: height - 12, "text-anchor": "middle" });
-    t.textContent = (p.label || "").slice(2); // 22-09 -> 短标签
-    svg.appendChild(t);
-    if (p.extra) {
-      const v = svgEl("text", { x: xs(i), y: ys(p.value) - 8, "text-anchor": "middle", fill: "#fbbf24" });
-      v.textContent = p.extra;
-      svg.appendChild(v);
+    if (i % every === 0 || i === points.length - 1) {
+      const t = svgEl("text", { x: xs(i), y: height - 12, "text-anchor": "middle" });
+      t.textContent = (p.label || "").slice(2); // 22-09 -> 短标签
+      svg.appendChild(t);
     }
   });
   return svg;
+}
+
+// 多序列折线(区对比):series = [{name, color, points:[{label, value}]}]
+const PALETTE = ["#34d399", "#4f8cff", "#f59e0b", "#f87171", "#a78bfa", "#22d3ee"];
+
+function multiLineChart(series, opts = {}) {
+  const dates = [...new Set(series.flatMap((s) => s.points.map((p) => p.label)))].sort();
+  if (dates.length < 2 || !series.length) return document.createTextNode("数据不足");
+  const idx = {};
+  dates.forEach((d, i) => (idx[d] = i));
+  const vals = series.flatMap((s) => s.points.map((p) => p.value));
+  const min = Math.min(...vals) * 0.96, max = Math.max(...vals) * 1.02;
+  const width = opts.width || 520, height = opts.height || 280;
+  const padL = 62, padR = 14, padT = 14, padB = 34;
+  const xs = (i) => padL + (i / (dates.length - 1)) * (width - padL - padR);
+  const ys = (v) => padT + (1 - (v - min) / (max - min || 1)) * (height - padT - padB);
+  const svg = svgEl("svg", { viewBox: "0 0 " + width + " " + height, class: "line-chart" });
+  for (let g = 0; g <= 3; g++) {
+    const v = min + ((max - min) * g) / 3;
+    svg.appendChild(svgEl("line", { x1: padL, x2: width - padR, y1: ys(v), y2: ys(v), stroke: "#24304f", "stroke-width": 1 }));
+    const t = svgEl("text", { x: padL - 6, y: ys(v) + 3, "text-anchor": "end" });
+    t.textContent = (v / 10000).toFixed(2) + "万";
+    svg.appendChild(t);
+  }
+  const every = Math.ceil(dates.length / 10);
+  dates.forEach((d, i) => {
+    if (i % every === 0 || i === dates.length - 1) {
+      const t = svgEl("text", { x: xs(i), y: height - 12, "text-anchor": "middle" });
+      t.textContent = d.slice(2);
+      svg.appendChild(t);
+    }
+  });
+  series.forEach((s) => {
+    const pts = s.points
+      .map((p) => ({ i: idx[p.label], v: p.value, label: p.label }))
+      .filter((p) => p.i != null)
+      .sort((a, b) => a.i - b.i);
+    if (pts.length < 2) return;
+    const path = pts.map((p, j) => (j ? "L" : "M") + xs(p.i).toFixed(1) + "," + ys(p.v).toFixed(1)).join(" ");
+    svg.appendChild(svgEl("path", { d: path, fill: "none", stroke: s.color, "stroke-width": 2 }));
+    pts.forEach((p) => {
+      const dot = svgEl("circle", { cx: xs(p.i), cy: ys(p.v), r: 3, fill: s.color });
+      dot.appendChild(svgTitle(s.name + " · " + p.label + " · " + fmt(p.v) + " 元/㎡"));
+      svg.appendChild(dot);
+    });
+  });
+  return svg;
+}
+
+// 趋势事实提取(供自动结论)
+function trendFacts(points) {
+  if (!points || points.length < 2) return [];
+  const f = points[0], l = points[points.length - 1];
+  const out = [];
+  const cum = (((l.value - f.value) / f.value) * 100).toFixed(1);
+  out.push("期间累计 " + (cum > 0 ? "+" : "") + cum + "%(" + f.label.slice(2) + " -> " + l.label.slice(2) + ")");
+  let hi = points[0], lo = points[0], maxDrop = null, run = 0, maxRun = 0;
+  for (let i = 1; i < points.length; i++) {
+    const prev = points[i - 1].value, cur = points[i].value;
+    const mom = ((cur - prev) / prev) * 100;
+    if (mom < 0) { run += 1; maxRun = Math.max(maxRun, run); } else { run = 0; }
+    if (!maxDrop || mom < maxDrop.mom) maxDrop = { label: points[i].label, mom: mom };
+    if (cur > hi.value) hi = points[i];
+    if (cur < lo.value) lo = points[i];
+  }
+  out.push("最高点 " + hi.label.slice(2) + "(" + fmt(hi.value) + "),最低点 " + lo.label.slice(2) + "(" + fmt(lo.value) + ")");
+  if (maxDrop) out.push("单期最大跌幅 " + maxDrop.mom.toFixed(1) + "%(" + maxDrop.label.slice(2) + ")");
+  if (maxRun > 0) out.push("最长连续下跌 " + maxRun + " 期");
+  return out;
 }
 
 /* ---------------- 顶部状态 ---------------- */
@@ -227,7 +294,10 @@ function renderResult(res) {
 
 /* ---------------- 市场分析:洞察条 + 全国/城市切换 ---------------- */
 
-const marketState = { city: "all", overview: null, trendAll: null, districtsAll: null, changes: null };
+const marketState = {
+  city: "all", year: "all", overview: null, trendAll: null, districtsAll: null,
+  changes: null, districtTrend: null, compare: new Set(["西城", "朝阳", "海淀"]),
+};
 
 function kpiCard(v, k, cls) {
   return '<div class="kpi ' + (cls || "") + '"><b>' + v + "</b><span>" + k + "</span></div>";
@@ -272,16 +342,21 @@ function renderCityView() {
     $("trend-title").textContent = "北京挂牌均价走势(35 期快照环比)";
     $("trend-note").textContent = "悬浮数据点可查看当期均价与环比;2024-09 快照为部分抓取,仅供参考。";
   } else {
-    $("city-cards").innerHTML = "";
+    const c = cc.find((x) => x.city === city);
+    $("city-cards").innerHTML = c
+      ? kpiCard(CITY_NAMES[city] || city, fmt(c.n_listings) + " 套 · 均价 " + fmt(c.avg_unit_price) + " 元/㎡ · 五城中按均价第 " + c.rank_by_price + " 位")
+      : "";
     $("trend-title").textContent = CITY_NAMES[city] + " 挂牌均价走势";
     $("trend-note").textContent = "悬浮数据点可查看当期均价与环比。";
   }
 
-  // 趋势
-  const tp = trendAll
-    .filter((r) => (isAll ? r.city === "bj" : r.city === city))
-    .map((r) => ({ label: r.snapshot_date, value: r.avg_unit_price, extra: r.mom_pct ? r.mom_pct + "%" : null }));
-  $("chart-trend").replaceChildren(lineChart(tp, { height: 230 }));
+  // 趋势(年份钻取)
+  $("trend-title").textContent = isAll ? "北京挂牌均价走势(35 期快照)" : CITY_NAMES[city] + " 挂牌均价走势";
+  renderTrendArea();
+
+  // 区对比(仅北京数据)
+  renderDistrictCompare();
+  renderConclusions();
 
   // 区域排名
   const dr = isAll
@@ -304,18 +379,106 @@ function renderCityView() {
   );
 }
 
+function renderTrendArea() {
+  const city = marketState.city === "all" ? "bj" : marketState.city;
+  const year = marketState.year;
+  const tp = (marketState.trendAll || [])
+    .filter((r) => r.city === city)
+    .filter((r) => year === "all" || String(r.snapshot_date).slice(0, 4) === year)
+    .map((r) => ({ label: r.snapshot_date, value: r.avg_unit_price }));
+  $("chart-trend").replaceChildren(lineChart(tp, { height: 280 }));
+}
+
+function renderDistrictCompare() {
+  const year = marketState.year;
+  const rows = marketState.districtTrend || [];
+  const districts = [...new Set(rows.map((r) => r.district))].sort();
+  // 区名 chip(默认选中三个,点击切换)
+  const box = $("district-switch");
+  box.innerHTML = districts
+    .map((d) => {
+      const active = marketState.compare.has(d);
+      const color = active ? PALETTE[districts.indexOf(d) % PALETTE.length] : "transparent";
+      return '<button data-d="' + d + '" class="' + (active ? "active" : "") +
+        '" style="' + (active ? "border-color:" + color + ";color:" + color : "") + '">' + d + "</button>";
+    })
+    .join("");
+  box.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const d = btn.dataset.d;
+      if (marketState.compare.has(d)) marketState.compare.delete(d);
+      else if (marketState.compare.size < 5) marketState.compare.add(d);
+      renderDistrictCompare();
+      renderConclusions();
+    });
+  });
+
+  const series = [...marketState.compare].map((d, i) => ({
+    name: d,
+    color: PALETTE[districts.indexOf(d) % PALETTE.length],
+    points: rows
+      .filter((r) => r.district === d)
+      .filter((r) => year === "all" || String(r.snapshot_date).slice(0, 4) === year)
+      .map((r) => ({ label: r.snapshot_date, value: r.avg_unit_price })),
+  }));
+  $("chart-district-trend").replaceChildren(multiLineChart(series, { height: 280 }));
+}
+
+function renderConclusions() {
+  const city = marketState.city === "all" ? "bj" : marketState.city;
+  const year = marketState.year;
+  const tp = (marketState.trendAll || [])
+    .filter((r) => r.city === city)
+    .filter((r) => year === "all" || String(r.snapshot_date).slice(0, 4) === year)
+    .map((r) => ({ label: r.snapshot_date, value: r.avg_unit_price }));
+
+  const items = [];
+  const cityName = marketState.city === "all" ? "北京" : CITY_NAMES[marketState.city];
+  trendFacts(tp).forEach((s) => items.push(cityName + "全市:" + s));
+
+  const rows = marketState.districtTrend || [];
+  const stats = [...marketState.compare]
+    .map((d) => {
+      const pts = rows
+        .filter((r) => r.district === d)
+        .filter((r) => year === "all" || String(r.snapshot_date).slice(0, 4) === year)
+        .sort((a, b) => (a.snapshot_date < b.snapshot_date ? -1 : 1));
+      if (pts.length < 2) return null;
+      const first = pts[0].avg_unit_price, last = pts[pts.length - 1].avg_unit_price;
+      return { district: d, pct: ((last - first) / first) * 100, last };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.pct - b.pct);
+  if (stats.length >= 2) {
+    items.push("对比期内最抗跌:" + stats[stats.length - 1].district + "(" + (stats[stats.length - 1].pct > 0 ? "+" : "") + stats[stats.length - 1].pct.toFixed(1) + "%),跌幅最大:" + stats[0].district + "(" + stats[0].pct.toFixed(1) + "%)");
+    const spread = (stats[stats.length - 1].pct - stats[0].pct).toFixed(1);
+    items.push("区间分化 " + spread + " 个百分点:同期不同区走势差异显著,估值须看区不看城");
+  } else if (stats.length === 1) {
+    items.push(stats[0].district + ":" + (stats[0].pct > 0 ? "+" : "") + stats[0].pct.toFixed(1) + "%");
+  }
+  if (year !== "all") items.push("当前窗口:" + year + " 年(快照为不定期抓取,无日内粒度)");
+
+  $("conclusion-list").innerHTML = items.map((s) => "<li>" + s + "</li>").join("");
+}
+
+function buildDistrictSwitch() {
+  // 首次渲染由 renderDistrictCompare 生成;此函数仅占位保持加载顺序清晰
+}
+
 async function loadMarket() {
-  const [overview, trend, deciles, changes, trendAll, districtsAll] = await Promise.all([
+  const [overview, trend, deciles, changes, trendAll, districtsAll, districtTrend] = await Promise.all([
     jget("/api/analysis/overview"),
     jget("/api/analysis/trend"),
     jget("/api/analysis/deciles"),
     jget("/api/analysis/price-changes"),
     jget("/api/analysis/trend-all"),
     jget("/api/analysis/districts-all"),
+    jget("/api/analysis/district-trend"),
   ]);
-  Object.assign(marketState, { overview, trend, deciles, changes, trendAll, districtsAll });
+  Object.assign(marketState, { overview, trend, deciles, changes, trendAll, districtsAll, districtTrend });
   marketState.cityCompare = changes.city_compare || [];
 
+  buildDistrictSwitch();
   renderInsights();
   renderCityView();
 
@@ -345,6 +508,19 @@ document.querySelectorAll("#city-switch button").forEach((btn) => {
     btn.classList.add("active");
     marketState.city = btn.dataset.city;
     if (marketState.trendAll) renderCityView();
+  });
+});
+
+document.querySelectorAll("#year-switch button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#year-switch button").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    marketState.year = btn.dataset.year;
+    if (marketState.trendAll) {
+      renderTrendArea();
+      renderDistrictCompare();
+      renderConclusions();
+    }
   });
 });
 

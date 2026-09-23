@@ -56,6 +56,26 @@ body {
   font-size: 18px;
 }
 
+.seg.small button {
+  padding: 4px 12px;
+  font-size: 13px;
+}
+
+ul.conclusions {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+ul.conclusions li {
+  margin: 6px 0;
+  line-height: 1.5;
+  color: #dbe4f5;
+}
+
+ul.conclusions li::marker {
+  color: #34d399;
+}
+
 .error {
   color: #f87171;
   background: rgba(248, 113, 113, 0.08);

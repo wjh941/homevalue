@@ -228,6 +228,10 @@ def create_app(
     def trend_all() -> list[dict]:
         return analysis_rows("city_price_trend_all")
 
+    @app.get("/api/analysis/district-trend")
+    def district_trend() -> list[dict]:
+        return analysis_rows("district_price_trend")
+
     @app.get("/api/analysis/deciles")
     def deciles() -> list[dict]:
         return analysis_rows("price_deciles")
