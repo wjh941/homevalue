@@ -1,11 +1,11 @@
 {
-  "n_requests": 400,
-  "concurrency": 8,
+  "n_requests": 20,
+  "concurrency": 1,
   "errors": 0,
-  "wall_seconds": 24.53,
-  "rps": 16.3,
-  "p50_ms": 457.2,
-  "p95_ms": 709.8,
-  "p99_ms": 759.0,
-  "mean_ms": 488.0
+  "wall_seconds": 23.23,
+  "rps": 0.9,
+  "p50_ms": 874.7,
+  "p95_ms": 1935.8,
+  "p99_ms": 1952.9,
+  "mean_ms": 1161.5
 }

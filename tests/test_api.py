@@ -80,3 +80,25 @@ def test_static_dashboard_served(api_client):
     r = api_client.get("/")
     assert r.status_code == 200
     assert "HomeValue" in r.text
+
+
+def test_predict_includes_similar_and_stats(api_client):
+    payload = {
+        "district": "朝阳",
+        "bizcircle": "望京",
+        "rooms": 2,
+        "halls": 1,
+        "area_sqm": 80.0,
+        "build_year": 2005,
+    }
+    body = api_client.post("/api/predict", json=payload).json()
+    assert isinstance(body.get("similar"), list)
+
+    s = api_client.get("/api/similar", params={"district": "朝阳", "area_sqm": 80.0})
+    assert s.status_code == 200
+    assert isinstance(s.json(), list)
+
+    stats = api_client.get("/api/predictions/stats").json()
+    assert stats["n_total"] >= 1
+    assert stats["top_districts"][0]["district"] == "朝阳"
+    assert stats["avg_p50"] is not None

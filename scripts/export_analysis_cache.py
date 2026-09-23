@@ -35,10 +35,28 @@ def to_records(df: pd.DataFrame) -> list[dict]:
     return [{k: clean(v) for k, v in row.items()} for row in df.to_dict("records")]
 
 
+SIMILAR_SAMPLE_SQL = (
+    "SELECT district, community, bizcircle, area_sqm, unit_price, rooms, halls,"
+    " build_year, floor_pos, renovation, total_floors FROM listings WHERE city = 'bj'"
+)
+
+
+def export_similar_sample(engine) -> list[dict]:
+    """每区抽 5 套单价最接近区内中位价的在售房源(listings 已是去重后的当前房源池)。"""
+    cand = read_query(engine, SIMILAR_SAMPLE_SQL)
+    picks = []
+    for _district, g in cand.groupby("district"):
+        med = g["unit_price"].median()
+        g2 = g.assign(_d=(g["unit_price"] - med).abs()).sort_values("_d").head(5).drop(columns="_d")
+        picks.append(g2)
+    return to_records(pd.concat(picks, ignore_index=True)) if picks else []
+
+
 def main() -> int:
     engine = get_engine(DB_PATH)
     queries = load_queries(SQL_DIR / "03_analysis.sql")
     cache = {name: to_records(read_query(engine, sql)) for name, sql in queries.items()}
+    cache["similar_sample"] = export_similar_sample(engine)
     ANALYSIS_CACHE.parent.mkdir(parents=True, exist_ok=True)
     ANALYSIS_CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"导出 {len(cache)} 个查询结果 -> {ANALYSIS_CACHE}")

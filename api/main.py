@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -23,6 +24,7 @@ from homevalue.config import (
     DB_PATH,
     MODEL_CITY,
     MODEL_VERSION,
+    PREDICTIONS_LOG,
     REPORTS_DIR,
     SQL_DIR,
 )
@@ -49,11 +51,13 @@ def create_app(
     db_path: Path | str | None = None,
     cache_path: Path | str | None = None,
     errors_path: Path | str | None = None,
+    predictions_log: Path | str | None = None,
 ) -> FastAPI:
     artifacts_dir = Path(artifacts_dir) if artifacts_dir else ARTIFACTS_DIR
     resolved_db = Path(db_path) if db_path else DB_PATH
     cache_path = Path(cache_path) if cache_path else ANALYSIS_CACHE
     errors_path = Path(errors_path) if errors_path else REPORTS_DIR / "error_analysis.json"
+    pred_log_path = Path(predictions_log) if predictions_log else PREDICTIONS_LOG
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -77,6 +81,31 @@ def create_app(
         if name in app.state.cache:
             return app.state.cache[name]
         raise HTTPException(status_code=503, detail=f"分析数据不可用: {name}")
+
+    def similar_rows(district: str, area_sqm: float) -> list[dict[str, Any]]:
+        """同区面积最接近输入的 5 套最新在售房源(DB 实时或缓存样本)。"""
+        if app.state.engine is not None:
+            rows = read_query(
+                app.state.engine,
+                "SELECT district, community, bizcircle, area_sqm, unit_price, rooms, halls,"
+                " build_year, floor_pos, renovation, total_floors FROM listings"
+                " WHERE city = :city AND district = :district"
+                " ORDER BY ABS(area_sqm - :area) LIMIT 5",
+                {"city": MODEL_CITY, "district": district, "area": area_sqm},
+            )
+            return rows.to_dict("records")
+        sample = [r for r in app.state.cache.get("similar_sample", []) if r.get("district") == district]
+        sample.sort(key=lambda r: abs((r.get("area_sqm") or 0) - area_sqm))
+        return sample[:5]
+
+    def append_prediction_log(entry: dict[str, Any]) -> None:
+        """逐条预测日志(输入+输出+延迟),失败静默不影响主流程。"""
+        try:
+            pred_log_path.parent.mkdir(parents=True, exist_ok=True)
+            with pred_log_path.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        except OSError:
+            pass
 
     @app.get("/api/health")
     def health() -> dict:
@@ -125,6 +154,23 @@ def create_app(
         except Exception:  # noqa: BLE001 - 可比参照失败不影响主预测
             comps = {"error": "comparables unavailable"}
 
+        try:
+            similar = similar_rows(row["district"], row["area_sqm"])
+        except Exception:  # noqa: BLE001
+            similar = []
+
+        append_prediction_log({
+            "ts": datetime.now(UTC).isoformat(timespec="seconds"),
+            "district": row["district"],
+            "bizcircle": row["bizcircle"],
+            "community": row["community"],
+            "area_sqm": area,
+            "rooms": row["rooms"],
+            "p50": round(p50),
+            "interval_width_pct": round((p90 - p10) / p50 * 100, 1) if p50 else None,
+            "model_version": art["metadata"]["model_version"],
+        })
+
         return {
             "model_version": art["metadata"]["model_version"],
             "input": row,
@@ -136,6 +182,7 @@ def create_app(
             },
             "interval_width_pct": round((p90 - p10) / p50 * 100, 1) if p50 else None,
             "comparables": comps,
+            "similar": similar,
         }
 
     @app.get("/api/analysis/overview")
@@ -173,6 +220,39 @@ def create_app(
             "summary": analysis_rows("price_change_summary"),
             "top_drops": analysis_rows("biggest_price_drops"),
             "city_compare": analysis_rows("city_compare"),
+        }
+
+    @app.get("/api/similar")
+    def similar_endpoint(district: str, area_sqm: float) -> list[dict]:
+        return similar_rows(district, area_sqm)
+
+    @app.get("/api/predictions/stats")
+    def prediction_stats() -> dict:
+        """预测日志统计(使用量 + 预测分布),是漂移监控与 A/B 分流的数据地基。"""
+        if not pred_log_path.exists():
+            return {"n_total": 0}
+        rows = []
+        for line in pred_log_path.read_text(encoding="utf-8").splitlines():
+            try:
+                rows.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+        if not rows:
+            return {"n_total": 0}
+        p50s = sorted(r["p50"] for r in rows if r.get("p50"))
+        widths = [r["interval_width_pct"] for r in rows if r.get("interval_width_pct") is not None]
+        districts: dict[str, int] = {}
+        for r in rows:
+            d = r.get("district") or "?"
+            districts[d] = districts.get(d, 0) + 1
+        top = sorted(districts.items(), key=lambda kv: -kv[1])[:5]
+        return {
+            "n_total": len(rows),
+            "avg_p50": round(sum(p50s) / len(p50s)) if p50s else None,
+            "median_p50": p50s[len(p50s) // 2] if p50s else None,
+            "avg_interval_width_pct": round(sum(widths) / len(widths), 1) if widths else None,
+            "top_districts": [{"district": d, "n": n} for d, n in top],
+            "last_ts": rows[-1].get("ts"),
         }
 
     @app.get("/api/analysis/errors")

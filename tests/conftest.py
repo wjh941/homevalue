@@ -119,6 +119,7 @@ def api_client(tmp_path: Path, micro_artifacts: Path, tiny_db: Path):
         db_path=tiny_db,
         cache_path=cache,
         errors_path=tmp_path / "errors_none.json",
+        predictions_log=tmp_path / "predictions_log.jsonl",
     )
     with TestClient(app) as client:
         yield client

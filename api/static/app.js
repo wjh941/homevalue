@@ -131,11 +131,17 @@ $("predict-form").addEventListener("submit", async (e) => {
     dir_main: $("f-dir").value,
     renovation: $("f-renovation").value,
   };
+  $("result-error").classList.add("hidden");
   try {
     const res = await jpost("/api/predict", payload);
     renderResult(res);
   } catch (err) {
-    alert("估值失败: " + err.message);
+    $("result-empty").classList.add("hidden");
+    const box = $("result-error");
+    box.textContent = /Failed to fetch|NetworkError/.test(err.message)
+      ? "网络异常或服务正在冷启动(免费实例约 50 秒),请稍后重试。"
+      : "估值失败: " + err.message;
+    box.classList.remove("hidden");
   } finally {
     btn.disabled = false;
     btn.textContent = "立即估值";
@@ -164,6 +170,22 @@ function renderResult(res) {
     compHtml += `<div class="comp-block">商圈 <b>${comps.bizcircle.name}</b>:${fmt(comps.bizcircle.n)} 套,均价 ${fmt(comps.bizcircle.avg_price)} 元/㎡</div>`;
   }
   $("r-comps").innerHTML = compHtml;
+
+  const sim = res.similar || [];
+  if (sim.length) {
+    const rows = sim
+      .map(
+        (s) =>
+          `<tr><td>${s.community || "--"}</td><td>${fmt(s.area_sqm, 1)}㎡</td><td>${fmt(s.unit_price)}</td><td>${s.rooms == null ? "--" : s.rooms + "室" + (s.halls || 0) + "厅"}</td><td>${s.build_year || "--"}</td></tr>`
+      )
+      .join("");
+    $("r-similar").innerHTML =
+      `<table class="similar"><thead><tr><th>同区相似在售</th><th>面积</th><th>挂牌单价</th><th>户型</th><th>年代</th></tr></thead><tbody>${rows}</tbody></table>`
+      + '<p class="hint">挂牌价通常高于成交价,仅作参照。</p>';
+  } else {
+    $("r-similar").innerHTML = "";
+  }
+
   $("r-meta").textContent = `模型 ${res.model_version} · 目标为单价,总价 = 单价 × 面积`;
 }
 
@@ -278,7 +300,26 @@ function showErr(err) {
 }
 
 /* ---------------- 启动 ---------------- */
-loadHeader().then(() => {
-  loaders.market();
-  loadedOnce.add("market");
-}).catch(showErr);
+
+async function boot() {
+  // 免费实例冷启动约 50 秒:期间友好提示并自动重试,而不是白屏报错
+  const maxTries = 12;
+  const delayMs = 6000;
+  for (let i = 1; i <= maxTries; i++) {
+    try {
+      await loadHeader();
+      loaders.market();
+      loadedOnce.add("market");
+      return;
+    } catch (err) {
+      console.error(err);
+      document.getElementById("top-stats").innerHTML =
+        `<div class="chip">⏳ 服务唤醒中(免费实例冷启动约 50 秒)· 第 ${i} 次重试</div>`;
+      if (i < maxTries) await new Promise((r) => setTimeout(r, delayMs));
+    }
+  }
+  document.getElementById("top-stats").innerHTML =
+    '<div class="chip">服务暂不可用,请稍后刷新重试</div>';
+}
+
+boot();

@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>HomeValue · 北京二手房估值平台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='88'%3E%E2%8C%82%3C/text%3E%3C/svg%3E" />
 <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
@@ -76,6 +77,7 @@
       <div class="card" id="result-card">
         <h2>估值结果</h2>
         <div id="result-empty" class="empty">填写左侧信息,点击「立即估值」</div>
+        <div id="result-error" class="error hidden"></div>
         <div id="result-body" class="hidden">
           <div class="price-hero">
             <span id="r-price">--</span><span class="unit">元/㎡</span>
@@ -91,6 +93,7 @@
             <div class="kpi"><b id="r-width">--</b><span>区间宽度</span></div>
           </div>
           <div id="r-comps"></div>
+          <div id="r-similar"></div>
           <p class="hint" id="r-meta"></p>
         </div>
       </div>

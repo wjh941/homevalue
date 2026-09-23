@@ -15,6 +15,7 @@ ARTIFACTS_DIR = Path(os.environ.get("HOMEVALUE_ARTIFACTS", PROJECT_ROOT / "model
 _DEFAULT_CACHE = PROJECT_ROOT / "reports" / "analysis_cache.json"
 ANALYSIS_CACHE = Path(os.environ.get("HOMEVALUE_ANALYSIS_CACHE", _DEFAULT_CACHE))
 REPORTS_DIR = PROJECT_ROOT / "reports"
+PREDICTIONS_LOG = Path(os.environ.get("HOMEVALUE_PREDICTIONS_LOG", REPORTS_DIR / "predictions_log.jsonl"))
 SQL_DIR = PROJECT_ROOT / "sql"
 API_STATIC_DIR = PROJECT_ROOT / "api" / "static"
 
