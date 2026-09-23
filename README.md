@@ -2,6 +2,9 @@
 
 [![CI](https://github.com/wjh941/homevalue/actions/workflows/ci.yml/badge.svg)](https://github.com/wjh941/homevalue/actions/workflows/ci.yml)
 
+**在线演示(免费实例,15 分钟无访问会休眠,首次打开约 50 秒冷启动):**
+### -> https://homevalue-wv6h.onrender.com
+
 从公开数据出发的端到端 ML 项目:数据采集 -> 清洗 -> SQLite 数仓 + SQL 分析 ->
 LightGBM 建模(含预测区间) -> 误差分析 -> FastAPI 服务 -> 仪表盘 -> A/B 实验设计 -> CI。
 
@@ -129,6 +132,8 @@ FROM t ORDER BY snapshot_date;
 - 区域上高单价老城区误差率最高(MAPE ~9.1%)
 
 ## 服务与仪表盘
+
+**线上环境**:https://homevalue-wv6h.onrender.com(Render Blueprint 部署,免费档)
 
 ```bash
 uvicorn api.main:app --port 8000
