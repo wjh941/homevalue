@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Lint (ruff)
+        run: ruff check .
+      - name: Tests (pytest)
+        run: pytest -q
+
+  # 手动触发的端到端冒烟:合成小数据 → 建库 → 训练,验证全链路不依赖真实数据集
+  smoke-pipeline:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Build tiny synthetic dataset
+        run: python scripts/make_synth.py --n 4000 --out data/raw
+      - name: Build sqlite warehouse
+        run: python scripts/build_db.py
+      - name: Train smoke model
+        run: python scripts/train.py --model lgbm --exp-id smoke --full-features

@@ -1,0 +1,18 @@
+{
+  "bizcircle": 0.4568,
+  "district": 0.3976,
+  "building_age": 0.0361,
+  "total_floors": 0.0357,
+  "area_sqm": 0.0338,
+  "floor_ordinal": 0.0101,
+  "rooms": 0.008,
+  "renovation": 0.0063,
+  "halls": 0.0041,
+  "dir_south": 0.0036,
+  "halls_per_room": 0.0024,
+  "dir_north": 0.0019,
+  "dir_count": 0.0014,
+  "dir_west": 0.001,
+  "dir_east": 0.001,
+  "age_missing": 0.0003
+}

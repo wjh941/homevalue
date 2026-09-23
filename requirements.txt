@@ -1,0 +1,13 @@
+numpy>=2.0
+pandas>=3.0
+scikit-learn>=1.9
+lightgbm>=4.7
+joblib>=1.6
+sqlalchemy>=2.0
+fastapi>=0.141
+uvicorn>=0.41
+matplotlib>=3.11
+httpx>=0.28
+requests>=2.31
+pytest>=8.4
+ruff>=0.8

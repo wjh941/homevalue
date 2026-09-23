@@ -1,0 +1,662 @@
+{
+ "districts_rank": [
+  {
+   "district": "西城",
+   "n_listings": 9289,
+   "avg_unit_price": 124292.0,
+   "avg_area": 73.9,
+   "avg_age": 31.7,
+   "price_rank": 1
+  },
+  {
+   "district": "东城",
+   "n_listings": 12276,
+   "avg_unit_price": 106732.0,
+   "avg_area": 77.9,
+   "avg_age": 28.1,
+   "price_rank": 2
+  },
+  {
+   "district": "海淀",
+   "n_listings": 9357,
+   "avg_unit_price": 97619.0,
+   "avg_area": 94.5,
+   "avg_age": 25.6,
+   "price_rank": 3
+  },
+  {
+   "district": "朝阳",
+   "n_listings": 10557,
+   "avg_unit_price": 75401.0,
+   "avg_area": 104.1,
+   "avg_age": 22.2,
+   "price_rank": 4
+  },
+  {
+   "district": "其他",
+   "n_listings": 59243,
+   "avg_unit_price": 73923.0,
+   "avg_area": 92.3,
+   "avg_age": 24.8,
+   "price_rank": 5
+  },
+  {
+   "district": "丰台",
+   "n_listings": 9607,
+   "avg_unit_price": 58642.0,
+   "avg_area": 87.8,
+   "avg_age": 21.5,
+   "price_rank": 6
+  },
+  {
+   "district": "昌平",
+   "n_listings": 16482,
+   "avg_unit_price": 47408.0,
+   "avg_area": 121.2,
+   "avg_age": 19.0,
+   "price_rank": 7
+  },
+  {
+   "district": "通州",
+   "n_listings": 12099,
+   "avg_unit_price": 43475.0,
+   "avg_area": 103.6,
+   "avg_age": 18.4,
+   "price_rank": 8
+  },
+  {
+   "district": "大兴",
+   "n_listings": 9459,
+   "avg_unit_price": 43392.0,
+   "avg_area": 109.2,
+   "avg_age": 17.5,
+   "price_rank": 9
+  }
+ ],
+ "city_price_trend": [
+  {
+   "snapshot_date": "2022-09-23",
+   "n_listings": 38359,
+   "avg_unit_price": 75551.0,
+   "mom_pct": null
+  },
+  {
+   "snapshot_date": "2023-04-01",
+   "n_listings": 42744,
+   "avg_unit_price": 76143.0,
+   "mom_pct": 0.78
+  },
+  {
+   "snapshot_date": "2023-10-27",
+   "n_listings": 49406,
+   "avg_unit_price": 74025.0,
+   "mom_pct": -2.78
+  },
+  {
+   "snapshot_date": "2024-05-01",
+   "n_listings": 42650,
+   "avg_unit_price": 69300.0,
+   "mom_pct": -6.38
+  },
+  {
+   "snapshot_date": "2024-09-26",
+   "n_listings": 1646,
+   "avg_unit_price": 49172.0,
+   "mom_pct": -29.04
+  }
+ ],
+ "top_bizcircle_per_district": [
+  {
+   "district": "东城",
+   "bizcircle": "交道口",
+   "n_listings": 123,
+   "avg_unit_price": 151477.0
+  },
+  {
+   "district": "东城",
+   "bizcircle": "地安门",
+   "n_listings": 56,
+   "avg_unit_price": 150079.0
+  },
+  {
+   "district": "东城",
+   "bizcircle": "东单",
+   "n_listings": 49,
+   "avg_unit_price": 135493.0
+  },
+  {
+   "district": "丰台",
+   "bizcircle": "菜户营",
+   "n_listings": 262,
+   "avg_unit_price": 76362.0
+  },
+  {
+   "district": "丰台",
+   "bizcircle": "丽泽",
+   "n_listings": 193,
+   "avg_unit_price": 73756.0
+  },
+  {
+   "district": "丰台",
+   "bizcircle": "马连道",
+   "n_listings": 63,
+   "avg_unit_price": 72089.0
+  },
+  {
+   "district": "其他",
+   "bizcircle": "太阳宫",
+   "n_listings": 863,
+   "avg_unit_price": 121939.0
+  },
+  {
+   "district": "其他",
+   "bizcircle": "五道口",
+   "n_listings": 1229,
+   "avg_unit_price": 112046.0
+  },
+  {
+   "district": "其他",
+   "bizcircle": "知春路",
+   "n_listings": 1118,
+   "avg_unit_price": 105856.0
+  },
+  {
+   "district": "大兴",
+   "bizcircle": "亦庄开发区其它",
+   "n_listings": 395,
+   "avg_unit_price": 77523.0
+  },
+  {
+   "district": "大兴",
+   "bizcircle": "亦庄",
+   "n_listings": 273,
+   "avg_unit_price": 54122.0
+  },
+  {
+   "district": "大兴",
+   "bizcircle": "高米店",
+   "n_listings": 991,
+   "avg_unit_price": 52737.0
+  },
+  {
+   "district": "昌平",
+   "bizcircle": "奥林匹克公园",
+   "n_listings": 50,
+   "avg_unit_price": 85158.0
+  },
+  {
+   "district": "昌平",
+   "bizcircle": "回龙观",
+   "n_listings": 7233,
+   "avg_unit_price": 55003.0
+  },
+  {
+   "district": "昌平",
+   "bizcircle": "霍营",
+   "n_listings": 337,
+   "avg_unit_price": 52704.0
+  },
+  {
+   "district": "朝阳",
+   "bizcircle": "南沙滩",
+   "n_listings": 110,
+   "avg_unit_price": 83908.0
+  },
+  {
+   "district": "朝阳",
+   "bizcircle": "安贞",
+   "n_listings": 207,
+   "avg_unit_price": 83839.0
+  },
+  {
+   "district": "朝阳",
+   "bizcircle": "芍药居",
+   "n_listings": 139,
+   "avg_unit_price": 82525.0
+  },
+  {
+   "district": "海淀",
+   "bizcircle": "万柳",
+   "n_listings": 231,
+   "avg_unit_price": 145136.0
+  },
+  {
+   "district": "海淀",
+   "bizcircle": "中关村",
+   "n_listings": 174,
+   "avg_unit_price": 125338.0
+  },
+  {
+   "district": "海淀",
+   "bizcircle": "万寿路",
+   "n_listings": 130,
+   "avg_unit_price": 119638.0
+  },
+  {
+   "district": "西城",
+   "bizcircle": "金融街",
+   "n_listings": 168,
+   "avg_unit_price": 156374.0
+  },
+  {
+   "district": "西城",
+   "bizcircle": "德胜门",
+   "n_listings": 161,
+   "avg_unit_price": 150762.0
+  },
+  {
+   "district": "西城",
+   "bizcircle": "西四",
+   "n_listings": 116,
+   "avg_unit_price": 149347.0
+  },
+  {
+   "district": "通州",
+   "bizcircle": "常营",
+   "n_listings": 34,
+   "avg_unit_price": 52083.0
+  },
+  {
+   "district": "通州",
+   "bizcircle": "武夷花园",
+   "n_listings": 1067,
+   "avg_unit_price": 51345.0
+  },
+  {
+   "district": "通州",
+   "bizcircle": "玉桥",
+   "n_listings": 354,
+   "avg_unit_price": 46160.0
+  }
+ ],
+ "price_deciles": [
+  {
+   "decile": 1,
+   "n_listings": 14837,
+   "price_min": 12508.0,
+   "price_max": 38850.0,
+   "avg_unit_price": 33171.0,
+   "avg_area": 113.6
+  },
+  {
+   "decile": 2,
+   "n_listings": 14837,
+   "price_min": 38851.0,
+   "price_max": 46291.0,
+   "avg_unit_price": 42541.0,
+   "avg_area": 102.8
+  },
+  {
+   "decile": 3,
+   "n_listings": 14837,
+   "price_min": 46292.0,
+   "price_max": 53630.0,
+   "avg_unit_price": 50046.0,
+   "avg_area": 96.6
+  },
+  {
+   "decile": 4,
+   "n_listings": 14837,
+   "price_min": 53631.0,
+   "price_max": 60331.0,
+   "avg_unit_price": 57073.0,
+   "avg_area": 91.3
+  },
+  {
+   "decile": 5,
+   "n_listings": 14837,
+   "price_min": 60331.0,
+   "price_max": 66977.0,
+   "avg_unit_price": 63616.0,
+   "avg_area": 89.4
+  },
+  {
+   "decile": 6,
+   "n_listings": 14837,
+   "price_min": 66977.0,
+   "price_max": 74850.0,
+   "avg_unit_price": 70723.0,
+   "avg_area": 89.1
+  },
+  {
+   "decile": 7,
+   "n_listings": 14837,
+   "price_min": 74850.0,
+   "price_max": 85002.0,
+   "avg_unit_price": 79649.0,
+   "avg_area": 92.5
+  },
+  {
+   "decile": 8,
+   "n_listings": 14837,
+   "price_min": 85002.0,
+   "price_max": 98187.0,
+   "avg_unit_price": 91333.0,
+   "avg_area": 98.5
+  },
+  {
+   "decile": 9,
+   "n_listings": 14837,
+   "price_min": 98188.0,
+   "price_max": 115964.0,
+   "avg_unit_price": 106251.0,
+   "avg_area": 94.4
+  },
+  {
+   "decile": 10,
+   "n_listings": 14836,
+   "price_min": 115965.0,
+   "price_max": 245284.0,
+   "avg_unit_price": 135864.0,
+   "avg_area": 90.4
+  }
+ ],
+ "layout_crosstab": [
+  {
+   "district": "东城",
+   "avg_1room": 109681.0,
+   "avg_2room": 105642.0,
+   "avg_3room": 106169.0,
+   "avg_4plus": 106317.0
+  },
+  {
+   "district": "丰台",
+   "avg_1room": 56331.0,
+   "avg_2room": 57663.0,
+   "avg_3room": 61395.0,
+   "avg_4plus": 63387.0
+  },
+  {
+   "district": "其他",
+   "avg_1room": 72095.0,
+   "avg_2room": 71925.0,
+   "avg_3room": 77122.0,
+   "avg_4plus": 86548.0
+  },
+  {
+   "district": "大兴",
+   "avg_1room": 41708.0,
+   "avg_2room": 40156.0,
+   "avg_3room": 45886.0,
+   "avg_4plus": 50405.0
+  },
+  {
+   "district": "昌平",
+   "avg_1room": 54974.0,
+   "avg_2room": 48820.0,
+   "avg_3room": 44880.0,
+   "avg_4plus": 44376.0
+  },
+  {
+   "district": "朝阳",
+   "avg_1room": 73570.0,
+   "avg_2room": 72797.0,
+   "avg_3room": 77376.0,
+   "avg_4plus": 88811.0
+  },
+  {
+   "district": "海淀",
+   "avg_1room": 97036.0,
+   "avg_2room": 94379.0,
+   "avg_3room": 100929.0,
+   "avg_4plus": 105488.0
+  },
+  {
+   "district": "西城",
+   "avg_1room": 128904.0,
+   "avg_2room": 123197.0,
+   "avg_3room": 123007.0,
+   "avg_4plus": 118027.0
+  },
+  {
+   "district": "通州",
+   "avg_1room": 42435.0,
+   "avg_2room": 41803.0,
+   "avg_3room": 44513.0,
+   "avg_4plus": 49384.0
+  }
+ ],
+ "price_change_summary": [
+  {
+   "n_changed": 14456,
+   "avg_pct_change": -5.64,
+   "n_reduced": 13766,
+   "pct_reduced": 95.2
+  }
+ ],
+ "biggest_price_drops": [
+  {
+   "district": "丰台",
+   "bizcircle": "北京南站",
+   "community": "右外东庄",
+   "prev_date": "2023-04-01",
+   "prev_price": 68579.0,
+   "last_date": "2024-05-01",
+   "last_price": 43434.0,
+   "pct_change": -36.67
+  },
+  {
+   "district": "其他",
+   "bizcircle": "牡丹园",
+   "community": "塔院小区",
+   "prev_date": "2023-04-01",
+   "prev_price": 114641.0,
+   "last_date": "2023-10-27",
+   "last_price": 74986.0,
+   "pct_change": -34.59
+  },
+  {
+   "district": "昌平",
+   "bizcircle": "北七家",
+   "community": "八仙别墅仙霞西里",
+   "prev_date": "2022-09-23",
+   "prev_price": 117979.0,
+   "last_date": "2023-04-01",
+   "last_price": 77759.0,
+   "pct_change": -34.09
+  },
+  {
+   "district": "其他",
+   "bizcircle": "十里河",
+   "community": "周家庄中路19号院",
+   "prev_date": "2023-10-27",
+   "prev_price": 62837.0,
+   "last_date": "2024-05-01",
+   "last_price": 42191.0,
+   "pct_change": -32.86
+  },
+  {
+   "district": "其他",
+   "bizcircle": "朝青",
+   "community": "青年汇佳园",
+   "prev_date": "2023-10-27",
+   "prev_price": 87161.0,
+   "last_date": "2024-05-01",
+   "last_price": 59118.0,
+   "pct_change": -32.17
+  },
+  {
+   "district": "通州",
+   "bizcircle": "通州其它",
+   "community": "富力尚悦居A区",
+   "prev_date": "2023-04-01",
+   "prev_price": 66459.0,
+   "last_date": "2023-10-27",
+   "last_price": 46106.0,
+   "pct_change": -30.62
+  },
+  {
+   "district": "其他",
+   "bizcircle": "团结湖",
+   "community": "团结湖路",
+   "prev_date": "2023-10-27",
+   "prev_price": 79143.0,
+   "last_date": "2024-05-01",
+   "last_price": 55235.0,
+   "pct_change": -30.21
+  },
+  {
+   "district": "东城",
+   "bizcircle": "和平里",
+   "community": "和平里四区",
+   "prev_date": "2023-10-27",
+   "prev_price": 129663.0,
+   "last_date": "2024-05-01",
+   "last_price": 90784.0,
+   "pct_change": -29.98
+  },
+  {
+   "district": "昌平",
+   "bizcircle": "回龙观",
+   "community": "龙腾苑六区",
+   "prev_date": "2023-04-01",
+   "prev_price": 51277.0,
+   "last_date": "2024-09-26",
+   "last_price": 36196.0,
+   "pct_change": -29.41
+  },
+  {
+   "district": "通州",
+   "bizcircle": "通州其它",
+   "community": "富力尚悦居A区",
+   "prev_date": "2023-04-01",
+   "prev_price": 62306.0,
+   "last_date": "2023-10-27",
+   "last_price": 44133.0,
+   "pct_change": -29.17
+  },
+  {
+   "district": "东城",
+   "bizcircle": "广渠门",
+   "community": "夕照寺西里",
+   "prev_date": "2023-10-27",
+   "prev_price": 119415.0,
+   "last_date": "2024-05-01",
+   "last_price": 84746.0,
+   "pct_change": -29.03
+  },
+  {
+   "district": "其他",
+   "bizcircle": "红庙",
+   "community": "呼家楼新街大院",
+   "prev_date": "2022-09-23",
+   "prev_price": 150006.0,
+   "last_date": "2023-04-01",
+   "last_price": 106836.0,
+   "pct_change": -28.78
+  },
+  {
+   "district": "昌平",
+   "bizcircle": "北七家",
+   "community": "王府温馨公寓",
+   "prev_date": "2023-04-01",
+   "prev_price": 36664.0,
+   "last_date": "2023-10-27",
+   "last_price": 26133.0,
+   "pct_change": -28.72
+  },
+  {
+   "district": "其他",
+   "bizcircle": "百子湾",
+   "community": "美利山",
+   "prev_date": "2023-04-01",
+   "prev_price": 67095.0,
+   "last_date": "2023-10-27",
+   "last_price": 47925.0,
+   "pct_change": -28.57
+  },
+  {
+   "district": "其他",
+   "bizcircle": "高碑店",
+   "community": "南太平庄北巷",
+   "prev_date": "2023-10-27",
+   "prev_price": 50730.0,
+   "last_date": "2024-05-01",
+   "last_price": 36478.0,
+   "pct_change": -28.09
+  },
+  {
+   "district": "其他",
+   "bizcircle": "五道口",
+   "community": "学院路甲9号院",
+   "prev_date": "2023-10-27",
+   "prev_price": 97867.0,
+   "last_date": "2024-05-01",
+   "last_price": 70840.0,
+   "pct_change": -27.62
+  },
+  {
+   "district": "昌平",
+   "bizcircle": "回龙观",
+   "community": "北京城建畅悦居A区",
+   "prev_date": "2023-10-27",
+   "prev_price": 50368.0,
+   "last_date": "2024-05-01",
+   "last_price": 36623.0,
+   "pct_change": -27.29
+  },
+  {
+   "district": "其他",
+   "bizcircle": "CBD",
+   "community": "北京银泰中心",
+   "prev_date": "2022-09-23",
+   "prev_price": 114512.0,
+   "last_date": "2023-04-01",
+   "last_price": 83282.0,
+   "pct_change": -27.27
+  },
+  {
+   "district": "海淀",
+   "bizcircle": "海淀北部新区",
+   "community": "上庄馨瑞嘉园",
+   "prev_date": "2023-04-01",
+   "prev_price": 56727.0,
+   "last_date": "2024-05-01",
+   "last_price": 41256.0,
+   "pct_change": -27.27
+  },
+  {
+   "district": "东城",
+   "bizcircle": "和平里",
+   "community": "和平里一区",
+   "prev_date": "2023-10-27",
+   "prev_price": 136279.0,
+   "last_date": "2024-05-01",
+   "last_price": 99155.0,
+   "pct_change": -27.24
+  }
+ ],
+ "city_compare": [
+  {
+   "city": "sh",
+   "n_listings": 897,
+   "avg_unit_price": 79232.0,
+   "rank_by_price": 1
+  },
+  {
+   "city": "bj",
+   "n_listings": 148369,
+   "avg_unit_price": 73026.0,
+   "rank_by_price": 2
+  },
+  {
+   "city": "gz",
+   "n_listings": 5141,
+   "avg_unit_price": 62530.0,
+   "rank_by_price": 3
+  },
+  {
+   "city": "sz",
+   "n_listings": 1597,
+   "avg_unit_price": 51784.0,
+   "rank_by_price": 4
+  }
+ ],
+ "pareto_value": [
+  {
+   "n_top20": 29673,
+   "n_all": 148369,
+   "top20_value_share": 42.4
+  }
+ ]
+}

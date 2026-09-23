@@ -1,0 +1,19 @@
+# data: raw downloads and built sqlite are reproducible via scripts/
+data/
+!data/.gitkeep
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# generated plots (json reports are committed)
+reports/*.png
+reports/holdout_predictions.csv
+
+*.log
+.DS_Store
+build_err.log
+train.log

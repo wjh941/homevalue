@@ -1,0 +1,11 @@
+{
+  "n_requests": 100,
+  "concurrency": 1,
+  "errors": 0,
+  "wall_seconds": 17.87,
+  "rps": 5.6,
+  "p50_ms": 165.9,
+  "p95_ms": 240.1,
+  "p99_ms": 255.6,
+  "mean_ms": 178.5
+}

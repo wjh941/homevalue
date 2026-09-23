@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HomeValue · 北京二手房估值平台</title>
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">⌂</span>
+    <div>
+      <h1>HomeValue</h1>
+      <p>北京二手房估值平台 · 数据驱动</p>
+    </div>
+  </div>
+  <div class="topstats" id="top-stats"></div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-view="predict">估值</button>
+  <button class="tab" data-view="market">市场分析</button>
+  <button class="tab" data-view="model">模型洞察</button>
+</nav>
+
+<main>
+  <!-- ===================== 估值 ===================== -->
+  <section id="view-predict" class="view active">
+    <div class="grid-2">
+      <form id="predict-form" class="card">
+        <h2>房源信息</h2>
+        <div class="form-grid">
+          <label>区
+            <select id="f-district" required></select>
+          </label>
+          <label>商圈
+            <input id="f-bizcircle" placeholder="如 望京(可留空)" />
+          </label>
+          <label>室
+            <input id="f-rooms" type="number" min="0" max="10" value="2" required />
+          </label>
+          <label>厅
+            <input id="f-halls" type="number" min="0" max="10" value="1" required />
+          </label>
+          <label>建筑面积(㎡)
+            <input id="f-area" type="number" min="10" max="800" step="0.01" value="89.5" required />
+          </label>
+          <label>建成年份
+            <input id="f-year" type="number" min="1950" max="2026" value="2008" />
+          </label>
+          <label>楼层
+            <select id="f-floor">
+              <option>地下室</option><option>底层</option><option>低楼层</option>
+              <option selected>中楼层</option><option>高楼层</option><option>顶层</option>
+            </select>
+          </label>
+          <label>总层数
+            <input id="f-total-floors" type="number" min="1" max="120" value="18" />
+          </label>
+          <label>主朝向
+            <select id="f-dir">
+              <option selected>南</option><option>北</option><option>东</option><option>西</option>
+            </select>
+          </label>
+          <label>装修
+            <select id="f-renovation">
+              <option>精装</option><option selected>简装</option><option>毛坯</option><option>其他</option>
+            </select>
+          </label>
+        </div>
+        <button class="btn-primary" type="submit" id="predict-btn">立即估值</button>
+        <p class="hint">模型输出为统计估值,不构成交易依据。</p>
+      </form>
+
+      <div class="card" id="result-card">
+        <h2>估值结果</h2>
+        <div id="result-empty" class="empty">填写左侧信息,点击「立即估值」</div>
+        <div id="result-body" class="hidden">
+          <div class="price-hero">
+            <span id="r-price">--</span><span class="unit">元/㎡</span>
+          </div>
+          <div class="interval-bar">
+            <div class="interval-track">
+              <div class="interval-fill" id="r-interval-fill"></div>
+            </div>
+            <div class="interval-labels"><span id="r-p10">--</span><span>80% 预测区间</span><span id="r-p90">--</span></div>
+          </div>
+          <div class="kpi-row">
+            <div class="kpi"><b id="r-total">--</b><span>总价中位(万)</span></div>
+            <div class="kpi"><b id="r-width">--</b><span>区间宽度</span></div>
+          </div>
+          <div id="r-comps"></div>
+          <p class="hint" id="r-meta"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 市场分析 ===================== -->
+  <section id="view-market" class="view">
+    <div class="kpi-cards" id="market-kpis"></div>
+    <div class="grid-2">
+      <div class="card"><h2>全市挂牌均价走势(快照间环比)</h2><div id="chart-trend"></div>
+        <p class="hint">2024-09 快照为部分抓取(1,646 行),其环比仅供参考。</p></div>
+      <div class="card"><h2>各区挂牌均价排名</h2><div id="chart-districts"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><h2>单价十分位画像</h2><div id="table-deciles"></div></div>
+      <div class="card"><h2>挂牌价变动与多城市对比</h2><div id="price-changes"></div></div>
+    </div>
+  </section>
+
+  <!-- ===================== 模型洞察 ===================== -->
+  <section id="view-model" class="view">
+    <div class="kpi-cards" id="model-kpis"></div>
+    <div class="grid-2">
+      <div class="card"><h2>特征重要性(LightGBM gain)</h2><div id="chart-importance"></div></div>
+      <div class="card"><h2>分群误差(MAE)</h2>
+        <h3>按价格段</h3><div id="chart-err-price"></div>
+        <h3>按区</h3><div id="chart-err-district"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  数据:公开链家/贝壳挂牌快照(2022-2024) · 模型:LightGBM · 服务:FastAPI ·
+  仅供技术演示,估值不构成交易建议
+</footer>
+
+<script src="./app.js"></script>
+</body>
+</html>
