@@ -1,8 +1,14 @@
-# Render Blueprint:在 Render 控制台 New -> Blueprint 选择本仓库即可一键部署
+# Render Blueprint:控制台 New -> Blueprint 选择本仓库即可一键部署(免费档,无需绑卡)
 services:
   - type: web
     name: homevalue
-    runtime: docker
+    runtime: python
     plan: free
+    region: singapore
     healthCheckPath: /api/health
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
     autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
