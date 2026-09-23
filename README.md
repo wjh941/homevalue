@@ -14,14 +14,15 @@ LightGBM 建模(含预测区间) -> 误差分析 -> FastAPI 服务 -> 仪表盘 
 
 | 维度 | 数字 |
 |---|---|
-| 真实数据 | 226,729 行原始挂牌 -> 156,004 套唯一房源(北京 148,369 套) |
+| 真实数据 | **186 万行原始挂牌(35 期快照) -> 294,740 套唯一房源(北京 287,105 套)** |
 | 特征 | 19 个:16 个基础特征 + 小区/商圈目标编码 |
-| 主指标 | 留出集 MAE **5,641 元/平米**,MAPE **7.85%**,R² **0.926**(5 折 CV:5,820 ± 13) |
-| baseline 提升 | 线性回归 MAE 14,909 -> LightGBM+TE 5,641(**-62.2%**) |
-| 预测区间 | p10/p90 分位模型,实测 80% 区间覆盖率 **75.3%** |
+| 主指标 | 留出集 MAE **5,743 元/平米**,MAPE **8.29%**,R² **0.924**(5 折 CV:5,845;n=57,470) |
+| baseline 提升 | 线性回归 MAE 14,909 -> LightGBM+TE 5,743(**-61.5%**) |
+| 预测区间 | p10/p90 分位模型,实测 80% 区间覆盖率 **76.7%** |
+| 调价历史 | **50,033 套跨期调价**,95.3% 降价,平均 -3.75%(35 期月度粒度) |
 | 服务 | FastAPI + 3 模型推理,单并发 P95 **264ms**,8 并发 P95 **710ms**(400 请求 0 错误) |
 | SQL | 9 个含窗口函数/CTE 的分析查询(RANK/LAG/NTILE/ROW_NUMBER/透视/帕累托) |
-| 工程 | 30 个 pytest 用例、ruff 通过、GitHub Actions(lint+test+冒烟训练)、Docker、Render 部署 |
+| 工程 | 31 个 pytest 用例、ruff 通过、GitHub Actions(lint+test+月度数据管道)、Docker、Render 部署 |
 
 ## 架构
 
@@ -70,9 +71,18 @@ python scripts/train.py --model lgbm --exp-id smoke --full-features
 
 ## 数据
 
-- 来源:[linpingta/lianjia-eroom-analysis](https://github.com/linpingta/lianjia-eroom-analysis)(公开的链家/贝壳挂牌页快照,2022-2024)
-- 快照即"在售房源列表",同一房源跨快照保留历史,支持挂牌价调价分析
+- 来源:[linpingta/lianjia-eroom-analysis](https://github.com/linpingta/lianjia-eroom-analysis)(公开的链家/贝壳挂牌页快照)
+- **全部可用快照共 37 期**(2022-09 至 2024-09,不足 1MB 的残缺期自动剔除,实际使用 35 期),
+  fetch --all 一次拉全:同一房源跨多期保留完整调价历史,月度粒度的环比/调价分析由此而来
 - 清洗:hhid 去重、价格/面积合理域过滤(脏数据率约 2%)、字段解析(户型/楼层/朝向/年份)
+
+### 数据更新机制(自动化)
+
+- **每月 3 日** GitHub Actions 定时检查源仓库新快照:有新数据则自动 重建数仓 → 重训 → 导出缓存 →
+  提交推送,Render 跟随上线(见 .github/workflows/update-data.yml);页面头部展示"数据截至"日期
+- 手动更新:python scripts/fetch_data.py --all && python scripts/build_db.py && python scripts/train.py --model lgbm --exp-id auto --full-features --community-te && python scripts/export_analysis_cache.py(命令行依次执行)
+- 诚实边界:源仓库自 2024-09 后停更,所以"数据截至"就是那一天;直接抓取链家现网存在合规与反爬问题,
+  本项目不把爬虫放进线上服务。数据时效性在页面与文档中如实标注,不伪装成实时数据。
 
 ### 数据质量发现(面试点)
 
@@ -81,7 +91,8 @@ python scripts/train.py --model lgbm --exp-id smoke --full-features
    其余归入「其他」。修复过程说明:exp002 指标先变差后(去掉脏值红利)配齐特征再变优,
    详见 [EXPERIMENTS.md](EXPERIMENTS.md) 结论 2。
 2. **2024-09 快照为部分抓取(1,646 行)**,该期环比仅作参考。
-3. **95.2% 的调价房源在降价**(14,456 套跨期调价,平均 -5.64%)——2023-2024 北京挂牌市场以降价为主。
+3. **95.3% 的调价房源在降价**:50,033 套跨期调价(35 期月度粒度),平均 -3.75%——2022-2024
+   北京挂牌市场持续以降价为主,全市挂牌均价累计 **-9.9%**(75,551 -> 68,066,2022-09 -> 2024-07)。
 
 ## SQL 分析(sql/03_analysis.sql,README 与 API 共用)
 
@@ -110,7 +121,8 @@ SELECT snapshot_date, n_listings, avg_unit_price,
 FROM t ORDER BY snapshot_date;
 ```
 
-结果:75,551(2022-09)-> 76,143(+0.78%)-> 74,025(-2.78%)-> 69,300(-6.38%)。
+结果(35 期月度序列节选):75,551(2022-09)-> 76,143 -> 74,025 -> 69,300 -> ... -> 68,066(2024-07),
+挂牌均价两年累计约 **-9.9%**;完整序列由 /api/analysis/trend 返回。
 
 ## 建模
 
@@ -126,7 +138,7 @@ FROM t ORDER BY snapshot_date;
 
 ## 误差分析(reports/error_analysis.json)
 
-- 整体:MAE 5,641,中位相对误差 6.0%,72.6% 的房源误差 ≤ 10%,**94.0% ≤ 20%**
+- 整体:MAE 5,743,中位相对误差 6.6%,69.4% 的房源误差 ≤ 10%,**93.5% ≤ 20%**(n=57,470)
 - **低价段(<3 万/平米)MAPE 15.1% 且系统性高估(bias +3,312)** —— 典型的向均值回归
 - 中间价格段(8-12 万)最准(MAPE 7.2%),是大多数用户所在区间
 - 区域上高单价老城区误差率最高(MAPE ~9.1%)

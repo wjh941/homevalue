@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
 
 import numpy as np
@@ -57,6 +58,16 @@ def main() -> int:
     queries = load_queries(SQL_DIR / "03_analysis.sql")
     cache = {name: to_records(read_query(engine, sql)) for name, sql in queries.items()}
     cache["similar_sample"] = export_similar_sample(engine)
+    dates = read_query(
+        engine, "SELECT MIN(snapshot_date) AS first, MAX(snapshot_date) AS last,"
+        " COUNT(DISTINCT snapshot_date) AS n FROM listings_all WHERE city = 'bj'"
+    ).to_dict("records")[0]
+    cache["_meta"] = {
+        "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
+        "first_snapshot": dates["first"],
+        "last_snapshot": dates["last"],
+        "n_snapshots": int(dates["n"]),
+    }
     ANALYSIS_CACHE.parent.mkdir(parents=True, exist_ok=True)
     ANALYSIS_CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"导出 {len(cache)} 个查询结果 -> {ANALYSIS_CACHE}")

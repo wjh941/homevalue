@@ -1,296 +1,296 @@
 {
   "model_city": "bj",
   "overall": {
-    "n": 29633,
-    "mae": 5641.0,
-    "mape_pct": 7.85,
-    "median_ape_pct": 5.97,
-    "within_10pct": 0.726,
-    "within_20pct": 0.9399,
-    "interval_coverage_80": 0.753
+    "n": 57470,
+    "mae": 5743.0,
+    "mape_pct": 8.29,
+    "median_ape_pct": 6.58,
+    "within_10pct": 0.6939,
+    "within_20pct": 0.9346,
+    "interval_coverage_80": 0.7669
   },
   "by_district": [
     {
       "district": "海淀",
-      "n": 1896,
-      "mae": 8657.0,
-      "mape_pct": 9.08,
-      "bias": -621.0,
-      "median_ae": 6448.0
-    },
-    {
-      "district": "昌平",
-      "n": 3274,
-      "mae": 4000.0,
-      "mape_pct": 8.74,
-      "bias": -238.0,
-      "median_ae": 2985.0
-    },
-    {
-      "district": "朝阳",
-      "n": 2089,
-      "mae": 6052.0,
-      "mape_pct": 8.43,
-      "bias": -761.0,
-      "median_ae": 4910.0
+      "n": 5918,
+      "mae": 8476.0,
+      "mape_pct": 8.94,
+      "bias": -815.0,
+      "median_ae": 6501.0
     },
     {
       "district": "西城",
-      "n": 1895,
-      "mae": 10326.0,
-      "mape_pct": 8.39,
-      "bias": -2067.0,
-      "median_ae": 7785.0
+      "n": 3639,
+      "mae": 10854.0,
+      "mape_pct": 8.74,
+      "bias": -2206.0,
+      "median_ae": 8394.0
     },
     {
-      "district": "大兴",
-      "n": 1892,
-      "mae": 3364.0,
-      "mape_pct": 8.12,
-      "bias": -178.0,
-      "median_ae": 2384.0
+      "district": "昌平",
+      "n": 6300,
+      "mae": 3842.0,
+      "mape_pct": 8.62,
+      "bias": -237.0,
+      "median_ae": 3030.0
     },
     {
       "district": "东城",
-      "n": 2507,
-      "mae": 8649.0,
-      "mape_pct": 7.99,
-      "bias": -1553.0,
-      "median_ae": 6412.0
-    },
-    {
-      "district": "丰台",
-      "n": 1879,
-      "mae": 4402.0,
-      "mape_pct": 7.81,
-      "bias": -160.0,
-      "median_ae": 3439.0
-    },
-    {
-      "district": "通州",
-      "n": 2323,
-      "mae": 3318.0,
-      "mape_pct": 7.76,
-      "bias": -13.0,
-      "median_ae": 2457.0
+      "n": 4561,
+      "mae": 8732.0,
+      "mape_pct": 8.45,
+      "bias": -1179.0,
+      "median_ae": 6722.0
     },
     {
       "district": "其他",
-      "n": 11878,
-      "mae": 5170.0,
-      "mape_pct": 7.16,
-      "bias": -417.0,
-      "median_ae": 3962.0
+      "n": 3310,
+      "mae": 6177.0,
+      "mape_pct": 8.31,
+      "bias": -535.0,
+      "median_ae": 4942.0
+    },
+    {
+      "district": "朝阳",
+      "n": 16822,
+      "mae": 5547.0,
+      "mape_pct": 8.17,
+      "bias": -415.0,
+      "median_ae": 4462.0
+    },
+    {
+      "district": "大兴",
+      "n": 4775,
+      "mae": 3153.0,
+      "mape_pct": 7.96,
+      "bias": -144.0,
+      "median_ae": 2466.0
+    },
+    {
+      "district": "通州",
+      "n": 5809,
+      "mae": 3303.0,
+      "mape_pct": 7.93,
+      "bias": -299.0,
+      "median_ae": 2563.0
+    },
+    {
+      "district": "丰台",
+      "n": 6336,
+      "mae": 4477.0,
+      "mape_pct": 7.85,
+      "bias": -440.0,
+      "median_ae": 3538.0
     }
   ],
   "by_price_band": [
     {
       "price_band": "0-3万/㎡",
-      "n": 613,
-      "mae": 3818.0,
-      "mape_pct": 15.12,
-      "bias": 3312.0,
-      "median_ae": 2643.0
-    },
-    {
-      "price_band": "3-5万/㎡",
-      "n": 6643,
-      "mae": 3524.0,
-      "mape_pct": 8.65,
-      "bias": 1406.0,
-      "median_ae": 2576.0
+      "n": 1812,
+      "mae": 3412.0,
+      "mape_pct": 13.44,
+      "bias": 2673.0,
+      "median_ae": 2680.0
     },
     {
       "price_band": "12万+/㎡",
-      "n": 2547,
-      "mae": 12211.0,
+      "n": 4362,
+      "mae": 13149.0,
+      "mape_pct": 9.13,
+      "bias": -9322.0,
+      "median_ae": 10267.0
+    },
+    {
+      "price_band": "3-5万/㎡",
+      "n": 15356,
+      "mae": 3496.0,
       "mape_pct": 8.59,
-      "bias": -8715.0,
-      "median_ae": 9164.0
+      "bias": 1110.0,
+      "median_ae": 2680.0
     },
     {
       "price_band": "5-8万/㎡",
-      "n": 12070,
-      "mae": 4669.0,
-      "mape_pct": 7.31,
-      "bias": 146.0,
-      "median_ae": 3652.0
+      "n": 22301,
+      "mae": 5014.0,
+      "mape_pct": 7.88,
+      "bias": 57.0,
+      "median_ae": 4018.0
     },
     {
       "price_band": "8-12万/㎡",
-      "n": 7760,
-      "mae": 6952.0,
-      "mape_pct": 7.18,
-      "bias": -1021.0,
-      "median_ae": 5455.0
+      "n": 13639,
+      "mae": 7405.0,
+      "mape_pct": 7.66,
+      "bias": -1187.0,
+      "median_ae": 6081.0
     }
   ],
   "by_area_band": [
     {
-      "area_band": "140㎡+",
-      "n": 4215,
-      "mae": 6216.0,
-      "mape_pct": 8.89,
-      "bias": -567.0,
-      "median_ae": 4210.0
+      "area_band": "≤50㎡",
+      "n": 5349,
+      "mae": 7921.0,
+      "mape_pct": 9.41,
+      "bias": -1309.0,
+      "median_ae": 5583.0
     },
     {
-      "area_band": "≤50㎡",
-      "n": 2848,
-      "mae": 7206.0,
-      "mape_pct": 8.27,
-      "bias": -1174.0,
-      "median_ae": 5057.0
+      "area_band": "140㎡+",
+      "n": 7080,
+      "mae": 6343.0,
+      "mape_pct": 9.06,
+      "bias": -760.0,
+      "median_ae": 4322.0
     },
     {
       "area_band": "50-90㎡",
-      "n": 14842,
-      "mae": 5560.0,
-      "mape_pct": 7.73,
-      "bias": -454.0,
-      "median_ae": 4048.0
+      "n": 29930,
+      "mae": 5644.0,
+      "mape_pct": 8.25,
+      "bias": -514.0,
+      "median_ae": 4152.0
     },
     {
       "area_band": "90-140㎡",
-      "n": 7728,
-      "mae": 4907.0,
-      "mape_pct": 7.34,
-      "bias": -584.0,
-      "median_ae": 3389.0
+      "n": 15111,
+      "mae": 4887.0,
+      "mape_pct": 7.62,
+      "bias": -393.0,
+      "median_ae": 3515.0
     }
   ],
   "by_age_band": [
     {
       "age_band": "0-5年",
-      "n": 56,
-      "mae": 7380.0,
-      "mape_pct": 14.29,
-      "bias": -1018.0,
-      "median_ae": 3736.0
+      "n": 154,
+      "mae": 6239.0,
+      "mape_pct": 10.97,
+      "bias": -971.0,
+      "median_ae": 4142.0
     },
     {
       "age_band": "未知",
-      "n": 10142,
-      "mae": 6231.0,
-      "mape_pct": 8.59,
-      "bias": -551.0,
-      "median_ae": 4391.0
+      "n": 22280,
+      "mae": 6247.0,
+      "mape_pct": 8.86,
+      "bias": -729.0,
+      "median_ae": 4452.0
     },
     {
       "age_band": "25年+",
-      "n": 7112,
-      "mae": 5941.0,
-      "mape_pct": 7.68,
-      "bias": -561.0,
-      "median_ae": 4271.0
+      "n": 12383,
+      "mae": 6288.0,
+      "mape_pct": 8.44,
+      "bias": -553.0,
+      "median_ae": 4625.0
     },
     {
       "age_band": "15-25年",
-      "n": 9171,
-      "mae": 5063.0,
-      "mape_pct": 7.32,
-      "bias": -629.0,
-      "median_ae": 3594.0
+      "n": 16203,
+      "mae": 5176.0,
+      "mape_pct": 7.75,
+      "bias": -504.0,
+      "median_ae": 3809.0
     },
     {
       "age_band": "5-15年",
-      "n": 3152,
-      "mae": 4717.0,
-      "mape_pct": 7.24,
-      "bias": -500.0,
-      "median_ae": 3223.0
+      "n": 6450,
+      "mae": 4365.0,
+      "mape_pct": 7.32,
+      "bias": -355.0,
+      "median_ae": 3030.0
     }
   ],
   "by_renovation": [
     {
       "renovation": "毛坯",
-      "n": 493,
-      "mae": 5841.0,
-      "mape_pct": 8.93,
-      "bias": -597.0,
-      "median_ae": 4066.0
-    },
-    {
-      "renovation": "简装",
-      "n": 10877,
-      "mae": 5548.0,
-      "mape_pct": 8.08,
-      "bias": -485.0,
-      "median_ae": 3895.0
+      "n": 883,
+      "mae": 6695.0,
+      "mape_pct": 9.93,
+      "bias": -690.0,
+      "median_ae": 4485.0
     },
     {
       "renovation": "其他",
-      "n": 2926,
-      "mae": 5707.0,
-      "mape_pct": 8.05,
-      "bias": -360.0,
-      "median_ae": 3913.0
+      "n": 5492,
+      "mae": 5922.0,
+      "mape_pct": 8.5,
+      "bias": -895.0,
+      "median_ae": 4036.0
+    },
+    {
+      "renovation": "简装",
+      "n": 21558,
+      "mae": 5549.0,
+      "mape_pct": 8.48,
+      "bias": -560.0,
+      "median_ae": 3984.0
     },
     {
       "renovation": "精装",
-      "n": 15337,
-      "mae": 5688.0,
-      "mape_pct": 7.6,
-      "bias": -675.0,
-      "median_ae": 4027.0
+      "n": 29537,
+      "mae": 5822.0,
+      "mape_pct": 8.06,
+      "bias": -545.0,
+      "median_ae": 4175.0
     }
   ],
   "by_rooms": [
     {
-      "rooms": "7",
-      "n": 46,
-      "mae": 7566.0,
-      "mape_pct": 12.89,
-      "bias": -2889.0,
-      "median_ae": 5165.0
+      "rooms": "6",
+      "n": 204,
+      "mae": 9028.0,
+      "mape_pct": 13.38,
+      "bias": -1539.0,
+      "median_ae": 5159.0
     },
     {
-      "rooms": "6",
-      "n": 139,
-      "mae": 8250.0,
+      "rooms": "7",
+      "n": 72,
+      "mae": 8150.0,
       "mape_pct": 12.84,
-      "bias": -217.0,
-      "median_ae": 5646.0
+      "bias": -2733.0,
+      "median_ae": 4941.0
     },
     {
       "rooms": "5",
-      "n": 444,
-      "mae": 6742.0,
-      "mape_pct": 11.46,
-      "bias": -338.0,
-      "median_ae": 4572.0
+      "n": 721,
+      "mae": 7144.0,
+      "mape_pct": 11.26,
+      "bias": -661.0,
+      "median_ae": 5094.0
     },
     {
       "rooms": "4",
-      "n": 1564,
-      "mae": 6440.0,
-      "mape_pct": 9.01,
-      "bias": -622.0,
-      "median_ae": 4235.0
-    },
-    {
-      "rooms": "3",
-      "n": 7543,
-      "mae": 5629.0,
-      "mape_pct": 7.79,
-      "bias": -661.0,
-      "median_ae": 3850.0
+      "n": 2624,
+      "mae": 6835.0,
+      "mape_pct": 9.43,
+      "bias": -1130.0,
+      "median_ae": 4608.0
     },
     {
       "rooms": "1",
-      "n": 5823,
-      "mae": 5943.0,
-      "mape_pct": 7.76,
-      "bias": -695.0,
-      "median_ae": 4254.0
+      "n": 10993,
+      "mae": 6369.0,
+      "mape_pct": 8.76,
+      "bias": -741.0,
+      "median_ae": 4675.0
     },
     {
       "rooms": "2",
-      "n": 14047,
-      "mae": 5352.0,
-      "mape_pct": 7.58,
-      "bias": -474.0,
-      "median_ae": 3839.0
+      "n": 28424,
+      "mae": 5450.0,
+      "mape_pct": 8.05,
+      "bias": -513.0,
+      "median_ae": 3944.0
+    },
+    {
+      "rooms": "3",
+      "n": 14388,
+      "mae": 5498.0,
+      "mape_pct": 7.92,
+      "bias": -490.0,
+      "median_ae": 3864.0
     }
   ]
 }

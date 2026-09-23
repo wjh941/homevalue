@@ -47,20 +47,27 @@ def list_dir(dir_name: str) -> list[dict]:
         return json.loads(resp.read().decode("utf-8"))
 
 
-def bj_targets() -> dict[str, str]:
-    """Return {local filename: url} for the chosen Beijing snapshot dates."""
+def bj_targets(all_snapshots: bool = False) -> dict[str, str]:
+    """Return {local filename: url} for the chosen Beijing snapshot dates.
+
+    all_snapshots=False: the 5 canonical snapshots (快速复现).
+    all_snapshots=True : every usable snapshot in the source repo (~35 期,2022-09..2024-07),
+    跳过 0 字节/过小的残缺抓取。
+    """
     entries = [e for e in list_dir("bj_data") if e["name"].endswith(".csv")]
     found: dict[str, dict] = {}
     for e in entries:
         m = DATE_RE.search(e["name"])
-        if m and m.group(0) in BJ_DATES:
+        keep = m and (all_snapshots or m.group(0) in BJ_DATES)
+        if keep and e["size"] > 1_000_000:  # <1MB 的快照是残缺抓取,跳过
             # keep the largest file per date (2024-09 has a truncated variant)
             prev = found.get(m.group(0))
             if prev is None or e["size"] > prev["size"]:
                 found[m.group(0)] = e
-    missing = set(BJ_DATES) - set(found)
-    if missing:
-        raise RuntimeError(f"missing Beijing snapshots: {sorted(missing)}")
+    if not all_snapshots:
+        missing = set(BJ_DATES) - set(found)
+        if missing:
+            raise RuntimeError(f"missing Beijing snapshots: {sorted(missing)}")
     return {
         "bj__" + e["name"]: e["download_url"]
         for _, e in sorted(found.items())
@@ -88,12 +95,14 @@ def peek(path: Path) -> tuple[int, list[str]]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", default="data/raw", help="download directory")
+    parser.add_argument("--all", action="store_true",
+                        help="下载源仓库全部可用快照(~35 期),默认仅 5 期快速复现")
     args = parser.parse_args()
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
-    targets = bj_targets()
+    targets = bj_targets(all_snapshots=args.all)
     for city, rel in CITY_FILES.items():
         targets[city + "__" + Path(rel).name] = RAW_URL.format(
             repo=REPO, branch=BRANCH, path=rel

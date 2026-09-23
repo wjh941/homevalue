@@ -95,11 +95,13 @@ async function loadHeader() {
   const health = await jget("/api/health");
   const overview = await jget("/api/analysis/overview");
   const h = health.holdout || {};
+  const fr = health.data_freshness || {};
   const chips = [
     ["在售房源", overview.n_listings ? fmt(overview.n_listings) + " 套" : "--"],
     ["留出集 MAE", h.mae != null ? fmt(h.mae) + " 元/㎡" : "--"],
     ["MAPE", h.mape_pct != null ? h.mape_pct + "%" : "--"],
     ["R²", h.r2 != null ? h.r2 : "--"],
+    ["数据截至", fr.last_snapshot ? String(fr.last_snapshot).slice(0, 10) : "--"],
     ["数据后端", health.data_backend === "sqlite" ? "SQLite 实时" : "预计算缓存"],
   ];
   $("top-stats").innerHTML = chips.map(([k, v]) => `<div class="chip">${k} <b>${v}</b></div>`).join("");

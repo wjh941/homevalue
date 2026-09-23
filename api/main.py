@@ -109,11 +109,25 @@ def create_app(
 
     @app.get("/api/health")
     def health() -> dict:
+        meta = app.state.cache.get("_meta") or {}
+        if app.state.engine is not None:
+            try:
+                row = read_query(
+                    app.state.engine,
+                    "SELECT MIN(snapshot_date) AS first, MAX(snapshot_date) AS last,"
+                    " COUNT(DISTINCT snapshot_date) AS n FROM listings_all WHERE city = :city",
+                    {"city": MODEL_CITY},
+                ).to_dict("records")[0]
+                meta = {"first_snapshot": row["first"], "last_snapshot": row["last"],
+                        "n_snapshots": row["n"]}
+            except Exception:  # noqa: BLE001
+                pass
         return {
             "status": "ok",
             "model_version": app.state.art["metadata"]["model_version"],
             "exp_id": app.state.art["metadata"]["exp_id"],
             "data_backend": "sqlite" if app.state.engine is not None else "cache",
+            "data_freshness": meta,
             "holdout": app.state.art["metadata"]["holdout"],
         }
 

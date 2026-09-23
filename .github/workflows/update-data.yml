@@ -1,0 +1,50 @@
+name: update-data
+
+# 数据管道自动化:每月 3 日检查源仓库是否有新快照;
+# 有新数据则自动 重建数仓 -> 重训模型 -> 导出缓存 -> 提交推送(Render autoDeploy 跟随上线)。
+on:
+  schedule:
+    - cron: "0 3 3 * *" # 每月 3 日 03:00 UTC
+  workflow_dispatch: {} # 允许在 Actions 页面手动触发
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Fetch all available snapshots
+        run: python scripts/fetch_data.py --all
+
+      - name: Rebuild warehouse
+        run: python scripts/build_db.py
+
+      - name: Retrain model (full features + target encoding)
+        run: python scripts/train.py --model lgbm --exp-id auto-monthly --full-features --community-te
+
+      - name: Error analysis + analysis cache
+        run: |
+          python scripts/error_analysis.py
+          python scripts/export_analysis_cache.py
+
+      - name: Commit and push if data changed
+        run: |
+          git config user.name "homevalue-bot"
+          git config user.email "bot@homevalue.local"
+          git add reports/ models/
+          if git diff --cached --quiet; then
+            echo "无新数据,跳过提交"
+          else
+            git commit -m "data: 月度自动更新 $(date -u +%Y-%m-%d)"
+            git push
+          fi
