@@ -42,6 +42,42 @@ function svgTitle(text) {
   return t;
 }
 
+// 日期轴:MM-DD 短标签旋转排布(自适应密度),年份分隔线 + 年份行
+function drawDateAxis(svg, dates, xs, opts) {
+  const width = opts.width, height = opts.height, padL = opts.padL, padR = opts.padR;
+  const plotW = width - padL - padR;
+  const every = Math.max(1, Math.ceil(dates.length / Math.max(3, Math.floor(plotW / 30))));
+  dates.forEach((d, i) => {
+    if (i % every !== 0 && i !== dates.length - 1) return;
+    const t = svgEl("text", {
+      x: xs(i), y: height - 30, "text-anchor": "end",
+      transform: "rotate(-35 " + xs(i) + " " + (height - 30) + ")",
+    });
+    t.textContent = d.slice(5); // MM-DD
+    svg.appendChild(t);
+  });
+  const years = [];
+  dates.forEach((d) => {
+    const y = d.slice(0, 4);
+    if (!years.length || years[years.length - 1].year !== y) years.push({ year: y, start: dates.indexOf(d) });
+  });
+  years.forEach((yr, k) => {
+    const endI = k + 1 < years.length ? years[k + 1].start - 1 : dates.length - 1;
+    if (k > 0) {
+      svg.appendChild(svgEl("line", {
+        x1: xs(yr.start) - 5, x2: xs(yr.start) - 5, y1: 12, y2: height - 44,
+        stroke: "#2a3a5f", "stroke-dasharray": "3 3",
+      }));
+    }
+    const t = svgEl("text", {
+      x: (xs(yr.start) + xs(endI)) / 2, y: height - 8, "text-anchor": "middle",
+      style: "font-size:12px;font-weight:600;fill:#8b9bb8",
+    });
+    t.textContent = yr.year;
+    svg.appendChild(t);
+  });
+}
+
 function barChart(items, opts = {}) {
   // items: [{label, value}];横向条形图;悬浮显示数值,可选 onBarClick(label)
   if (!items || !items.length) return document.createTextNode("暂无数据");
@@ -77,8 +113,8 @@ function barChart(items, opts = {}) {
 
 function lineChart(points, opts = {}) {
   if (!points || points.length < 2) return document.createTextNode("该年份窗口内快照不足 2 期,切回「全部」查看完整走势");
-  const width = opts.width || 520, height = opts.height || 280;
-  const padL = 62, padR = 14, padT = 14, padB = 34;
+  const width = opts.width || 520, height = opts.height || 300;
+  const padL = 62, padR = 14, padT = 14, padB = 60;
   const vals = points.map((p) => p.value);
   const min = Math.min(...vals) * 0.96, max = Math.max(...vals) * 1.02;
   const xs = (i) => padL + (i / (points.length - 1)) * (width - padL - padR);
@@ -91,19 +127,14 @@ function lineChart(points, opts = {}) {
     t.textContent = (v / 10000).toFixed(2) + "万";
     svg.appendChild(t);
   }
-  const every = Math.ceil(points.length / 12); // 标签抽稀,保证可读
   const path = points.map((p, i) => (i ? "L" : "M") + xs(i).toFixed(1) + "," + ys(p.value).toFixed(1)).join(" ");
   svg.appendChild(svgEl("path", { d: path, fill: "none", stroke: "#34d399", "stroke-width": 2 }));
   points.forEach((p, i) => {
     const dot = svgEl("circle", { cx: xs(i), cy: ys(p.value), r: 3.5, fill: "#34d399" });
     dot.appendChild(svgTitle(p.label + " · " + fmt(p.value) + " 元/㎡" + (p.mom != null ? " · 环比 " + p.mom + "%" : "")));
     svg.appendChild(dot);
-    if (i % every === 0 || i === points.length - 1) {
-      const t = svgEl("text", { x: xs(i), y: height - 12, "text-anchor": "middle" });
-      t.textContent = (p.label || "").slice(2); // 22-09 -> 短标签
-      svg.appendChild(t);
-    }
   });
+  drawDateAxis(svg, points.map((p) => p.label), xs, { width, height, padL, padR });
   return svg;
 }
 
@@ -117,8 +148,8 @@ function multiLineChart(series, opts = {}) {
   dates.forEach((d, i) => (idx[d] = i));
   const vals = series.flatMap((s) => s.points.map((p) => p.value));
   const min = Math.min(...vals) * 0.96, max = Math.max(...vals) * 1.02;
-  const width = opts.width || 520, height = opts.height || 280;
-  const padL = 62, padR = 14, padT = 14, padB = 34;
+  const width = opts.width || 520, height = opts.height || 300;
+  const padL = 62, padR = 14, padT = 14, padB = 60;
   const xs = (i) => padL + (i / (dates.length - 1)) * (width - padL - padR);
   const ys = (v) => padT + (1 - (v - min) / (max - min || 1)) * (height - padT - padB);
   const svg = svgEl("svg", { viewBox: "0 0 " + width + " " + height, class: "line-chart" });
@@ -129,14 +160,7 @@ function multiLineChart(series, opts = {}) {
     t.textContent = (v / 10000).toFixed(2) + "万";
     svg.appendChild(t);
   }
-  const every = Math.ceil(dates.length / 10);
-  dates.forEach((d, i) => {
-    if (i % every === 0 || i === dates.length - 1) {
-      const t = svgEl("text", { x: xs(i), y: height - 12, "text-anchor": "middle" });
-      t.textContent = d.slice(2);
-      svg.appendChild(t);
-    }
-  });
+  drawDateAxis(svg, dates, xs, { width, height, padL, padR });
   series.forEach((s) => {
     const pts = s.points
       .map((p) => ({ i: idx[p.label], v: p.value, label: p.label }))
