@@ -220,6 +220,14 @@ def create_app(
     def districts() -> list[dict]:
         return analysis_rows("districts_rank")
 
+    @app.get("/api/analysis/districts-all")
+    def districts_all() -> list[dict]:
+        return analysis_rows("districts_rank_all")
+
+    @app.get("/api/analysis/trend-all")
+    def trend_all() -> list[dict]:
+        return analysis_rows("city_price_trend_all")
+
     @app.get("/api/analysis/deciles")
     def deciles() -> list[dict]:
         return analysis_rows("price_deciles")

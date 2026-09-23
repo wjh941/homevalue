@@ -30,11 +30,17 @@ RAW_URL = "https://raw.githubusercontent.com/{repo}/{branch}/{path}"
 # Beijing snapshots, roughly every 6 months, oldest first.
 BJ_DATES = ["20220923", "20230401", "20231027", "20240501", "20240926"]
 
-# One snapshot per smaller city (fixed files; dates embedded in the name).
+# Other cities: all usable snapshots (dates embedded in the name; 0-byte crawls skipped).
 CITY_FILES = {
-    "sh": "sh_data/sh_eroom_time__20231112_detail__1699761883__area_3.csv",
-    "sz": "sz_data/sz_eroom_time__20231114_detail__1699973280__area_2.csv",
-    "gz": "gz_data/gz_eroom_time__20231117_detail__1700230560__area_2.csv",
+    "sh": [
+        "sh_data/sh_eroom_time__20231112_detail__1699761883__area_3.csv",
+        "sh_data/sh_eroom_time__20240601_detail__1717244236__area_3.csv",
+        "sh_data/sh_eroom_time__20240605_detail__1717594528__area_3.csv",
+        "sh_data/sh_eroom_time__20240615_detail__1718432544__area_3.csv",
+    ],
+    "sz": ["sz_data/sz_eroom_time__20231114_detail__1699973280__area_2.csv"],
+    "gz": ["gz_data/gz_eroom_time__20231117_detail__1700230560__area_2.csv"],
+    "hz": ["hz_data/hangzhou_eroom_time__20220115_detail__1642236238__area_17.csv"],
 }
 
 DATE_RE = re.compile(r"[0-9]{8}")
@@ -59,7 +65,8 @@ def bj_targets(all_snapshots: bool = False) -> dict[str, str]:
     for e in entries:
         m = DATE_RE.search(e["name"])
         keep = m and (all_snapshots or m.group(0) in BJ_DATES)
-        if keep and e["size"] > 1_000_000:  # <1MB 的快照是残缺抓取,跳过
+        if keep and (not all_snapshots or e["size"] > 1_000_000):
+            # --all: <1MB 的快照是残缺抓取,跳过;默认模式保留 2024-09 残缺期(口径可复现)
             # keep the largest file per date (2024-09 has a truncated variant)
             prev = found.get(m.group(0))
             if prev is None or e["size"] > prev["size"]:
@@ -103,10 +110,11 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
 
     targets = bj_targets(all_snapshots=args.all)
-    for city, rel in CITY_FILES.items():
-        targets[city + "__" + Path(rel).name] = RAW_URL.format(
-            repo=REPO, branch=BRANCH, path=rel
-        )
+    for city, rels in CITY_FILES.items():
+        for rel in rels:
+            targets[city + "__" + Path(rel).name] = RAW_URL.format(
+                repo=REPO, branch=BRANCH, path=rel
+            )
 
     for fname, url in targets.items():
         dest = out / fname

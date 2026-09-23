@@ -809,8 +809,8 @@
  "city_compare": [
   {
    "city": "sh",
-   "n_listings": 897,
-   "avg_unit_price": 79232.0,
+   "n_listings": 2208,
+   "avg_unit_price": 75405.0,
    "rank_by_price": 1
   },
   {
@@ -830,6 +830,12 @@
    "n_listings": 1597,
    "avg_unit_price": 51784.0,
    "rank_by_price": 4
+  },
+  {
+   "city": "hz",
+   "n_listings": 21353,
+   "avg_unit_price": 40159.0,
+   "rank_by_price": 5
   }
  ],
  "pareto_value": [
@@ -837,6 +843,552 @@
    "n_top20": 57421,
    "n_all": 287105,
    "top20_value_share": 42.4
+  }
+ ],
+ "districts_rank_all": [
+  {
+   "city": "bj",
+   "district": "西城",
+   "n_listings": 19019,
+   "avg_unit_price": 122909.0,
+   "avg_area": 70.8,
+   "price_rank": 1
+  },
+  {
+   "city": "bj",
+   "district": "东城",
+   "n_listings": 22728,
+   "avg_unit_price": 103187.0,
+   "avg_area": 77.6,
+   "price_rank": 2
+  },
+  {
+   "city": "bj",
+   "district": "海淀",
+   "n_listings": 29779,
+   "avg_unit_price": 96459.0,
+   "avg_area": 89.5,
+   "price_rank": 3
+  },
+  {
+   "city": "bj",
+   "district": "其他",
+   "n_listings": 16353,
+   "avg_unit_price": 77400.0,
+   "avg_area": 99.7,
+   "price_rank": 4
+  },
+  {
+   "city": "bj",
+   "district": "朝阳",
+   "n_listings": 83907,
+   "avg_unit_price": 70085.0,
+   "avg_area": 93.2,
+   "price_rank": 5
+  },
+  {
+   "city": "bj",
+   "district": "丰台",
+   "n_listings": 31895,
+   "avg_unit_price": 58518.0,
+   "avg_area": 86.0,
+   "price_rank": 6
+  },
+  {
+   "city": "bj",
+   "district": "昌平",
+   "n_listings": 31419,
+   "avg_unit_price": 45893.0,
+   "avg_area": 114.7,
+   "price_rank": 7
+  },
+  {
+   "city": "bj",
+   "district": "通州",
+   "n_listings": 28510,
+   "avg_unit_price": 42056.0,
+   "avg_area": 97.0,
+   "price_rank": 8
+  },
+  {
+   "city": "bj",
+   "district": "大兴",
+   "n_listings": 23495,
+   "avg_unit_price": 41555.0,
+   "avg_area": 99.4,
+   "price_rank": 9
+  },
+  {
+   "city": "gz",
+   "district": "天河",
+   "n_listings": 2566,
+   "avg_unit_price": 71340.0,
+   "avg_area": 111.4,
+   "price_rank": 1
+  },
+  {
+   "city": "gz",
+   "district": "越秀",
+   "n_listings": 2575,
+   "avg_unit_price": 53749.0,
+   "avg_area": 80.1,
+   "price_rank": 2
+  },
+  {
+   "city": "hz",
+   "district": "奥体",
+   "n_listings": 376,
+   "avg_unit_price": 64616.0,
+   "avg_area": 105.7,
+   "price_rank": 1
+  },
+  {
+   "city": "hz",
+   "district": "西湖",
+   "n_listings": 2451,
+   "avg_unit_price": 55951.0,
+   "avg_area": 108.8,
+   "price_rank": 2
+  },
+  {
+   "city": "hz",
+   "district": "钱江世纪城",
+   "n_listings": 1149,
+   "avg_unit_price": 54227.0,
+   "avg_area": 103.7,
+   "price_rank": 3
+  },
+  {
+   "city": "hz",
+   "district": "滨江",
+   "n_listings": 2269,
+   "avg_unit_price": 46111.0,
+   "avg_area": 98.0,
+   "price_rank": 4
+  },
+  {
+   "city": "hz",
+   "district": "拱墅",
+   "n_listings": 2462,
+   "avg_unit_price": 45638.0,
+   "avg_area": 92.3,
+   "price_rank": 5
+  },
+  {
+   "city": "hz",
+   "district": "上城",
+   "n_listings": 2472,
+   "avg_unit_price": 44721.0,
+   "avg_area": 98.1,
+   "price_rank": 6
+  },
+  {
+   "city": "hz",
+   "district": "余杭",
+   "n_listings": 2537,
+   "avg_unit_price": 37731.0,
+   "avg_area": 122.6,
+   "price_rank": 7
+  },
+  {
+   "city": "hz",
+   "district": "白马湖",
+   "n_listings": 150,
+   "avg_unit_price": 37313.0,
+   "avg_area": 93.9,
+   "price_rank": 8
+  },
+  {
+   "city": "hz",
+   "district": "萧山科技城",
+   "n_listings": 318,
+   "avg_unit_price": 35132.0,
+   "avg_area": 131.6,
+   "price_rank": 9
+  },
+  {
+   "city": "hz",
+   "district": "萧山",
+   "n_listings": 1175,
+   "avg_unit_price": 32756.0,
+   "avg_area": 114.8,
+   "price_rank": 10
+  },
+  {
+   "city": "hz",
+   "district": "萧山市",
+   "n_listings": 1233,
+   "avg_unit_price": 31454.0,
+   "avg_area": 99.4,
+   "price_rank": 11
+  },
+  {
+   "city": "hz",
+   "district": "湘湖",
+   "n_listings": 436,
+   "avg_unit_price": 29009.0,
+   "avg_area": 122.6,
+   "price_rank": 12
+  },
+  {
+   "city": "hz",
+   "district": "南部卧城",
+   "n_listings": 780,
+   "avg_unit_price": 27246.0,
+   "avg_area": 99.6,
+   "price_rank": 13
+  },
+  {
+   "city": "hz",
+   "district": "临平",
+   "n_listings": 2521,
+   "avg_unit_price": 24365.0,
+   "avg_area": 114.1,
+   "price_rank": 14
+  },
+  {
+   "city": "hz",
+   "district": "大江东",
+   "n_listings": 886,
+   "avg_unit_price": 21102.0,
+   "avg_area": 108.7,
+   "price_rank": 15
+  },
+  {
+   "city": "hz",
+   "district": "临浦",
+   "n_listings": 138,
+   "avg_unit_price": 17755.0,
+   "avg_area": 109.3,
+   "price_rank": 16
+  },
+  {
+   "city": "sh",
+   "district": "静安",
+   "n_listings": 720,
+   "avg_unit_price": 84640.0,
+   "avg_area": 80.7,
+   "price_rank": 1
+  },
+  {
+   "city": "sh",
+   "district": "长宁",
+   "n_listings": 746,
+   "avg_unit_price": 82877.0,
+   "avg_area": 95.6,
+   "price_rank": 2
+  },
+  {
+   "city": "sh",
+   "district": "浦东",
+   "n_listings": 742,
+   "avg_unit_price": 58932.0,
+   "avg_area": 83.3,
+   "price_rank": 3
+  },
+  {
+   "city": "sz",
+   "district": "南山",
+   "n_listings": 1597,
+   "avg_unit_price": 51784.0,
+   "avg_area": 79.7,
+   "price_rank": 1
+  }
+ ],
+ "city_price_trend_all": [
+  {
+   "city": "bj",
+   "snapshot_date": "2022-09-23",
+   "n_listings": 38359,
+   "avg_unit_price": 75551.0,
+   "mom_pct": null
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2022-10-04",
+   "n_listings": 38182,
+   "avg_unit_price": 75544.0,
+   "mom_pct": -0.01
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2022-10-05",
+   "n_listings": 38386,
+   "avg_unit_price": 75476.0,
+   "mom_pct": -0.09
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2022-10-28",
+   "n_listings": 39243,
+   "avg_unit_price": 75415.0,
+   "mom_pct": -0.08
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2022-11-11",
+   "n_listings": 40032,
+   "avg_unit_price": 75192.0,
+   "mom_pct": -0.3
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2022-11-18",
+   "n_listings": 39427,
+   "avg_unit_price": 75444.0,
+   "mom_pct": 0.34
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2022-11-22",
+   "n_listings": 39286,
+   "avg_unit_price": 75279.0,
+   "mom_pct": -0.22
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2022-12-03",
+   "n_listings": 39752,
+   "avg_unit_price": 75275.0,
+   "mom_pct": -0.01
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2022-12-27",
+   "n_listings": 38539,
+   "avg_unit_price": 75244.0,
+   "mom_pct": -0.04
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2023-04-01",
+   "n_listings": 42744,
+   "avg_unit_price": 76143.0,
+   "mom_pct": 1.19
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2023-05-13",
+   "n_listings": 43597,
+   "avg_unit_price": 75790.0,
+   "mom_pct": -0.46
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2023-07-08",
+   "n_listings": 45104,
+   "avg_unit_price": 75029.0,
+   "mom_pct": -1.0
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2023-09-03",
+   "n_listings": 44641,
+   "avg_unit_price": 74862.0,
+   "mom_pct": -0.22
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2023-09-23",
+   "n_listings": 48844,
+   "avg_unit_price": 74660.0,
+   "mom_pct": -0.27
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2023-10-27",
+   "n_listings": 49406,
+   "avg_unit_price": 74025.0,
+   "mom_pct": -0.85
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2023-11-03",
+   "n_listings": 49373,
+   "avg_unit_price": 74068.0,
+   "mom_pct": 0.06
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2023-11-17",
+   "n_listings": 49176,
+   "avg_unit_price": 73661.0,
+   "mom_pct": -0.55
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2023-12-02",
+   "n_listings": 48982,
+   "avg_unit_price": 73273.0,
+   "mom_pct": -0.53
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2023-12-08",
+   "n_listings": 48817,
+   "avg_unit_price": 73091.0,
+   "mom_pct": -0.25
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2023-12-23",
+   "n_listings": 48575,
+   "avg_unit_price": 72969.0,
+   "mom_pct": -0.17
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-01-07",
+   "n_listings": 47959,
+   "avg_unit_price": 72840.0,
+   "mom_pct": -0.18
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-01-12",
+   "n_listings": 46681,
+   "avg_unit_price": 72546.0,
+   "mom_pct": -0.4
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-01-20",
+   "n_listings": 46918,
+   "avg_unit_price": 72729.0,
+   "mom_pct": 0.25
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-01-26",
+   "n_listings": 46611,
+   "avg_unit_price": 72508.0,
+   "mom_pct": -0.3
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-02-24",
+   "n_listings": 46628,
+   "avg_unit_price": 72361.0,
+   "mom_pct": -0.2
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-03-13",
+   "n_listings": 47607,
+   "avg_unit_price": 71823.0,
+   "mom_pct": -0.74
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-03-21",
+   "n_listings": 48444,
+   "avg_unit_price": 71492.0,
+   "mom_pct": -0.46
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-04-04",
+   "n_listings": 48590,
+   "avg_unit_price": 71078.0,
+   "mom_pct": -0.58
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-05-01",
+   "n_listings": 42650,
+   "avg_unit_price": 69300.0,
+   "mom_pct": -2.5
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-05-24",
+   "n_listings": 43169,
+   "avg_unit_price": 69369.0,
+   "mom_pct": 0.1
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-05-27",
+   "n_listings": 43182,
+   "avg_unit_price": 69114.0,
+   "mom_pct": -0.37
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-05-30",
+   "n_listings": 43225,
+   "avg_unit_price": 68984.0,
+   "mom_pct": -0.19
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-07-13",
+   "n_listings": 38436,
+   "avg_unit_price": 68015.0,
+   "mom_pct": -1.4
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-07-24",
+   "n_listings": 39747,
+   "avg_unit_price": 68066.0,
+   "mom_pct": 0.07
+  },
+  {
+   "city": "bj",
+   "snapshot_date": "2024-09-26",
+   "n_listings": 1646,
+   "avg_unit_price": 49172.0,
+   "mom_pct": -27.76
+  },
+  {
+   "city": "gz",
+   "snapshot_date": "2023-11-17",
+   "n_listings": 5141,
+   "avg_unit_price": 62530.0,
+   "mom_pct": null
+  },
+  {
+   "city": "hz",
+   "snapshot_date": "2022-01-15",
+   "n_listings": 21353,
+   "avg_unit_price": 40159.0,
+   "mom_pct": null
+  },
+  {
+   "city": "sh",
+   "snapshot_date": "2023-11-12",
+   "n_listings": 897,
+   "avg_unit_price": 79232.0,
+   "mom_pct": null
+  },
+  {
+   "city": "sh",
+   "snapshot_date": "2024-06-01",
+   "n_listings": 576,
+   "avg_unit_price": 72643.0,
+   "mom_pct": -8.32
+  },
+  {
+   "city": "sh",
+   "snapshot_date": "2024-06-05",
+   "n_listings": 534,
+   "avg_unit_price": 76042.0,
+   "mom_pct": 4.68
+  },
+  {
+   "city": "sh",
+   "snapshot_date": "2024-06-15",
+   "n_listings": 497,
+   "avg_unit_price": 72996.0,
+   "mom_pct": -4.01
+  },
+  {
+   "city": "sz",
+   "snapshot_date": "2023-11-14",
+   "n_listings": 1597,
+   "avg_unit_price": 51784.0,
+   "mom_pct": null
   }
  ],
  "similar_sample": [
@@ -1427,7 +1979,7 @@
   }
  ],
  "_meta": {
-  "generated_at": "2026-09-23T07:07:40+00:00",
+  "generated_at": "2026-09-23T07:22:35+00:00",
   "first_snapshot": "2022-09-23",
   "last_snapshot": "2024-09-26",
   "n_snapshots": 35

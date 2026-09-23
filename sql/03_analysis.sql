@@ -140,3 +140,35 @@ SELECT SUM(CASE WHEN top20 = 1 THEN 1 ELSE 0 END) AS n_top20,
        ROUND(100.0 * SUM(CASE WHEN top20 = 1 THEN total_price_wan ELSE 0 END)
              / SUM(total_price_wan), 1)           AS top20_value_share
 FROM ranked;
+
+-- 10. 全国各区均价排名(RANK 按城市分区;样本过少的区剔除)
+-- name: districts_rank_all
+WITH d AS (
+    SELECT city, district,
+           COUNT(*)                  AS n_listings,
+           ROUND(AVG(unit_price), 0) AS avg_unit_price,
+           ROUND(AVG(area_sqm), 1)   AS avg_area
+    FROM listings
+    GROUP BY city, district
+    HAVING COUNT(*) >= 30
+)
+SELECT city, district, n_listings, avg_unit_price, avg_area,
+       RANK() OVER (PARTITION BY city ORDER BY avg_unit_price DESC) AS price_rank
+FROM d
+ORDER BY city, price_rank;
+
+-- 11. 多城市挂牌均价趋势(LAG 按城市分区环比)
+-- name: city_price_trend_all
+WITH t AS (
+    SELECT city, snapshot_date,
+           COUNT(*)                  AS n_listings,
+           ROUND(AVG(unit_price), 0) AS avg_unit_price
+    FROM listings_all
+    GROUP BY city, snapshot_date
+)
+SELECT city, snapshot_date, n_listings, avg_unit_price,
+       ROUND(
+           (avg_unit_price - LAG(avg_unit_price) OVER (PARTITION BY city ORDER BY snapshot_date)) * 100.0
+           / LAG(avg_unit_price) OVER (PARTITION BY city ORDER BY snapshot_date), 2) AS mom_pct
+FROM t
+ORDER BY city, snapshot_date;

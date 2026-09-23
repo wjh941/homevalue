@@ -102,14 +102,24 @@
 
   <!-- ===================== 市场分析 ===================== -->
   <section id="view-market" class="view">
-    <div class="kpi-cards" id="market-kpis"></div>
+    <div class="kpi-cards" id="insight-strip"></div>
+    <div class="seg" id="city-switch">
+      <button data-city="all" class="active">全国对比</button>
+      <button data-city="bj">北京</button>
+      <button data-city="sh">上海</button>
+      <button data-city="gz">广州</button>
+      <button data-city="sz">深圳</button>
+      <button data-city="hz">杭州</button>
+    </div>
+    <div class="kpi-cards" id="city-cards"></div>
     <div class="grid-2">
-      <div class="card"><h2>全市挂牌均价走势(快照间环比)</h2><div id="chart-trend"></div>
-        <p class="hint">2024-09 快照为部分抓取(1,646 行),其环比仅供参考。</p></div>
-      <div class="card"><h2>各区挂牌均价排名</h2><div id="chart-districts"></div></div>
+      <div class="card"><h2 id="trend-title">挂牌均价走势(快照间环比)</h2><div id="chart-trend"></div>
+        <p class="hint" id="trend-note">悬浮数据点可查看当期均价与环比;2024-09 快照为部分抓取,仅供参考。</p></div>
+      <div class="card"><h2 id="district-title">各区挂牌均价排名</h2><div id="chart-districts"></div>
+        <p class="hint" id="district-note">点击条形可一键带入估值表单。</p></div>
     </div>
     <div class="grid-2">
-      <div class="card"><h2>单价十分位画像</h2><div id="table-deciles"></div></div>
+      <div class="card"><h2>单价十分位画像(北京)</h2><div id="table-deciles"></div></div>
       <div class="card"><h2>挂牌价变动与多城市对比</h2><div id="price-changes"></div></div>
     </div>
   </section>
