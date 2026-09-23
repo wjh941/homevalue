@@ -1391,6 +1391,1646 @@
    "mom_pct": null
   }
  ],
+ "district_price_trend": [
+  {
+   "district": "东城",
+   "snapshot_date": "2022-09-23",
+   "n_listings": 3591,
+   "avg_unit_price": 107262.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2022-10-04",
+   "n_listings": 3568,
+   "avg_unit_price": 107089.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2022-10-05",
+   "n_listings": 3593,
+   "avg_unit_price": 107135.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2022-10-28",
+   "n_listings": 3644,
+   "avg_unit_price": 106775.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2022-11-11",
+   "n_listings": 3675,
+   "avg_unit_price": 106384.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2022-11-18",
+   "n_listings": 3614,
+   "avg_unit_price": 107239.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2022-11-22",
+   "n_listings": 3592,
+   "avg_unit_price": 107372.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2022-12-03",
+   "n_listings": 3646,
+   "avg_unit_price": 106991.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2022-12-27",
+   "n_listings": 3597,
+   "avg_unit_price": 106799.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2023-04-01",
+   "n_listings": 4063,
+   "avg_unit_price": 107259.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2023-05-13",
+   "n_listings": 4049,
+   "avg_unit_price": 106310.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2023-07-08",
+   "n_listings": 4127,
+   "avg_unit_price": 105984.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2023-09-03",
+   "n_listings": 4153,
+   "avg_unit_price": 105765.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2023-09-23",
+   "n_listings": 4540,
+   "avg_unit_price": 105627.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2023-10-27",
+   "n_listings": 4533,
+   "avg_unit_price": 104641.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2023-11-03",
+   "n_listings": 4657,
+   "avg_unit_price": 104639.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2023-11-17",
+   "n_listings": 4610,
+   "avg_unit_price": 104106.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2023-12-02",
+   "n_listings": 4641,
+   "avg_unit_price": 103686.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2023-12-08",
+   "n_listings": 4535,
+   "avg_unit_price": 103480.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2023-12-23",
+   "n_listings": 4589,
+   "avg_unit_price": 102761.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-01-07",
+   "n_listings": 4602,
+   "avg_unit_price": 102644.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-01-12",
+   "n_listings": 4418,
+   "avg_unit_price": 102317.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-01-20",
+   "n_listings": 4445,
+   "avg_unit_price": 102508.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-01-26",
+   "n_listings": 4485,
+   "avg_unit_price": 102003.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-02-24",
+   "n_listings": 4535,
+   "avg_unit_price": 102208.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-03-13",
+   "n_listings": 4678,
+   "avg_unit_price": 101687.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-03-21",
+   "n_listings": 4779,
+   "avg_unit_price": 101195.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-04-04",
+   "n_listings": 4862,
+   "avg_unit_price": 100627.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-05-01",
+   "n_listings": 4187,
+   "avg_unit_price": 99412.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-05-24",
+   "n_listings": 4236,
+   "avg_unit_price": 99201.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-05-27",
+   "n_listings": 4187,
+   "avg_unit_price": 99679.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-05-30",
+   "n_listings": 4193,
+   "avg_unit_price": 99246.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-07-13",
+   "n_listings": 3901,
+   "avg_unit_price": 98659.0
+  },
+  {
+   "district": "东城",
+   "snapshot_date": "2024-07-24",
+   "n_listings": 3949,
+   "avg_unit_price": 98627.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2022-09-23",
+   "n_listings": 3233,
+   "avg_unit_price": 62186.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2022-10-04",
+   "n_listings": 3206,
+   "avg_unit_price": 62418.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2022-10-05",
+   "n_listings": 3186,
+   "avg_unit_price": 62560.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2022-10-28",
+   "n_listings": 3309,
+   "avg_unit_price": 62511.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2022-11-11",
+   "n_listings": 3342,
+   "avg_unit_price": 62664.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2022-11-18",
+   "n_listings": 3285,
+   "avg_unit_price": 62195.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2022-11-22",
+   "n_listings": 3300,
+   "avg_unit_price": 62090.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2022-12-03",
+   "n_listings": 3284,
+   "avg_unit_price": 62516.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2022-12-27",
+   "n_listings": 3128,
+   "avg_unit_price": 62678.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2023-04-01",
+   "n_listings": 3346,
+   "avg_unit_price": 63231.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2023-05-13",
+   "n_listings": 3416,
+   "avg_unit_price": 62782.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2023-07-08",
+   "n_listings": 3517,
+   "avg_unit_price": 61960.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2023-09-03",
+   "n_listings": 3413,
+   "avg_unit_price": 62612.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2023-09-23",
+   "n_listings": 3654,
+   "avg_unit_price": 62189.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2023-10-27",
+   "n_listings": 3662,
+   "avg_unit_price": 61678.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2023-11-03",
+   "n_listings": 3632,
+   "avg_unit_price": 61512.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2023-11-17",
+   "n_listings": 3633,
+   "avg_unit_price": 61078.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2023-12-02",
+   "n_listings": 3641,
+   "avg_unit_price": 60535.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2023-12-08",
+   "n_listings": 3648,
+   "avg_unit_price": 60647.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2023-12-23",
+   "n_listings": 3653,
+   "avg_unit_price": 60421.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-01-07",
+   "n_listings": 3655,
+   "avg_unit_price": 60557.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-01-12",
+   "n_listings": 3610,
+   "avg_unit_price": 60495.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-01-20",
+   "n_listings": 3535,
+   "avg_unit_price": 60471.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-01-26",
+   "n_listings": 3570,
+   "avg_unit_price": 60736.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-02-24",
+   "n_listings": 3515,
+   "avg_unit_price": 60413.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-03-13",
+   "n_listings": 3511,
+   "avg_unit_price": 60324.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-03-21",
+   "n_listings": 3572,
+   "avg_unit_price": 59831.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-04-04",
+   "n_listings": 3614,
+   "avg_unit_price": 58996.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-05-01",
+   "n_listings": 3306,
+   "avg_unit_price": 58035.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-05-24",
+   "n_listings": 3221,
+   "avg_unit_price": 57662.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-05-27",
+   "n_listings": 3179,
+   "avg_unit_price": 57455.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-05-30",
+   "n_listings": 3303,
+   "avg_unit_price": 56985.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-07-13",
+   "n_listings": 2786,
+   "avg_unit_price": 56538.0
+  },
+  {
+   "district": "丰台",
+   "snapshot_date": "2024-07-24",
+   "n_listings": 2936,
+   "avg_unit_price": 57608.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2022-09-23",
+   "n_listings": 2704,
+   "avg_unit_price": 43998.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2022-10-04",
+   "n_listings": 2654,
+   "avg_unit_price": 44314.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2022-10-05",
+   "n_listings": 2714,
+   "avg_unit_price": 43974.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2022-10-28",
+   "n_listings": 2663,
+   "avg_unit_price": 44220.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2022-11-11",
+   "n_listings": 2730,
+   "avg_unit_price": 43960.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2022-11-18",
+   "n_listings": 2635,
+   "avg_unit_price": 43972.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2022-11-22",
+   "n_listings": 2624,
+   "avg_unit_price": 43788.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2022-12-03",
+   "n_listings": 2659,
+   "avg_unit_price": 43363.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2022-12-27",
+   "n_listings": 2532,
+   "avg_unit_price": 43520.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2023-04-01",
+   "n_listings": 2723,
+   "avg_unit_price": 44760.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2023-05-13",
+   "n_listings": 2671,
+   "avg_unit_price": 46028.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2023-07-08",
+   "n_listings": 2637,
+   "avg_unit_price": 45237.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2023-09-03",
+   "n_listings": 2542,
+   "avg_unit_price": 45426.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2023-09-23",
+   "n_listings": 2811,
+   "avg_unit_price": 43809.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2023-10-27",
+   "n_listings": 2791,
+   "avg_unit_price": 45074.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2023-11-03",
+   "n_listings": 2715,
+   "avg_unit_price": 44924.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2023-11-17",
+   "n_listings": 2712,
+   "avg_unit_price": 43916.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2023-12-02",
+   "n_listings": 2711,
+   "avg_unit_price": 44121.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2023-12-08",
+   "n_listings": 2722,
+   "avg_unit_price": 44883.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2023-12-23",
+   "n_listings": 2718,
+   "avg_unit_price": 44487.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-01-07",
+   "n_listings": 2777,
+   "avg_unit_price": 44764.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-01-12",
+   "n_listings": 2706,
+   "avg_unit_price": 44272.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-01-20",
+   "n_listings": 2608,
+   "avg_unit_price": 44843.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-01-26",
+   "n_listings": 2674,
+   "avg_unit_price": 44592.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-02-24",
+   "n_listings": 2596,
+   "avg_unit_price": 44277.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-03-13",
+   "n_listings": 2631,
+   "avg_unit_price": 43762.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-03-21",
+   "n_listings": 2748,
+   "avg_unit_price": 43243.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-04-04",
+   "n_listings": 2610,
+   "avg_unit_price": 42725.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-05-01",
+   "n_listings": 2449,
+   "avg_unit_price": 40627.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-05-24",
+   "n_listings": 2400,
+   "avg_unit_price": 40101.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-05-27",
+   "n_listings": 2449,
+   "avg_unit_price": 39245.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-05-30",
+   "n_listings": 2408,
+   "avg_unit_price": 39184.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-07-13",
+   "n_listings": 2147,
+   "avg_unit_price": 37939.0
+  },
+  {
+   "district": "大兴",
+   "snapshot_date": "2024-07-24",
+   "n_listings": 2202,
+   "avg_unit_price": 38523.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2022-09-23",
+   "n_listings": 4508,
+   "avg_unit_price": 50367.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2022-10-04",
+   "n_listings": 4499,
+   "avg_unit_price": 50284.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2022-10-05",
+   "n_listings": 4518,
+   "avg_unit_price": 50266.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2022-10-28",
+   "n_listings": 4694,
+   "avg_unit_price": 50268.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2022-11-11",
+   "n_listings": 4735,
+   "avg_unit_price": 50266.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2022-11-18",
+   "n_listings": 4680,
+   "avg_unit_price": 50259.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2022-11-22",
+   "n_listings": 4637,
+   "avg_unit_price": 50243.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2022-12-03",
+   "n_listings": 4673,
+   "avg_unit_price": 49968.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2022-12-27",
+   "n_listings": 4682,
+   "avg_unit_price": 49585.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2023-04-01",
+   "n_listings": 5197,
+   "avg_unit_price": 50417.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2023-05-13",
+   "n_listings": 5308,
+   "avg_unit_price": 50248.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2023-07-08",
+   "n_listings": 5367,
+   "avg_unit_price": 49399.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2023-09-03",
+   "n_listings": 5194,
+   "avg_unit_price": 48615.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2023-09-23",
+   "n_listings": 5715,
+   "avg_unit_price": 48783.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2023-10-27",
+   "n_listings": 5837,
+   "avg_unit_price": 48363.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2023-11-03",
+   "n_listings": 5796,
+   "avg_unit_price": 48184.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2023-11-17",
+   "n_listings": 5587,
+   "avg_unit_price": 47932.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2023-12-02",
+   "n_listings": 5706,
+   "avg_unit_price": 47836.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2023-12-08",
+   "n_listings": 5626,
+   "avg_unit_price": 47455.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2023-12-23",
+   "n_listings": 5516,
+   "avg_unit_price": 47292.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-01-07",
+   "n_listings": 5338,
+   "avg_unit_price": 47051.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-01-12",
+   "n_listings": 5309,
+   "avg_unit_price": 46978.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-01-20",
+   "n_listings": 5211,
+   "avg_unit_price": 46733.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-01-26",
+   "n_listings": 5282,
+   "avg_unit_price": 46708.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-02-24",
+   "n_listings": 5191,
+   "avg_unit_price": 46440.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-03-13",
+   "n_listings": 5443,
+   "avg_unit_price": 46128.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-03-21",
+   "n_listings": 5493,
+   "avg_unit_price": 46172.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-04-04",
+   "n_listings": 5519,
+   "avg_unit_price": 45821.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-05-01",
+   "n_listings": 5135,
+   "avg_unit_price": 44706.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-05-24",
+   "n_listings": 5016,
+   "avg_unit_price": 43873.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-05-27",
+   "n_listings": 4943,
+   "avg_unit_price": 43896.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-05-30",
+   "n_listings": 4992,
+   "avg_unit_price": 43883.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-07-13",
+   "n_listings": 4431,
+   "avg_unit_price": 43258.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-07-24",
+   "n_listings": 4468,
+   "avg_unit_price": 43466.0
+  },
+  {
+   "district": "昌平",
+   "snapshot_date": "2024-09-26",
+   "n_listings": 1646,
+   "avg_unit_price": 49172.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2022-09-23",
+   "n_listings": 12357,
+   "avg_unit_price": 76015.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2022-10-04",
+   "n_listings": 12422,
+   "avg_unit_price": 75967.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2022-10-05",
+   "n_listings": 12445,
+   "avg_unit_price": 75855.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2022-10-28",
+   "n_listings": 12815,
+   "avg_unit_price": 75864.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2022-11-11",
+   "n_listings": 13303,
+   "avg_unit_price": 75912.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2022-11-18",
+   "n_listings": 13098,
+   "avg_unit_price": 75858.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2022-11-22",
+   "n_listings": 13049,
+   "avg_unit_price": 75831.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2022-12-03",
+   "n_listings": 13291,
+   "avg_unit_price": 75880.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2022-12-27",
+   "n_listings": 12791,
+   "avg_unit_price": 75816.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2023-04-01",
+   "n_listings": 14559,
+   "avg_unit_price": 76435.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2023-05-13",
+   "n_listings": 15239,
+   "avg_unit_price": 76254.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2023-07-08",
+   "n_listings": 16123,
+   "avg_unit_price": 75291.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2023-09-03",
+   "n_listings": 16186,
+   "avg_unit_price": 75155.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2023-09-23",
+   "n_listings": 17669,
+   "avg_unit_price": 74812.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2023-10-27",
+   "n_listings": 18065,
+   "avg_unit_price": 73841.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2023-11-03",
+   "n_listings": 18004,
+   "avg_unit_price": 73839.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2023-11-17",
+   "n_listings": 18126,
+   "avg_unit_price": 73353.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2023-12-02",
+   "n_listings": 17813,
+   "avg_unit_price": 73047.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2023-12-08",
+   "n_listings": 17904,
+   "avg_unit_price": 72835.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2023-12-23",
+   "n_listings": 17719,
+   "avg_unit_price": 72770.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-01-07",
+   "n_listings": 17460,
+   "avg_unit_price": 72395.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-01-12",
+   "n_listings": 16743,
+   "avg_unit_price": 72179.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-01-20",
+   "n_listings": 17015,
+   "avg_unit_price": 72348.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-01-26",
+   "n_listings": 16802,
+   "avg_unit_price": 72077.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-02-24",
+   "n_listings": 17036,
+   "avg_unit_price": 71774.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-03-13",
+   "n_listings": 17284,
+   "avg_unit_price": 71288.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-03-21",
+   "n_listings": 17610,
+   "avg_unit_price": 70924.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-04-04",
+   "n_listings": 17619,
+   "avg_unit_price": 70475.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-05-01",
+   "n_listings": 14809,
+   "avg_unit_price": 68830.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-05-24",
+   "n_listings": 15380,
+   "avg_unit_price": 68576.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-05-27",
+   "n_listings": 15473,
+   "avg_unit_price": 68424.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-05-30",
+   "n_listings": 15498,
+   "avg_unit_price": 68405.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-07-13",
+   "n_listings": 13711,
+   "avg_unit_price": 67467.0
+  },
+  {
+   "district": "朝阳",
+   "snapshot_date": "2024-07-24",
+   "n_listings": 14381,
+   "avg_unit_price": 67065.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2022-09-23",
+   "n_listings": 3079,
+   "avg_unit_price": 101612.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2022-10-04",
+   "n_listings": 3031,
+   "avg_unit_price": 101530.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2022-10-05",
+   "n_listings": 3073,
+   "avg_unit_price": 101683.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2022-10-28",
+   "n_listings": 3021,
+   "avg_unit_price": 102111.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2022-11-11",
+   "n_listings": 3076,
+   "avg_unit_price": 101510.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2022-11-18",
+   "n_listings": 3046,
+   "avg_unit_price": 101978.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2022-11-22",
+   "n_listings": 3064,
+   "avg_unit_price": 101708.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2022-12-03",
+   "n_listings": 3089,
+   "avg_unit_price": 101541.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2022-12-27",
+   "n_listings": 2987,
+   "avg_unit_price": 101231.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2023-04-01",
+   "n_listings": 3224,
+   "avg_unit_price": 103512.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2023-05-13",
+   "n_listings": 3187,
+   "avg_unit_price": 103127.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2023-07-08",
+   "n_listings": 3286,
+   "avg_unit_price": 102745.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2023-09-03",
+   "n_listings": 3231,
+   "avg_unit_price": 102085.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2023-09-23",
+   "n_listings": 3550,
+   "avg_unit_price": 102904.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2023-10-27",
+   "n_listings": 3558,
+   "avg_unit_price": 102822.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2023-11-03",
+   "n_listings": 3562,
+   "avg_unit_price": 102559.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2023-11-17",
+   "n_listings": 3579,
+   "avg_unit_price": 101172.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2023-12-02",
+   "n_listings": 3613,
+   "avg_unit_price": 99827.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2023-12-08",
+   "n_listings": 3605,
+   "avg_unit_price": 99901.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2023-12-23",
+   "n_listings": 3626,
+   "avg_unit_price": 99346.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-01-07",
+   "n_listings": 3538,
+   "avg_unit_price": 99260.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-01-12",
+   "n_listings": 3501,
+   "avg_unit_price": 98712.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-01-20",
+   "n_listings": 3481,
+   "avg_unit_price": 98709.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-01-26",
+   "n_listings": 3448,
+   "avg_unit_price": 98636.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-02-24",
+   "n_listings": 3446,
+   "avg_unit_price": 99076.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-03-13",
+   "n_listings": 3459,
+   "avg_unit_price": 98370.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-03-21",
+   "n_listings": 3465,
+   "avg_unit_price": 97908.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-04-04",
+   "n_listings": 3499,
+   "avg_unit_price": 96845.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-05-01",
+   "n_listings": 3065,
+   "avg_unit_price": 95427.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-05-24",
+   "n_listings": 3030,
+   "avg_unit_price": 95213.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-05-27",
+   "n_listings": 3048,
+   "avg_unit_price": 94476.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-05-30",
+   "n_listings": 3027,
+   "avg_unit_price": 95129.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-07-13",
+   "n_listings": 2767,
+   "avg_unit_price": 93507.0
+  },
+  {
+   "district": "海淀",
+   "snapshot_date": "2024-07-24",
+   "n_listings": 2803,
+   "avg_unit_price": 93968.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2022-09-23",
+   "n_listings": 2677,
+   "avg_unit_price": 127964.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2022-10-04",
+   "n_listings": 2647,
+   "avg_unit_price": 127807.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2022-10-05",
+   "n_listings": 2643,
+   "avg_unit_price": 127679.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2022-10-28",
+   "n_listings": 2714,
+   "avg_unit_price": 127816.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2022-11-11",
+   "n_listings": 2625,
+   "avg_unit_price": 127605.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2022-11-18",
+   "n_listings": 2633,
+   "avg_unit_price": 127789.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2022-11-22",
+   "n_listings": 2588,
+   "avg_unit_price": 127000.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2022-12-03",
+   "n_listings": 2613,
+   "avg_unit_price": 127128.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2022-12-27",
+   "n_listings": 2537,
+   "avg_unit_price": 127236.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2023-04-01",
+   "n_listings": 2765,
+   "avg_unit_price": 127991.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2023-05-13",
+   "n_listings": 2655,
+   "avg_unit_price": 127986.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2023-07-08",
+   "n_listings": 2692,
+   "avg_unit_price": 126146.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2023-09-03",
+   "n_listings": 2548,
+   "avg_unit_price": 125286.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2023-09-23",
+   "n_listings": 2810,
+   "avg_unit_price": 125662.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2023-10-27",
+   "n_listings": 2769,
+   "avg_unit_price": 124310.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2023-11-03",
+   "n_listings": 2780,
+   "avg_unit_price": 123888.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2023-11-17",
+   "n_listings": 2786,
+   "avg_unit_price": 123328.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2023-12-02",
+   "n_listings": 2817,
+   "avg_unit_price": 121970.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2023-12-08",
+   "n_listings": 2803,
+   "avg_unit_price": 121346.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2023-12-23",
+   "n_listings": 2802,
+   "avg_unit_price": 121049.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-01-07",
+   "n_listings": 2789,
+   "avg_unit_price": 120767.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-01-12",
+   "n_listings": 2797,
+   "avg_unit_price": 120505.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-01-20",
+   "n_listings": 2796,
+   "avg_unit_price": 120524.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-01-26",
+   "n_listings": 2771,
+   "avg_unit_price": 120726.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-02-24",
+   "n_listings": 2611,
+   "avg_unit_price": 120550.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-03-13",
+   "n_listings": 2688,
+   "avg_unit_price": 120023.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-03-21",
+   "n_listings": 2726,
+   "avg_unit_price": 119543.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-04-04",
+   "n_listings": 2787,
+   "avg_unit_price": 118262.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-05-01",
+   "n_listings": 2507,
+   "avg_unit_price": 116006.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-05-24",
+   "n_listings": 2510,
+   "avg_unit_price": 121328.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-05-27",
+   "n_listings": 2505,
+   "avg_unit_price": 119216.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-05-30",
+   "n_listings": 2464,
+   "avg_unit_price": 119236.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-07-13",
+   "n_listings": 2087,
+   "avg_unit_price": 117234.0
+  },
+  {
+   "district": "西城",
+   "snapshot_date": "2024-07-24",
+   "n_listings": 2151,
+   "avg_unit_price": 117776.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2022-09-23",
+   "n_listings": 3639,
+   "avg_unit_price": 44435.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2022-10-04",
+   "n_listings": 3566,
+   "avg_unit_price": 44219.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2022-10-05",
+   "n_listings": 3600,
+   "avg_unit_price": 44176.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2022-10-28",
+   "n_listings": 3683,
+   "avg_unit_price": 44175.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2022-11-11",
+   "n_listings": 3745,
+   "avg_unit_price": 44239.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2022-11-18",
+   "n_listings": 3602,
+   "avg_unit_price": 44184.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2022-11-22",
+   "n_listings": 3638,
+   "avg_unit_price": 44195.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2022-12-03",
+   "n_listings": 3664,
+   "avg_unit_price": 44197.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2022-12-27",
+   "n_listings": 3480,
+   "avg_unit_price": 43981.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2023-04-01",
+   "n_listings": 3713,
+   "avg_unit_price": 44662.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2023-05-13",
+   "n_listings": 3748,
+   "avg_unit_price": 44370.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2023-07-08",
+   "n_listings": 3890,
+   "avg_unit_price": 43933.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2023-09-03",
+   "n_listings": 3858,
+   "avg_unit_price": 43801.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2023-09-23",
+   "n_listings": 4178,
+   "avg_unit_price": 43204.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2023-10-27",
+   "n_listings": 4183,
+   "avg_unit_price": 43427.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2023-11-03",
+   "n_listings": 4191,
+   "avg_unit_price": 43324.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2023-11-17",
+   "n_listings": 4184,
+   "avg_unit_price": 43179.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2023-12-02",
+   "n_listings": 4126,
+   "avg_unit_price": 42754.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2023-12-08",
+   "n_listings": 4087,
+   "avg_unit_price": 42848.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2023-12-23",
+   "n_listings": 4092,
+   "avg_unit_price": 42736.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-01-07",
+   "n_listings": 4016,
+   "avg_unit_price": 42627.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-01-12",
+   "n_listings": 3987,
+   "avg_unit_price": 42592.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-01-20",
+   "n_listings": 4030,
+   "avg_unit_price": 42502.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-01-26",
+   "n_listings": 3930,
+   "avg_unit_price": 42430.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-02-24",
+   "n_listings": 3876,
+   "avg_unit_price": 42216.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-03-13",
+   "n_listings": 4012,
+   "avg_unit_price": 41934.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-03-21",
+   "n_listings": 4048,
+   "avg_unit_price": 42003.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-04-04",
+   "n_listings": 4097,
+   "avg_unit_price": 41668.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-05-01",
+   "n_listings": 3659,
+   "avg_unit_price": 40995.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-05-24",
+   "n_listings": 3755,
+   "avg_unit_price": 40774.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-05-27",
+   "n_listings": 3763,
+   "avg_unit_price": 40719.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-05-30",
+   "n_listings": 3732,
+   "avg_unit_price": 40741.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-07-13",
+   "n_listings": 3416,
+   "avg_unit_price": 40042.0
+  },
+  {
+   "district": "通州",
+   "snapshot_date": "2024-07-24",
+   "n_listings": 3526,
+   "avg_unit_price": 40034.0
+  }
+ ],
  "similar_sample": [
   {
    "district": "东城",
@@ -1979,7 +3619,7 @@
   }
  ],
  "_meta": {
-  "generated_at": "2026-09-23T07:22:35+00:00",
+  "generated_at": "2026-09-23T07:48:40+00:00",
   "first_snapshot": "2022-09-23",
   "last_snapshot": "2024-09-26",
   "n_snapshots": 35
