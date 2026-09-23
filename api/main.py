@@ -33,6 +33,7 @@ from homevalue.model import load_artifacts, predict_quantiles
 class PredictIn(BaseModel):
     district: str = Field(min_length=2, max_length=10, description="区,如 朝阳")
     bizcircle: str | None = Field(default=None, max_length=20, description="商圈,如 望京")
+    community: str | None = Field(default=None, max_length=30, description="小区,如 望京新城(用于目标编码)")
     rooms: int = Field(ge=0, le=10, description="室")
     halls: int = Field(ge=0, le=10, description="厅")
     area_sqm: float = Field(gt=5, le=1000, description="建筑面积(平米)")

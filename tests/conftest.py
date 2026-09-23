@@ -52,15 +52,21 @@ def tiny_db(tmp_path_factory: pytest.TempPathFactory) -> Path:
 def micro_artifacts(tmp_path_factory: pytest.TempPathFactory, tiny_db: Path) -> Path:
     """在微型数仓上训练极小模型,产出一套可服务的 artifacts。"""
     import joblib
+    import numpy as np
     from lightgbm import LGBMRegressor
 
-    from scripts.train import prepare_xy
+    from homevalue.features import fit_category_maps, fit_target_maps
+    from scripts.train import build_X_te
 
     engine = get_engine(tiny_db)
     df = read_query(engine, "SELECT * FROM listings WHERE city = 'bj'")
     df["bizcircle"] = df["bizcircle"].fillna("未知")
 
-    X, y_log, _y_raw, cols, cat_maps = prepare_xy(df, full=True)
+    cat_maps = fit_category_maps(df, min_count=30)
+    te_maps = fit_target_maps(df)
+    X = build_X_te(df, te_maps, cat_maps)
+    y_log = np.log1p(df["unit_price"].to_numpy())
+    cols = list(X.columns)
     art = tmp_path_factory.mktemp("models")
     main = LGBMRegressor(n_estimators=30, random_state=0, verbose=-1).fit(X, y_log)
     joblib.dump(main, art / "main.joblib")
@@ -68,10 +74,12 @@ def micro_artifacts(tmp_path_factory: pytest.TempPathFactory, tiny_db: Path) -> 
     q90 = LGBMRegressor(objective="quantile", alpha=0.9, n_estimators=20, random_state=0, verbose=-1)
     joblib.dump(q10.fit(X, y_log), art / "q10.joblib")
     joblib.dump(q90.fit(X, y_log), art / "q90.joblib")
+    joblib.dump(te_maps, art / "te_maps.joblib")
     metadata = {
         "model_version": "test",
         "exp_id": "test",
         "cat_maps": cat_maps,
+        "te": {"cols": ["community", "bizcircle"], "k": 20},
         "feature_cols": cols,
         "holdout": {"mae": 1234.0, "mape_pct": 5.0, "r2": 0.9},
     }

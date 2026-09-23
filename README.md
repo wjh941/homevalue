@@ -12,13 +12,13 @@ LightGBM 建模(含预测区间) -> 误差分析 -> FastAPI 服务 -> 仪表盘 
 | 维度 | 数字 |
 |---|---|
 | 真实数据 | 226,729 行原始挂牌 -> 156,004 套唯一房源(北京 148,369 套) |
-| 特征 | 16 个(面积/户型/楼层/房龄/朝向/装修 + 区/商圈类别特征) |
-| 主指标 | 留出集 MAE **6,824 元/平米**,MAPE **9.48%**,R² **0.896**(5 折 CV:6,936 ± 51) |
-| baseline 提升 | 线性回归 MAE 14,909 -> LightGBM 6,824(**-54.2%**) |
-| 预测区间 | p10/p90 分位模型,实测 80% 区间覆盖率 **76.1%** |
-| 服务 | FastAPI + 3 模型推理,单并发 P95 **240ms**,8 并发 P95 **739ms**(400 请求 0 错误) |
+| 特征 | 19 个:16 个基础特征 + 小区/商圈目标编码 |
+| 主指标 | 留出集 MAE **5,641 元/平米**,MAPE **7.85%**,R² **0.926**(5 折 CV:5,820 ± 13) |
+| baseline 提升 | 线性回归 MAE 14,909 -> LightGBM+TE 5,641(**-62.2%**) |
+| 预测区间 | p10/p90 分位模型,实测 80% 区间覆盖率 **75.3%** |
+| 服务 | FastAPI + 3 模型推理,单并发 P95 **264ms**,8 并发 P95 **710ms**(400 请求 0 错误) |
 | SQL | 9 个含窗口函数/CTE 的分析查询(RANK/LAG/NTILE/ROW_NUMBER/透视/帕累托) |
-| 工程 | 30 个 pytest 用例、ruff 通过、GitHub Actions(lint+test+冒烟训练)、Docker |
+| 工程 | 30 个 pytest 用例、ruff 通过、GitHub Actions(lint+test+冒烟训练)、Docker、Render 部署 |
 
 ## 架构
 
@@ -49,6 +49,7 @@ python scripts/train.py --model linear --exp-id exp001
 python scripts/train.py --model lgbm   --exp-id exp002
 python scripts/train.py --model lgbm   --exp-id exp003 --full-features
 python scripts/train.py --model lgbm   --exp-id exp004 --full-features --tune
+python scripts/train.py --model lgbm   --exp-id exp005 --full-features --community-te
 
 # 3) 误差分析(输出 reports/error_analysis.json + PNG)
 python scripts/error_analysis.py
@@ -113,18 +114,19 @@ FROM t ORDER BY snapshot_date;
 - 目标取 log(unit_price),指标换算回原尺度;随机 80/20 切分,训练集内 5 折 CV
 - 特征 16 个:面积、室/厅、厅室比、总楼层、楼层位置序数、建成年份、房龄(+缺失标记)、
   朝向 4 哑元 + 朝向数、区/商圈/装修(低频类折叠为 __other__)
-- 线性 baseline(ColumnTransformer + OneHot) -> LightGBM -> +商圈 -> 网格调参
-- 预测区间:q10/q90 两个 quantile 目标的 LightGBM,实测覆盖率 76.1%
+- 线性 baseline(ColumnTransformer + OneHot) -> LightGBM -> +商圈 -> 网格调参 -> **小区/商圈目标编码**
+- 目标编码:**折内拟合防泄漏**,平滑系数 k=20(样本少的小区向全局均价收缩),线上未见类别回落先验,
+  MAE 6,824 -> 5,641(**-17.3%**,见 EXPERIMENTS.md 结论 5)
+- 预测区间:q10/q90 两个 quantile 目标的 LightGBM,实测覆盖率 75.3%
 
 完整实验对比与结论见 [EXPERIMENTS.md](EXPERIMENTS.md)。
 
 ## 误差分析(reports/error_analysis.json)
 
-- 整体:MAE 6,824,中位相对误差 7.2%,64.1% 的房源误差 ≤ 10%,89.9% ≤ 20%
-- **低价段(0-3 万/平米)MAPE 17.7% 且系统性高估(bias +4,000)**;
-  豪宅段(12 万+)系统性低估(bias -11,362)—— 典型的向均值回归
-- 中间价格段(5-12 万)最准(MAPE ~8.8%),是大多数用户所在区间
-- 区域上西城/东城(高单价老房)误差率最高(~11%)
+- 整体:MAE 5,641,中位相对误差 6.0%,72.6% 的房源误差 ≤ 10%,**94.0% ≤ 20%**
+- **低价段(<3 万/平米)MAPE 15.1% 且系统性高估(bias +3,312)** —— 典型的向均值回归
+- 中间价格段(8-12 万)最准(MAPE 7.2%),是大多数用户所在区间
+- 区域上高单价老城区误差率最高(MAPE ~9.1%)
 
 ## 服务与仪表盘
 
@@ -162,7 +164,7 @@ peeking 约束与决策规则;统计实现(homevalue/ab.py)经蒙特卡洛验证
 
 - 挂牌价非成交价,存在挂牌偏倚;快照样本受爬虫分页策略影响(各区 3,000 行上限)
 - 无经纬度/地铁距离等空间特征;小区粒度特征未做 target encoding
-- 区间覆盖率 76.1% 略低于名义 80%,可通过 conformal prediction 校准(下一步)
+- 区间覆盖率 75.3% 略低于名义 80%,可通过 conformal prediction 校准(下一步)
 
 ## 目录结构
 

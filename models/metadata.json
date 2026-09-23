@@ -1,6 +1,6 @@
 {
-  "model_version": "1.0.0",
-  "exp_id": "exp004",
+  "model_version": "1.1.0",
+  "exp_id": "exp005",
   "model": "lgbm",
   "params": {
     "num_leaves": 127,
@@ -14,6 +14,7 @@
     "halls_per_room",
     "total_floors",
     "floor_ordinal",
+    "build_year",
     "building_age",
     "age_missing",
     "dir_south",
@@ -23,7 +24,9 @@
     "dir_count",
     "district",
     "bizcircle",
-    "renovation"
+    "renovation",
+    "te_community",
+    "te_bizcircle"
   ],
   "cat_maps": {
     "district": [
@@ -56,7 +59,6 @@
       "东直门",
       "东花市",
       "中关村",
-      "中央别墅区",
       "丰台其它",
       "临河里",
       "丽泽",
@@ -254,31 +256,38 @@
       "__other__"
     ]
   },
+  "te": {
+    "cols": [
+      "community",
+      "bizcircle"
+    ],
+    "k": 20
+  },
   "cv": {
-    "mae": 6935.778217636561,
-    "mae_std": 50.706879509581675,
-    "rmse": 10036.108462742373,
-    "rmse_std": 116.50242315880534,
-    "mape_pct": 9.667918774264791,
-    "mape_pct_std": 0.05971678479724965,
-    "r2": 0.8900711067360293,
-    "r2_std": 0.0021011380909423736,
-    "median_ae": 4773.455317940646,
-    "median_ae_std": 38.47012496614976
+    "mae": 5819.920969315,
+    "mae_std": 12.733148037515907,
+    "rmse": 8693.969627057537,
+    "rmse_std": 70.28154973901854,
+    "mape_pct": 8.141999642250052,
+    "mape_pct_std": 0.04674012331623855,
+    "r2": 0.9175051231043849,
+    "r2_std": 0.0013780517104768082,
+    "median_ae": 4035.109001255397,
+    "median_ae_std": 15.540000346658854
   },
   "holdout": {
-    "mae": 6824.072824604771,
-    "rmse": 9813.084923673716,
-    "mape_pct": 9.476000359434885,
-    "r2": 0.8961810144544192,
-    "median_ae": 4691.444516541429
+    "mae": 5640.867456428725,
+    "rmse": 8284.611478443258,
+    "mape_pct": 7.846325950825528,
+    "r2": 0.9260037077882965,
+    "median_ae": 3958.4918077163384
   },
   "quantiles": {
-    "interval_coverage_80": 0.7606384773731988
+    "interval_coverage_80": 0.7530118449026423
   },
   "n_train": 118736,
   "n_test": 29633,
   "age_ref_year": 2024,
-  "trained_at": "2026-09-23T03:20:45.694606+00:00",
-  "train_seconds": 177.3
+  "trained_at": "2026-09-23T04:34:42.183424+00:00",
+  "train_seconds": 40.8
 }

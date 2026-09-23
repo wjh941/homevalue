@@ -7,6 +7,7 @@
     python scripts/train.py --model lgbm   --exp-id exp002
     python scripts/train.py --model lgbm   --exp-id exp003 --full-features
     python scripts/train.py --model lgbm   --exp-id exp004 --full-features --tune
+    python scripts/train.py --model lgbm   --exp-id exp005 --full-features --community-te
 """
 
 from __future__ import annotations
@@ -44,8 +45,12 @@ from homevalue.config import (  # noqa: E402
 from homevalue.db import get_engine, read_query  # noqa: E402
 from homevalue.features import (  # noqa: E402
     CAT_FEATURES,
+    TE_SMOOTH_K,
+    TE_SOURCE_COLS,
+    apply_target_maps,
     build_feature_frame,
     fit_category_maps,
+    fit_target_maps,
 )
 
 # 特征子集定义
@@ -192,6 +197,149 @@ def coverage(y_true: np.ndarray, lo: np.ndarray, hi: np.ndarray) -> float:
 
 
 # ---------------------------------------------------------------------------
+# TE 路径:小区/商圈目标编码
+# ---------------------------------------------------------------------------
+
+TE_PARAMS = dict(num_leaves=127, learning_rate=0.05, min_child_samples=40)
+
+
+def build_X_te(df_part: pd.DataFrame, te_maps: dict, cat_maps: dict) -> pd.DataFrame:
+    """基础特征 + TE 特征,列序固定。"""
+    X = build_feature_frame(df_part, cat_maps)
+    te = apply_target_maps(df_part, te_maps)
+    for col in te.columns:
+        X[col] = te[col].to_numpy()
+    for c in CAT_FEATURES:
+        X[c] = X[c].astype("category")
+    return X
+
+
+def cv_evaluate_te(df_train: pd.DataFrame, cat_maps: dict, folds: int = 5) -> dict:
+    """折内拟合 TE 的 5 折 CV(防泄漏)。"""
+    kf = KFold(n_splits=folds, shuffle=True, random_state=42)
+    y_all = df_train["unit_price"].to_numpy()
+    per_fold = []
+    for tr_idx, va_idx in kf.split(df_train):
+        te_maps = fit_target_maps(df_train.iloc[tr_idx])
+        X_tr = build_X_te(df_train.iloc[tr_idx], te_maps, cat_maps)
+        X_va = build_X_te(df_train.iloc[va_idx], te_maps, cat_maps)
+        m = make_lgbm(TE_PARAMS)
+        m.fit(X_tr, np.log1p(y_all[tr_idx]))
+        pred = np.expm1(m.predict(X_va))
+        per_fold.append(metrics(y_all[va_idx], pred))
+    agg = {}
+    for k in per_fold[0]:
+        vals = [f[k] for f in per_fold]
+        agg[k] = float(np.mean(vals))
+        agg[k + "_std"] = float(np.std(vals))
+    return agg
+
+
+def run_te_pipeline(args, df: pd.DataFrame, t0: float) -> int:
+    """--community-te:TE 特征训练(参数沿用 exp004 网格最优),保存完整产物。"""
+    rng = np.random.default_rng(42)
+    test_mask = rng.random(len(df)) < 0.2
+    tr_df = df[~test_mask].reset_index(drop=True)
+    hold_df = df[test_mask].reset_index(drop=True)
+    y_log_tr = np.log1p(tr_df["unit_price"].to_numpy())
+    y_raw_hold = hold_df["unit_price"].to_numpy()
+    print(f"训练 {len(tr_df):,} / 测试 {len(hold_df):,}(TE 源列: {TE_SOURCE_COLS}, k={TE_SMOOTH_K})")
+
+    cat_maps = fit_category_maps(tr_df, min_count=30)
+    print("5 折交叉验证(折内拟合 TE)...")
+    cv = cv_evaluate_te(tr_df, cat_maps)
+    print("  " + "  ".join(f"{k}={cv[k]:,.4f}" for k in ("mae", "rmse", "mape_pct", "r2")))
+
+    te_maps = fit_target_maps(tr_df)
+    X_tr = build_X_te(tr_df, te_maps, cat_maps)
+    X_hold = build_X_te(hold_df, te_maps, cat_maps)
+    model = make_lgbm(TE_PARAMS)
+    model.fit(X_tr, y_log_tr)
+    pred_hold = np.expm1(model.predict(X_hold))
+    holdout = metrics(y_raw_hold, pred_hold)
+    print("留出集: " + "  ".join(f"{k}={holdout[k]:,.4f}" for k in ("mae", "rmse", "mape_pct", "r2")))
+
+    print("训练分位数模型 p10/p90 ...")
+    q10 = make_lgbm({**TE_PARAMS, "objective": "quantile", "alpha": 0.1, "n_estimators": 400})
+    q90 = make_lgbm({**TE_PARAMS, "objective": "quantile", "alpha": 0.9, "n_estimators": 400})
+    q10.fit(X_tr, y_log_tr)
+    q90.fit(X_tr, y_log_tr)
+    lo = np.minimum(np.expm1(q10.predict(X_hold)), pred_hold)
+    hi = np.maximum(np.expm1(q90.predict(X_hold)), pred_hold)
+    q_result = {"interval_coverage_80": coverage(y_raw_hold, lo, hi)}
+    print(f"  80% 区间覆盖率(留出集): {q_result['interval_coverage_80']:.1%}")
+
+    ARTIFACTS_DIR.mkdir(exist_ok=True)
+    joblib.dump(model, ARTIFACTS_DIR / "main.joblib")
+    joblib.dump(q10, ARTIFACTS_DIR / "q10.joblib")
+    joblib.dump(q90, ARTIFACTS_DIR / "q90.joblib")
+    joblib.dump(te_maps, ARTIFACTS_DIR / "te_maps.joblib")
+
+    gain = model.booster_.feature_importance(importance_type="gain")
+    names = model.booster_.feature_name()
+    order = np.argsort(gain)[::-1]
+    feature_importance = {names[i]: float(gain[i]) for i in order}
+    total = sum(feature_importance.values()) or 1.0
+    feature_importance = {k: round(v / total, 4) for k, v in feature_importance.items()}
+    (ARTIFACTS_DIR / "feature_importance.json").write_text(
+        json.dumps(feature_importance, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    metadata = {
+        "model_version": MODEL_VERSION,
+        "exp_id": args.exp_id,
+        "model": args.model,
+        "params": TE_PARAMS,
+        "feature_cols": list(X_tr.columns),
+        "cat_maps": cat_maps,
+        "te": {"cols": TE_SOURCE_COLS, "k": TE_SMOOTH_K},
+        "cv": cv,
+        "holdout": holdout,
+        "quantiles": q_result,
+        "n_train": int(len(X_tr)),
+        "n_test": int(len(X_hold)),
+        "age_ref_year": AGE_REF_YEAR,
+        "trained_at": datetime.now(UTC).isoformat(),
+        "train_seconds": round(time.time() - t0, 1),
+    }
+    (ARTIFACTS_DIR / "metadata.json").write_text(
+        json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    print(f"产物已保存 -> {ARTIFACTS_DIR}")
+
+    pred_df = pd.DataFrame(
+        {"hhid": df["hhid"].to_numpy()[test_mask], "y_true": y_raw_hold, "y_pred": pred_hold,
+         "p10": lo, "p90": hi}
+    )
+    pred_df.to_csv(REPORTS_DIR / "holdout_predictions.csv", index=False)
+
+    record = {
+        "exp_id": args.exp_id,
+        "ts": datetime.now(UTC).isoformat(timespec="seconds"),
+        "model": args.model,
+        "features": "full+te",
+        "n_features": int(X_tr.shape[1]),
+        "params": TE_PARAMS,
+        "n_train": int(len(X_tr)),
+        "n_test": int(len(X_hold)),
+        "cv_mae": round(cv["mae"], 0),
+        "cv_mae_std": round(cv["mae_std"], 0),
+        "cv_mape_pct": round(cv["mape_pct"], 2),
+        "cv_r2": round(cv["r2"], 4),
+        "holdout_mae": round(holdout["mae"], 0),
+        "holdout_rmse": round(holdout["rmse"], 0),
+        "holdout_mape_pct": round(holdout["mape_pct"], 2),
+        "holdout_r2": round(holdout["r2"], 4),
+        "interval_coverage_80": round(q_result["interval_coverage_80"], 4),
+        "seconds": round(time.time() - t0, 1),
+    }
+    with (REPORTS_DIR / "metrics_log.jsonl").open("a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    print(f"实验记录已追加 -> reports/metrics_log.jsonl ({round(time.time() - t0, 1)}s)")
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # 主流程
 # ---------------------------------------------------------------------------
 
@@ -202,6 +350,8 @@ def main() -> int:
     parser.add_argument("--exp-id", required=True)
     parser.add_argument("--full-features", action="store_true", help="加入商圈/装修等全部特征")
     parser.add_argument("--tune", action="store_true", help="LGBM 网格搜索(耗时)")
+    parser.add_argument("--community-te", action="store_true",
+                        help="小区/商圈目标编码(需 --full-features,参数沿用 exp004 最优)")
     parser.add_argument("--db", type=Path, default=DB_PATH)
     parser.add_argument("--save-artifacts", action="store_true", default=None,
                         help="默认:full-features 时保存到 models/")
@@ -211,6 +361,14 @@ def main() -> int:
     t0 = time.time()
     df = load_data(args.db)
     print(f"数据: {len(df):,} 行 (city={MODEL_CITY}), 列={df.shape[1]}")
+
+    if args.community_te:
+        if not args.full_features:
+            print("错误:--community-te 需要搭配 --full-features")
+            return 2
+        if args.tune:
+            print("提示:TE 路径使用 exp004 网格最优参数,忽略 --tune")
+        return run_te_pipeline(args, df, t0)
 
     X, y_log, y_raw, cols, cat_maps = prepare_xy(df, args.full_features)
     rng = np.random.default_rng(42)

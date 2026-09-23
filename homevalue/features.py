@@ -212,6 +212,34 @@ def attach_derived(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+# ---------------------------------------------------------------------------
+# Target Encoding(小区/商圈粒度,折内拟合防泄漏)
+# ---------------------------------------------------------------------------
+
+TE_SOURCE_COLS = ["community", "bizcircle"]
+TE_SMOOTH_K = 20  # 样本少的小区向全局均价收缩
+
+
+def fit_target_maps(df: pd.DataFrame, target: str = "unit_price") -> dict:
+    """在训练数据上拟合 TE 映射:平滑均值 = (mean*n + k*prior) / (n + k)。"""
+    prior = float(df[target].mean())
+    maps: dict[str, dict[str, float]] = {}
+    for col in TE_SOURCE_COLS:
+        g = df.groupby(col, observed=True)[target].agg(["mean", "count"])
+        smoothed = (g["mean"] * g["count"] + TE_SMOOTH_K * prior) / (g["count"] + TE_SMOOTH_K)
+        maps[col] = smoothed.astype(float).to_dict()
+    return {"prior": prior, "k": TE_SMOOTH_K, "maps": maps}
+
+
+def apply_target_maps(df: pd.DataFrame, te: dict) -> pd.DataFrame:
+    """对输入(训练切分或单行线上输入)应用 TE,未见类别取先验。"""
+    out = pd.DataFrame(index=df.index)
+    for col, m in te["maps"].items():
+        series = df[col] if col in df.columns else pd.Series([None] * len(df), index=df.index)
+        out["te_" + col] = series.map(m).fillna(te["prior"]).astype(float)
+    return out
+
+
 def fit_category_maps(df: pd.DataFrame, min_count: int = 30) -> dict[str, list[str]]:
     """统计类别列出现次数,低频类别统一折叠到 __other__,防止线上出现未见类别。"""
     maps: dict[str, list[str]] = {}

@@ -18,7 +18,7 @@ REPORTS_DIR = PROJECT_ROOT / "reports"
 SQL_DIR = PROJECT_ROOT / "sql"
 API_STATIC_DIR = PROJECT_ROOT / "api" / "static"
 
-MODEL_VERSION = "1.0.0"
+MODEL_VERSION = "1.1.0"
 
 # 数据采集基准年,统一房龄口径(跨期训练时避免漂移)
 AGE_REF_YEAR = 2024
