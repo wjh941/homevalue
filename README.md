@@ -1,5 +1,7 @@
 # HomeValue · 房价预测与估值平台
 
+[![CI](https://github.com/wjh941/homevalue/actions/workflows/ci.yml/badge.svg)](https://github.com/wjh941/homevalue/actions/workflows/ci.yml)
+
 从公开数据出发的端到端 ML 项目:数据采集 -> 清洗 -> SQLite 数仓 + SQL 分析 ->
 LightGBM 建模(含预测区间) -> 误差分析 -> FastAPI 服务 -> 仪表盘 -> A/B 实验设计 -> CI。
 
