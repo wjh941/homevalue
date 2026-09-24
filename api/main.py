@@ -253,7 +253,8 @@ def create_app(
         row = payload.model_dump()
         known = get_known_districts()
         if known and row["district"] not in known:
-            raise HTTPException(status_code=400, detail="未知区:" + row["district"] + ";估值模型仅覆盖北京城区")
+            msg = "未知区:" + row["district"] + ";估值模型仅覆盖北京城区"
+            raise HTTPException(status_code=400, detail=msg)
         q = predict_quantiles(art, pd.DataFrame([row]))
         p10, p50, p90 = (float(q[k][0]) for k in ("p10", "p50", "p90"))
         area = row["area_sqm"]
