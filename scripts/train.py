@@ -235,6 +235,65 @@ def cv_evaluate_te(df_train: pd.DataFrame, cat_maps: dict, folds: int = 5) -> di
     return agg
 
 
+TIME_TRAIN_CUTOFF = "2024-03-21"  # 训练:最后出现 <= 此日期
+TIME_TEST_FROM = "2024-04-04"     # 测试:最后出现 >= 此日期(剔除 2024-09-26 残缺期)
+TIME_PARTIAL_DATE = "2024-09-26"
+
+
+def run_time_split_pipeline(args, df: pd.DataFrame, t0: float) -> int:
+    """时间外推评估:训练只用早期快照,在晚于 cutoff 的快照上测试。
+
+    与随机切分对照,量化市场漂移带来的真实泛化代价。评估专用,不写产物。
+    """
+    df = df.copy()
+    train_df = df[df["last_seen"] <= TIME_TRAIN_CUTOFF].reset_index(drop=True)
+    test_df = df[
+        (df["last_seen"] >= TIME_TEST_FROM) & (df["last_seen"] != TIME_PARTIAL_DATE)
+    ].reset_index(drop=True)
+    print(f"时间切分:训练 {len(train_df):,}(<= {TIME_TRAIN_CUTOFF}) / "
+          f"测试 {len(test_df):,}(>= {TIME_TEST_FROM},剔除 {TIME_PARTIAL_DATE} 残缺期)")
+    if len(test_df) < 1000:
+        print("错误:时间测试集过小")
+        return 2
+
+    y_log_tr = np.log1p(train_df["unit_price"].to_numpy())
+    y_te = test_df["unit_price"].to_numpy()
+    cat_maps = fit_category_maps(train_df, min_count=30)
+    te_maps = fit_target_maps(train_df)
+    X_tr = build_X_te(train_df, te_maps, cat_maps)
+    X_te = build_X_te(test_df, te_maps, cat_maps)
+
+    model = make_lgbm(TE_PARAMS)
+    model.fit(X_tr, y_log_tr)
+    pred = np.expm1(model.predict(X_te))
+    holdout = metrics(y_te, pred)
+    print("时间外推留出集: " + "  ".join(f"{k}={holdout[k]:,.4f}" for k in ("mae", "rmse", "mape_pct", "r2")))
+    print("对照(同参数,随机切分 exp006): MAE 5,743  MAPE 8.29%  R2 0.9242")
+
+    record = {
+        "exp_id": args.exp_id,
+        "ts": datetime.now(UTC).isoformat(timespec="seconds"),
+        "model": args.model,
+        "features": "full+te",
+        "split": "time",
+        "time_train_until": TIME_TRAIN_CUTOFF,
+        "time_test_from": TIME_TEST_FROM,
+        "n_features": int(X_tr.shape[1]),
+        "params": TE_PARAMS,
+        "n_train": int(len(X_tr)),
+        "n_test": int(len(X_te)),
+        "holdout_mae": round(holdout["mae"], 0),
+        "holdout_rmse": round(holdout["rmse"], 0),
+        "holdout_mape_pct": round(holdout["mape_pct"], 2),
+        "holdout_r2": round(holdout["r2"], 4),
+        "seconds": round(time.time() - t0, 1),
+    }
+    with (REPORTS_DIR / "metrics_log.jsonl").open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+    print(f"实验记录已追加 -> reports/metrics_log.jsonl({round(time.time() - t0, 1)}s)")
+    return 0
+
+
 def run_te_pipeline(args, df: pd.DataFrame, t0: float) -> int:
     """--community-te:TE 特征训练(参数沿用 exp004 网格最优),保存完整产物。"""
     rng = np.random.default_rng(42)
@@ -264,10 +323,32 @@ def run_te_pipeline(args, df: pd.DataFrame, t0: float) -> int:
     q90 = make_lgbm({**TE_PARAMS, "objective": "quantile", "alpha": 0.9, "n_estimators": 400})
     q10.fit(X_tr, y_log_tr)
     q90.fit(X_tr, y_log_tr)
-    lo = np.minimum(np.expm1(q10.predict(X_hold)), pred_hold)
-    hi = np.maximum(np.expm1(q90.predict(X_hold)), pred_hold)
-    q_result = {"interval_coverage_80": coverage(y_raw_hold, lo, hi)}
-    print(f"  80% 区间覆盖率(留出集): {q_result['interval_coverage_80']:.1%}")
+    lo_hold = np.minimum(np.expm1(q10.predict(X_hold)), pred_hold)
+    hi_hold = np.maximum(np.expm1(q90.predict(X_hold)), pred_hold)
+    q_result = {"interval_coverage_80": coverage(y_raw_hold, lo_hold, hi_hold)}
+    print(f"  原始 80% 区间覆盖率(留出集): {q_result['interval_coverage_80']:.1%}")
+
+    # Conformalized Quantile Regression:留出集一分为二(校准半边/评估半边),防止自证
+    rng_cq = np.random.default_rng(7)
+    perm_cq = rng_cq.permutation(len(y_raw_hold))
+    cal_idx, eval_idx = perm_cq[: len(perm_cq) // 2], perm_cq[len(perm_cq) // 2 :]
+    s_lo = lo_hold[cal_idx] - y_raw_hold[cal_idx]
+    s_hi = y_raw_hold[cal_idx] - hi_hold[cal_idx]
+    level = min(1.0, np.ceil((len(cal_idx) + 1) * 0.9) / len(cal_idx))  # 每侧承担 α/2 = 0.1
+    q_lo_adj = float(np.quantile(s_lo, level))
+    q_hi_adj = float(np.quantile(s_hi, level))
+    lo_eval = np.minimum(lo_hold[eval_idx] - q_lo_adj, pred_hold[eval_idx])
+    hi_eval = np.maximum(hi_hold[eval_idx] + q_hi_adj, pred_hold[eval_idx])
+    cov_before = coverage(y_raw_hold[eval_idx], lo_hold[eval_idx], hi_hold[eval_idx])
+    cov_after = coverage(y_raw_hold[eval_idx], lo_eval, hi_eval)
+    q_result["conformal"] = {
+        "q_lo_adj": round(q_lo_adj, 1),
+        "q_hi_adj": round(q_hi_adj, 1),
+        "eval_coverage_before": round(cov_before, 4),
+        "eval_coverage_after": round(cov_after, 4),
+    }
+    print(f"  CQR 校准后覆盖率(独立评估半边): {cov_after:.1%}(校准前 {cov_before:.1%},"
+          f"下界 -{q_lo_adj:,.0f} / 上界 +{q_hi_adj:,.0f})")
 
     ARTIFACTS_DIR.mkdir(exist_ok=True)
     joblib.dump(model, ARTIFACTS_DIR / "main.joblib")
@@ -293,6 +374,7 @@ def run_te_pipeline(args, df: pd.DataFrame, t0: float) -> int:
         "feature_cols": list(X_tr.columns),
         "cat_maps": cat_maps,
         "te": {"cols": TE_SOURCE_COLS, "k": TE_SMOOTH_K},
+        "conformal": q_result["conformal"],
         "cv": cv,
         "holdout": holdout,
         "quantiles": q_result,
@@ -309,7 +391,7 @@ def run_te_pipeline(args, df: pd.DataFrame, t0: float) -> int:
 
     pred_df = pd.DataFrame(
         {"hhid": df["hhid"].to_numpy()[test_mask], "y_true": y_raw_hold, "y_pred": pred_hold,
-         "p10": lo, "p90": hi}
+         "p10": lo_hold, "p90": hi_hold}
     )
     pred_df.to_csv(REPORTS_DIR / "holdout_predictions.csv", index=False)
 
@@ -352,6 +434,8 @@ def main() -> int:
     parser.add_argument("--tune", action="store_true", help="LGBM 网格搜索(耗时)")
     parser.add_argument("--community-te", action="store_true",
                         help="小区/商圈目标编码(需 --full-features,参数沿用 exp004 最优)")
+    parser.add_argument("--time-split", action="store_true",
+                        help="时间外推评估:用 2022-09..2024-03 训练,2024-04..07 测试(不覆盖产物)")
     parser.add_argument("--db", type=Path, default=DB_PATH)
     parser.add_argument("--save-artifacts", action="store_true", default=None,
                         help="默认:full-features 时保存到 models/")
@@ -362,6 +446,8 @@ def main() -> int:
     df = load_data(args.db)
     print(f"数据: {len(df):,} 行 (city={MODEL_CITY}), 列={df.shape[1]}")
 
+    if args.time_split:
+        return run_time_split_pipeline(args, df, t0)
     if args.community_te:
         if not args.full_features:
             print("错误:--community-te 需要搭配 --full-features")

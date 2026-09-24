@@ -42,6 +42,37 @@ SIMILAR_SAMPLE_SQL = (
 )
 
 
+def export_district_stats(engine) -> list[dict]:
+    """每区典型值(中位数/众数),供单房归因解释的基线。"""
+    df = read_query(
+        engine,
+        "SELECT district, area_sqm, build_year, total_floors, rooms, halls, renovation, floor_pos"
+        " FROM listings WHERE city = 'bj'"
+    )
+    out = []
+    for district, g in df.groupby("district"):
+        def med(col, _g=g):
+            s = pd.to_numeric(_g[col], errors="coerce").dropna()
+            return round(float(s.median()), 1) if len(s) else None
+
+        def mode_val(col, _g=g, default=None):
+            s = _g[col].dropna()
+            return (s.mode().iloc[0] if len(s) else default)
+
+        out.append({
+            "district": district,
+            "n": int(len(g)),
+            "median_area": med("area_sqm"),
+            "median_build_year": med("build_year"),
+            "median_total_floors": med("total_floors"),
+            "mode_rooms": mode_val("rooms"),
+            "mode_halls": mode_val("halls"),
+            "mode_renovation": mode_val("renovation", default="简装"),
+            "mode_floor_pos": mode_val("floor_pos", default="中楼层"),
+        })
+    return to_records(pd.DataFrame(out))
+
+
 def export_similar_sample(engine) -> list[dict]:
     """每区抽 5 套单价最接近区内中位价的在售房源(listings 已是去重后的当前房源池)。"""
     cand = read_query(engine, SIMILAR_SAMPLE_SQL)
@@ -58,6 +89,7 @@ def main() -> int:
     queries = load_queries(SQL_DIR / "03_analysis.sql")
     cache = {name: to_records(read_query(engine, sql)) for name, sql in queries.items()}
     cache["similar_sample"] = export_similar_sample(engine)
+    cache["district_stats"] = export_district_stats(engine)
     dates = read_query(
         engine, "SELECT MIN(snapshot_date) AS first, MAX(snapshot_date) AS last,"
         " COUNT(DISTINCT snapshot_date) AS n FROM listings_all WHERE city = 'bj'"

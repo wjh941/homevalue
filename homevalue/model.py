@@ -45,4 +45,9 @@ def predict_quantiles(art: dict, df: pd.DataFrame) -> dict[str, np.ndarray]:
     p50 = np.maximum(np.expm1(art["main"].predict(X)), 0.0)
     p10 = np.minimum(np.expm1(art["q10"].predict(X)), p50)
     p90 = np.maximum(np.expm1(art["q90"].predict(X)), p50)
+    conf = art["metadata"].get("conformal")
+    if conf:
+        # CQR 校准:向两侧外扩,使覆盖率逼近名义 80%
+        p10 = p10 - conf.get("q_lo_adj", 0.0)
+        p90 = p90 + conf.get("q_hi_adj", 0.0)
     return {"p10": p10, "p50": p50, "p90": p90}

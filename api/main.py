@@ -107,6 +107,98 @@ def create_app(
         except OSError:
             pass
 
+    district_stats_cache: dict[str, dict | None] = {}
+
+    def district_typicals(district: str) -> dict | None:
+        """区内典型值(面积/年代/楼层/户型/装修中位数或众数);sqlite 实时算,缓存模式读导出。"""
+        if district in district_stats_cache:
+            return district_stats_cache[district]
+        stats = None
+        try:
+            if app.state.engine is not None:
+                df = read_query(
+                    app.state.engine,
+                    "SELECT area_sqm, build_year, total_floors, rooms, halls, renovation, floor_pos"
+                    " FROM listings WHERE city = :city AND district = :district",
+                    {"city": MODEL_CITY, "district": district},
+                )
+                if len(df):
+                    def med(col):
+                        s = pd.to_numeric(df[col], errors="coerce").dropna()
+                        return round(float(s.median()), 1) if len(s) else None
+
+                    def mode_val(col, default=None):
+                        s = df[col].dropna()
+                        return (s.mode().iloc[0] if len(s) else default)
+
+                    stats = {
+                        "median_area": med("area_sqm"),
+                        "median_build_year": med("build_year"),
+                        "median_total_floors": med("total_floors"),
+                        "mode_rooms": mode_val("rooms"),
+                        "mode_halls": mode_val("halls"),
+                        "mode_renovation": mode_val("renovation", "简装"),
+                        "mode_floor_pos": mode_val("floor_pos", "中楼层"),
+                    }
+            else:
+                for r in app.state.cache.get("district_stats", []):
+                    if r.get("district") == district:
+                        stats = r
+                        break
+        except Exception:  # noqa: BLE001
+            stats = None
+        district_stats_cache[district] = stats
+        return stats
+
+    def attribution_for(art: dict, row: dict) -> dict | None:
+        """单房归因:以'区内典型房源'为基线,逐因子还原输入,度量对估值的边际影响。"""
+        try:
+            typical = district_typicals(row["district"])
+            if not typical:
+                return None
+            base = dict(row)
+            for k, v in (
+                ("area_sqm", typical.get("median_area")),
+                ("build_year", typical.get("median_build_year")),
+                ("total_floors", typical.get("median_total_floors")),
+                ("rooms", typical.get("mode_rooms")),
+                ("halls", typical.get("mode_halls")),
+                ("renovation", typical.get("mode_renovation")),
+                ("floor_pos", typical.get("mode_floor_pos")),
+            ):
+                base[k] = v
+            base["bizcircle"] = None
+            base["community"] = None
+
+            def p50_of(r: dict) -> float:
+                q = predict_quantiles(art, pd.DataFrame([r]))
+                return float(q["p50"][0])
+
+            p_base = p50_of(base)
+            factors_spec = [
+                ("面积", ["area_sqm"]),
+                ("房龄", ["build_year"]),
+                ("楼层", ["floor_pos", "total_floors"]),
+                ("户型", ["rooms", "halls"]),
+                ("装修", ["renovation"]),
+                ("商圈/小区", ["bizcircle", "community"]),
+            ]
+            factors = []
+            for name, keys in factors_spec:
+                r = dict(base)
+                vals = {k: row.get(k) for k in keys}
+                if all(v is None for v in vals.values()):
+                    continue
+                for k, v in vals.items():
+                    if v is not None:
+                        r[k] = v
+                delta = round(p50_of(r) - p_base)
+                factors.append({"name": name, "delta": delta})
+            factors.sort(key=lambda x: -abs(x["delta"]))
+            return {"baseline_p50": round(p_base), "factors": factors}
+        except Exception:  # noqa: BLE001 - 归因失败不影响主预测
+            return None
+
     @app.get("/api/health")
     def health() -> dict:
         meta = app.state.cache.get("_meta") or {}
@@ -197,6 +289,7 @@ def create_app(
             "interval_width_pct": round((p90 - p10) / p50 * 100, 1) if p50 else None,
             "comparables": comps,
             "similar": similar,
+            "attribution": attribution_for(art, row),
         }
 
     @app.get("/api/analysis/overview")

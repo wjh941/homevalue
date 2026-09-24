@@ -3618,8 +3618,109 @@
    "total_floors": 18
   }
  ],
+ "district_stats": [
+  {
+   "district": "东城",
+   "n": 22728,
+   "median_area": 65.9,
+   "median_build_year": 1999.0,
+   "median_total_floors": 11.0,
+   "mode_rooms": 2,
+   "mode_halls": 1,
+   "mode_renovation": "精装",
+   "mode_floor_pos": "中楼层"
+  },
+  {
+   "district": "丰台",
+   "n": 31895,
+   "median_area": 75.6,
+   "median_build_year": 2003.0,
+   "median_total_floors": 15.0,
+   "mode_rooms": 2,
+   "mode_halls": 1,
+   "mode_renovation": "精装",
+   "mode_floor_pos": "中楼层"
+  },
+  {
+   "district": "其他",
+   "n": 16353,
+   "median_area": 77.0,
+   "median_build_year": 2003.0,
+   "median_total_floors": 18.0,
+   "mode_rooms": 2,
+   "mode_halls": 1,
+   "mode_renovation": "精装",
+   "mode_floor_pos": "中楼层"
+  },
+  {
+   "district": "大兴",
+   "n": 23495,
+   "median_area": 87.5,
+   "median_build_year": 2008.0,
+   "median_total_floors": 8.0,
+   "mode_rooms": 2,
+   "mode_halls": 1,
+   "mode_renovation": "精装",
+   "mode_floor_pos": "中楼层"
+  },
+  {
+   "district": "昌平",
+   "n": 31419,
+   "median_area": 97.0,
+   "median_build_year": 2004.0,
+   "median_total_floors": 7.0,
+   "mode_rooms": 2,
+   "mode_halls": 1,
+   "mode_renovation": "精装",
+   "mode_floor_pos": "中楼层"
+  },
+  {
+   "district": "朝阳",
+   "n": 83907,
+   "median_area": 80.0,
+   "median_build_year": 2003.0,
+   "median_total_floors": 18.0,
+   "mode_rooms": 2,
+   "mode_halls": 1,
+   "mode_renovation": "精装",
+   "mode_floor_pos": "中楼层"
+  },
+  {
+   "district": "海淀",
+   "n": 29779,
+   "median_area": 73.3,
+   "median_build_year": 1999.0,
+   "median_total_floors": 7.0,
+   "mode_rooms": 2,
+   "mode_halls": 1,
+   "mode_renovation": "精装",
+   "mode_floor_pos": "中楼层"
+  },
+  {
+   "district": "西城",
+   "n": 19019,
+   "median_area": 61.4,
+   "median_build_year": 1992.0,
+   "median_total_floors": 7.0,
+   "mode_rooms": 2,
+   "mode_halls": 1,
+   "mode_renovation": "精装",
+   "mode_floor_pos": "中楼层"
+  },
+  {
+   "district": "通州",
+   "n": 28510,
+   "median_area": 88.9,
+   "median_build_year": 2006.0,
+   "median_total_floors": 11.0,
+   "mode_rooms": 2,
+   "mode_halls": 1,
+   "mode_renovation": "精装",
+   "mode_floor_pos": "中楼层"
+  }
+ ],
  "_meta": {
-  "generated_at": "2026-09-23T07:48:40+00:00",
+  "generated_at": "2026-09-24T06:54:41+00:00",
   "first_snapshot": "2022-09-23",
   "last_snapshot": "2024-09-26",
   "n_snapshots": 35

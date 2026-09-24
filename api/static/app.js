@@ -313,6 +313,19 @@ function renderResult(res) {
     $("r-similar").innerHTML = "";
   }
 
+  const att = res.attribution;
+  if (att && att.factors && att.factors.length) {
+    const rows = att.factors.slice(0, 3).map((x) => {
+      const up = x.delta > 0;
+      return '<div class="comp-block">' + (up ? "▲" : "▼") + " <b>" + x.name + "</b> " +
+        (up ? "+" : "") + fmt(x.delta) + " 元/㎡</div>";
+    }).join("");
+    $("r-attribution").innerHTML =
+      '<p class="hint" style="margin-top:12px">相对本区典型房源(' + fmt(att.baseline_p50) + ' 元/㎡)的主要偏离:</p>' + rows;
+  } else {
+    $("r-attribution").innerHTML = "";
+  }
+
   $("r-meta").textContent = "模型 " + res.model_version + " · 目标为单价,总价 = 单价 × 面积";
 }
 
@@ -551,10 +564,11 @@ document.querySelectorAll("#year-switch button").forEach((btn) => {
 /* ---------------- 模型洞察 ---------------- */
 
 async function loadModel() {
-  const [health, importance, errors] = await Promise.all([
+  const [health, importance, errors, usage] = await Promise.all([
     jget("/api/health"),
     jget("/api/features/importance"),
     jget("/api/analysis/errors"),
+    jget("/api/predictions/stats").catch(() => ({ n_total: 0 })),
   ]);
   const h = health.holdout || {};
   const o = errors.overall || {};
@@ -577,7 +591,18 @@ async function loadModel() {
   $("chart-err-district").replaceChildren(
     barChart(bd.map((r) => ({ label: r.district, value: r.mae })), { color: "#f87171" })
   );
-}
+
+  if (usage && usage.n_total > 0) {
+    const topD = (usage.top_districts || [])[0];
+    $("usage-box").className = "";
+    $("usage-box").innerHTML =
+      '<div class="kpi-cards">' +
+      kpiCard(fmt(usage.n_total), "累计预测次数") +
+      kpiCard(usage.avg_p50 != null ? fmt(usage.avg_p50) + " 元/㎡" : "--", "预测均价均值") +
+      kpiCard(usage.avg_interval_width_pct != null ? usage.avg_interval_width_pct + "%" : "--", "平均区间宽度") +
+      kpiCard(topD ? (CITY_NAMES[topD.district] || topD.district) + "(" + topD.n + " 次)" : "--", "最常查询区域") +
+      "</div>";
+  }
 
 /* ---------------- Tab 切换 ---------------- */
 

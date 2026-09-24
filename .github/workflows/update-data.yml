@@ -37,6 +37,10 @@ jobs:
           python scripts/error_analysis.py
           python scripts/export_analysis_cache.py
 
+      - name: Quality gate (新模型 MAE 劣化 >3% 则阻断发布)
+        run: |
+          python -c "import json, subprocess, sys; old = json.loads(subprocess.run(['git','show','HEAD:models/metadata.json'], capture_output=True, text=True).stdout or '{}').get('holdout',{}).get('mae'); new = json.load(open('models/metadata.json', encoding='utf-8')).get('holdout',{}).get('mae'); print('线上 MAE:', old, '-> 新 MAE:', new); sys.exit(1) if old and new and new > old * 1.03 else print('质量门禁通过')"
+
       - name: Commit and push if data changed
         run: |
           git config user.name "homevalue-bot"

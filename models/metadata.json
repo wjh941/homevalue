@@ -1,6 +1,6 @@
 {
   "model_version": "1.1.0",
-  "exp_id": "exp006",
+  "exp_id": "exp006b",
   "model": "lgbm",
   "params": {
     "num_leaves": 127,
@@ -269,6 +269,12 @@
     ],
     "k": 20
   },
+  "conformal": {
+    "q_lo_adj": 389.2,
+    "q_hi_adj": 530.1,
+    "eval_coverage_before": 0.7662,
+    "eval_coverage_after": 0.7968
+  },
   "cv": {
     "mae": 5845.190256564761,
     "mae_std": 22.167798202856616,
@@ -289,11 +295,17 @@
     "median_ae": 4093.799223379079
   },
   "quantiles": {
-    "interval_coverage_80": 0.7669392726639986
+    "interval_coverage_80": 0.7669392726639986,
+    "conformal": {
+      "q_lo_adj": 389.2,
+      "q_hi_adj": 530.1,
+      "eval_coverage_before": 0.7662,
+      "eval_coverage_after": 0.7968
+    }
   },
   "n_train": 229635,
   "n_test": 57470,
   "age_ref_year": 2024,
-  "trained_at": "2026-09-23T07:05:55.870296+00:00",
-  "train_seconds": 214.9
+  "trained_at": "2026-09-24T07:00:21.895532+00:00",
+  "train_seconds": 63.6
 }
