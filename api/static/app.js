@@ -421,6 +421,7 @@ function renderTrendArea() {
   const year = marketState.year;
   const tp = (marketState.trendAll || [])
     .filter((r) => r.city === city)
+    .filter((r) => !(r.n_listings != null && r.n_listings < 5000)) // 剔除部分抓取的残缺期
     .filter((r) => year === "all" || String(r.snapshot_date).slice(0, 4) === year)
     .map((r) => ({ label: r.snapshot_date, value: r.avg_unit_price }));
   $("chart-trend").replaceChildren(lineChart(tp, { height: 280 }));
@@ -429,6 +430,18 @@ function renderTrendArea() {
 function renderDistrictCompare() {
   const year = marketState.year;
   const rows = marketState.districtTrend || [];
+  const city = marketState.city;
+  const bjOnly = city !== "all" && city !== "bj";
+  $("district-compare-title").textContent = bjOnly
+    ? "各区均价走势对比(仅覆盖北京,当前城市快照期数不足)"
+    : "各区均价走势对比(北京)";
+  if (bjOnly) {
+    $("district-switch").innerHTML = "";
+    $("chart-district-trend").replaceChildren(
+      document.createTextNode("区级对比仅覆盖北京;其他城市快照不足,不做对比以免误导。")
+    );
+    return;
+  }
   const districts = [...new Set(rows.map((r) => r.district))].sort();
   // 区名 chip(默认选中三个,点击切换)
   const box = $("district-switch");
@@ -455,6 +468,7 @@ function renderDistrictCompare() {
     color: PALETTE[districts.indexOf(d) % PALETTE.length],
     points: rows
       .filter((r) => r.district === d)
+      .filter((r) => !(r.n_listings != null && r.n_listings < 5000)) // 剔除残缺期
       .filter((r) => year === "all" || String(r.snapshot_date).slice(0, 4) === year)
       .map((r) => ({ label: r.snapshot_date, value: r.avg_unit_price })),
   }));
@@ -466,6 +480,7 @@ function renderConclusions() {
   const year = marketState.year;
   const tp = (marketState.trendAll || [])
     .filter((r) => r.city === city)
+    .filter((r) => !(r.n_listings != null && r.n_listings < 5000)) // 剔除部分抓取的残缺期
     .filter((r) => year === "all" || String(r.snapshot_date).slice(0, 4) === year)
     .map((r) => ({ label: r.snapshot_date, value: r.avg_unit_price }));
 
@@ -474,10 +489,13 @@ function renderConclusions() {
   trendFacts(tp).forEach((s) => items.push(cityName + "全市:" + s));
 
   const rows = marketState.districtTrend || [];
-  const stats = [...marketState.compare]
+  const showDistrictStats = marketState.city === "all" || marketState.city === "bj";
+  const stats = showDistrictStats
+    ? [...marketState.compare]
     .map((d) => {
       const pts = rows
         .filter((r) => r.district === d)
+        .filter((r) => !(r.n_listings != null && r.n_listings < 5000)) // 剔除残缺期
         .filter((r) => year === "all" || String(r.snapshot_date).slice(0, 4) === year)
         .sort((a, b) => (a.snapshot_date < b.snapshot_date ? -1 : 1));
       if (pts.length < 2) return null;
@@ -485,7 +503,8 @@ function renderConclusions() {
       return { district: d, pct: ((last - first) / first) * 100, last };
     })
     .filter(Boolean)
-    .sort((a, b) => a.pct - b.pct);
+    .sort((a, b) => a.pct - b.pct)
+    : [];
   if (stats.length >= 2) {
     items.push("对比期内最抗跌:" + stats[stats.length - 1].district + "(" + (stats[stats.length - 1].pct > 0 ? "+" : "") + stats[stats.length - 1].pct.toFixed(1) + "%),跌幅最大:" + stats[0].district + "(" + stats[0].pct.toFixed(1) + "%)");
     const spread = (stats[stats.length - 1].pct - stats[0].pct).toFixed(1);
@@ -603,6 +622,7 @@ async function loadModel() {
       kpiCard(topD ? (CITY_NAMES[topD.district] || topD.district) + "(" + topD.n + " 次)" : "--", "最常查询区域") +
       "</div>";
   }
+}
 
 /* ---------------- Tab 切换 ---------------- */
 

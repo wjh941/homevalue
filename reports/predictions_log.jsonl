@@ -1,3 +1,6 @@
 {"ts": "2026-09-23T06:45:51+00:00", "district": "海淀", "bizcircle": "中关村", "community": "华清嘉园", "area_sqm": 75.0, "rooms": 2, "p50": 146347, "interval_width_pct": 18.3, "model_version": "1.1.0"}
 {"ts": "2026-09-24T07:09:41+00:00", "district": "海淀", "bizcircle": null, "community": "中关村", "area_sqm": 71.0, "rooms": 2, "p50": 117063, "interval_width_pct": 34.8, "model_version": "1.1.0"}
 {"ts": "2026-09-24T07:10:10+00:00", "district": "海淀", "bizcircle": null, "community": "中关村", "area_sqm": 71.0, "rooms": 2, "p50": 117063, "interval_width_pct": 34.8, "model_version": "1.1.0"}
+{"ts": "2026-09-24T07:34:13+00:00", "district": "朝阳", "bizcircle": null, "community": null, "area_sqm": 80.0, "rooms": 2, "p50": 69658, "interval_width_pct": 32.4, "model_version": "1.1.0"}
+{"ts": "2026-09-24T07:34:14+00:00", "district": "火星", "bizcircle": null, "community": null, "area_sqm": 80.0, "rooms": 2, "p50": 69492, "interval_width_pct": 32.2, "model_version": "1.1.0"}
+{"ts": "2026-09-24T07:37:10+00:00", "district": "朝阳", "bizcircle": null, "community": null, "area_sqm": 80.0, "rooms": 2, "p50": 69658, "interval_width_pct": 32.4, "model_version": "1.1.0"}

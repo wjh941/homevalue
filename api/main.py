@@ -223,10 +223,40 @@ def create_app(
             "holdout": app.state.art["metadata"]["holdout"],
         }
 
+    known_districts: set | None = None
+
+    def get_known_districts() -> set:
+        """北京有效区名(懒加载记忆化);用于拒绝模型从未见过的区。"""
+        nonlocal known_districts
+        if known_districts is None:
+            ds: set = set()
+            try:
+                if app.state.engine is not None:
+                    df = read_query(
+                        app.state.engine,
+                        "SELECT DISTINCT district FROM listings WHERE city = :city",
+                        {"city": MODEL_CITY},
+                    )
+                    ds = set(df["district"])
+                else:
+                    for r in app.state.cache.get("districts_rank_all", []):
+                        if r.get("city") == MODEL_CITY:
+                            ds.add(r["district"])
+            except Exception:  # noqa: BLE001
+                ds = set()
+            known_districts = ds
+        return known_districts
+
     @app.post("/api/predict")
     def predict(payload: PredictIn) -> dict:
         art = app.state.art
         row = payload.model_dump()
+        known = get_known_districts()
+        if known and row["district"] not in known:
+            raise HTTPException(
+                status_code=400,
+                detail="未知区:" + row["district"] + ";估值模型仅覆盖北京城区(东城/西城/朝阳/海淀/丰台/石景山/通州/昌平/大兴/其他)",
+            )
         q = predict_quantiles(art, pd.DataFrame([row]))
         p10, p50, p90 = (float(q[k][0]) for k in ("p10", "p50", "p90"))
         area = row["area_sqm"]

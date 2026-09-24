@@ -51,6 +51,23 @@ def test_predict_monotonic_quantiles_for_edge_input(api_client):
     assert p["p10"] <= p["p50"] <= p["p90"]
 
 
+def test_predict_rejects_unknown_district(api_client):
+    payload = {
+        "district": "火星",
+        "rooms": 2,
+        "halls": 1,
+        "area_sqm": 80.0,
+        "build_year": 2005,
+        "floor_pos": "中楼层",
+        "total_floors": 18,
+        "dir_main": "南",
+        "renovation": "精装",
+    }
+    r = api_client.post("/api/predict", json=payload)
+    assert r.status_code == 400
+    assert "未知区" in r.json()["detail"]
+
+
 def test_predict_validates_input(api_client):
     bad = {"district": "朝阳", "rooms": 2, "halls": 1, "area_sqm": 0}
     assert api_client.post("/api/predict", json=bad).status_code == 422
