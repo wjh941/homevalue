@@ -50,10 +50,10 @@
   },
   {
    "district": "昌平",
-   "n_listings": 31419,
-   "avg_unit_price": 45893.0,
-   "avg_area": 114.7,
-   "avg_age": 19.1,
+   "n_listings": 30847,
+   "avg_unit_price": 45883.0,
+   "avg_area": 114.9,
+   "avg_age": 19.2,
    "price_rank": 7
   },
   {
@@ -277,12 +277,6 @@
    "n_listings": 39747,
    "avg_unit_price": 68066.0,
    "mom_pct": 0.07
-  },
-  {
-   "snapshot_date": "2024-09-26",
-   "n_listings": 1646,
-   "avg_unit_price": 49172.0,
-   "mom_pct": -27.76
   }
  ],
  "top_bizcircle_per_district": [
@@ -367,8 +361,8 @@
   {
    "district": "昌平",
    "bizcircle": "回龙观",
-   "n_listings": 10703,
-   "avg_unit_price": 54220.0
+   "n_listings": 10131,
+   "avg_unit_price": 54660.0
   },
   {
    "district": "昌平",
@@ -452,82 +446,82 @@
  "price_deciles": [
   {
    "decile": 1,
-   "n_listings": 28711,
+   "n_listings": 28654,
    "price_min": 7991.0,
-   "price_max": 36730.0,
-   "avg_unit_price": 31279.0,
-   "avg_area": 103.5
+   "price_max": 36742.0,
+   "avg_unit_price": 31280.0,
+   "avg_area": 103.4
   },
   {
    "decile": 2,
-   "n_listings": 28711,
-   "price_min": 36731.0,
-   "price_max": 43427.0,
-   "avg_unit_price": 40148.0,
+   "n_listings": 28654,
+   "price_min": 36742.0,
+   "price_max": 43461.0,
+   "avg_unit_price": 40167.0,
    "avg_area": 97.7
   },
   {
    "decile": 3,
-   "n_listings": 28711,
-   "price_min": 43428.0,
-   "price_max": 50226.0,
-   "avg_unit_price": 46873.0,
+   "n_listings": 28654,
+   "price_min": 43461.0,
+   "price_max": 50274.0,
+   "avg_unit_price": 46915.0,
    "avg_area": 94.1
   },
   {
    "decile": 4,
-   "n_listings": 28711,
-   "price_min": 50226.0,
-   "price_max": 56853.0,
-   "avg_unit_price": 53498.0,
-   "avg_area": 90.4
+   "n_listings": 28653,
+   "price_min": 50274.0,
+   "price_max": 56911.0,
+   "avg_unit_price": 53555.0,
+   "avg_area": 90.3
   },
   {
    "decile": 5,
-   "n_listings": 28711,
-   "price_min": 56853.0,
-   "price_max": 63673.0,
-   "avg_unit_price": 60212.0,
+   "n_listings": 28653,
+   "price_min": 56912.0,
+   "price_max": 63733.0,
+   "avg_unit_price": 60271.0,
    "avg_area": 89.0
   },
   {
    "decile": 6,
-   "n_listings": 28710,
-   "price_min": 63673.0,
-   "price_max": 71696.0,
-   "avg_unit_price": 67552.0,
+   "n_listings": 28653,
+   "price_min": 63733.0,
+   "price_max": 71774.0,
+   "avg_unit_price": 67617.0,
    "avg_area": 89.0
   },
   {
    "decile": 7,
-   "n_listings": 28710,
-   "price_min": 71696.0,
-   "price_max": 82074.0,
-   "avg_unit_price": 76686.0,
+   "n_listings": 28653,
+   "price_min": 71775.0,
+   "price_max": 82164.0,
+   "avg_unit_price": 76757.0,
    "avg_area": 90.9
   },
   {
    "decile": 8,
-   "n_listings": 28710,
-   "price_min": 82075.0,
-   "price_max": 95460.0,
-   "avg_unit_price": 88516.0,
+   "n_listings": 28653,
+   "price_min": 82165.0,
+   "price_max": 95528.0,
+   "avg_unit_price": 88582.0,
    "avg_area": 95.2
   },
   {
    "decile": 9,
-   "n_listings": 28710,
-   "price_min": 95461.0,
-   "price_max": 113611.0,
-   "avg_unit_price": 103747.0,
+   "n_listings": 28653,
+   "price_min": 95529.0,
+   "price_max": 113654.0,
+   "avg_unit_price": 103799.0,
    "avg_area": 92.2
   },
   {
    "decile": 10,
-   "n_listings": 28710,
-   "price_min": 113614.0,
+   "n_listings": 28653,
+   "price_min": 113655.0,
    "price_max": 249434.0,
-   "avg_unit_price": 134556.0,
+   "avg_unit_price": 134597.0,
    "avg_area": 87.0
   }
  ],
@@ -562,10 +556,10 @@
   },
   {
    "district": "昌平",
-   "avg_1room": 51895.0,
-   "avg_2room": 46496.0,
+   "avg_1room": 51909.0,
+   "avg_2room": 46455.0,
    "avg_3room": 43652.0,
-   "avg_4plus": 44447.0
+   "avg_4plus": 44500.0
   },
   {
    "district": "朝阳",
@@ -598,9 +592,9 @@
  ],
  "price_change_summary": [
   {
-   "n_changed": 50033,
-   "avg_pct_change": -3.75,
-   "n_reduced": 47684,
+   "n_changed": 49719,
+   "avg_pct_change": -3.73,
+   "n_reduced": 47367,
    "pct_reduced": 95.3
   }
  ],
@@ -815,8 +809,8 @@
   },
   {
    "city": "bj",
-   "n_listings": 287105,
-   "avg_unit_price": 70306.0,
+   "n_listings": 286533,
+   "avg_unit_price": 70354.0,
    "rank_by_price": 2
   },
   {
@@ -840,8 +834,8 @@
  ],
  "pareto_value": [
   {
-   "n_top20": 57421,
-   "n_all": 287105,
+   "n_top20": 57306,
+   "n_all": 286533,
    "top20_value_share": 42.4
   }
  ],
@@ -897,9 +891,9 @@
   {
    "city": "bj",
    "district": "昌平",
-   "n_listings": 31419,
-   "avg_unit_price": 45893.0,
-   "avg_area": 114.7,
+   "n_listings": 30847,
+   "avg_unit_price": 45883.0,
+   "avg_area": 114.9,
    "price_rank": 7
   },
   {
@@ -1333,13 +1327,6 @@
    "n_listings": 39747,
    "avg_unit_price": 68066.0,
    "mom_pct": 0.07
-  },
-  {
-   "city": "bj",
-   "snapshot_date": "2024-09-26",
-   "n_listings": 1646,
-   "avg_unit_price": 49172.0,
-   "mom_pct": -27.76
   },
   {
    "city": "gz",
@@ -2207,12 +2194,6 @@
    "snapshot_date": "2024-07-24",
    "n_listings": 4468,
    "avg_unit_price": 43466.0
-  },
-  {
-   "district": "昌平",
-   "snapshot_date": "2024-09-26",
-   "n_listings": 1646,
-   "avg_unit_price": 49172.0
   },
   {
    "district": "朝阳",
@@ -3294,68 +3275,68 @@
   },
   {
    "district": "昌平",
-   "community": "龙跃苑四区",
+   "community": "龙旗广场",
    "bizcircle": "回龙观",
-   "area_sqm": 119.72,
-   "unit_price": 44020.0,
+   "area_sqm": 88.44,
+   "unit_price": 43985.0,
    "rooms": 3,
    "halls": 1,
-   "build_year": 2005.0,
+   "build_year": null,
+   "floor_pos": "高楼层",
+   "renovation": "简装",
+   "total_floors": 28
+  },
+  {
+   "district": "昌平",
+   "community": "天通苑北一区",
+   "bizcircle": "天通苑",
+   "area_sqm": 87.76,
+   "unit_price": 43984.0,
+   "rooms": 2,
+   "halls": 1,
+   "build_year": 2004.0,
+   "floor_pos": "高楼层",
+   "renovation": "精装",
+   "total_floors": 23
+  },
+  {
+   "district": "昌平",
+   "community": "佳运园一期",
+   "bizcircle": "立水桥",
+   "area_sqm": 63.66,
+   "unit_price": 43984.0,
+   "rooms": 1,
+   "halls": 1,
+   "build_year": null,
+   "floor_pos": "中楼层",
+   "renovation": "精装",
+   "total_floors": 6
+  },
+  {
+   "district": "昌平",
+   "community": "清水园一期",
+   "bizcircle": "立水桥",
+   "area_sqm": 67.75,
+   "unit_price": 43986.0,
+   "rooms": 2,
+   "halls": 1,
+   "build_year": 1997.0,
    "floor_pos": "中楼层",
    "renovation": "简装",
    "total_floors": 6
   },
   {
    "district": "昌平",
-   "community": "天通苑东一区",
+   "community": "天通苑北一区",
    "bizcircle": "天通苑",
-   "area_sqm": 89.73,
-   "unit_price": 44021.0,
+   "area_sqm": 102.31,
+   "unit_price": 43984.0,
    "rooms": 2,
    "halls": 1,
-   "build_year": 2001.0,
-   "floor_pos": "未知",
-   "renovation": "简装",
-   "total_floors": 7
-  },
-  {
-   "district": "昌平",
-   "community": "邑上苑",
-   "bizcircle": "鼓楼大街",
-   "area_sqm": 87.47,
-   "unit_price": 44016.0,
-   "rooms": 2,
-   "halls": 1,
-   "build_year": null,
-   "floor_pos": "低楼层",
-   "renovation": "精装",
-   "total_floors": 9
-  },
-  {
-   "district": "昌平",
-   "community": "金隅万科城一期",
-   "bizcircle": "鼓楼大街",
-   "area_sqm": 87.47,
-   "unit_price": 44016.0,
-   "rooms": 2,
-   "halls": 1,
-   "build_year": 2009.0,
-   "floor_pos": "未知",
-   "renovation": "其他",
-   "total_floors": 28
-  },
-  {
-   "district": "昌平",
-   "community": "天通苑中苑",
-   "bizcircle": "天通苑",
-   "area_sqm": 101.08,
-   "unit_price": 44025.0,
-   "rooms": 2,
-   "halls": 1,
-   "build_year": 2008.0,
+   "build_year": 2004.0,
    "floor_pos": "低楼层",
    "renovation": "简装",
-   "total_floors": 20
+   "total_floors": 13
   },
   {
    "district": "朝阳",
@@ -3665,8 +3646,8 @@
   },
   {
    "district": "昌平",
-   "n": 31419,
-   "median_area": 97.0,
+   "n": 30847,
+   "median_area": 97.1,
    "median_build_year": 2004.0,
    "median_total_floors": 7.0,
    "mode_rooms": 2,
@@ -3720,9 +3701,9 @@
   }
  ],
  "_meta": {
-  "generated_at": "2026-09-24T06:54:41+00:00",
+  "generated_at": "2026-10-03T08:56:38+00:00",
   "first_snapshot": "2022-09-23",
-  "last_snapshot": "2024-09-26",
-  "n_snapshots": 35
+  "last_snapshot": "2024-07-24",
+  "n_snapshots": 34
  }
 }
