@@ -23,8 +23,8 @@ LightGBM 建模(含校准预测区间与单房归因) -> 时间外推验证 -> F
 | 可解释性 | **单房归因**:相对区内典型房源的逐因子偏离(示例:商圈/小区 +43,927 元/㎡) |
 | 调价历史 | **50,033 套跨期调价**,95.3% 降价,平均 -3.75%(35 期月度粒度) |
 | 服务 | FastAPI + 3 模型推理,单并发 P95 **264ms**,8 并发 P95 **710ms**(400 请求 0 错误) |
-| SQL | 9 个含窗口函数/CTE 的分析查询(RANK/LAG/NTILE/ROW_NUMBER/透视/帕累托) |
-| 工程 | 31 个 pytest 用例、ruff 通过、GitHub Actions(lint+test+月度数据管道)、Docker、Render 部署 |
+| SQL | 12 个含窗口函数/CTE 的分析查询(RANK/LAG/NTILE/ROW_NUMBER/透视/帕累托/多城市钻取) |
+| 工程 | 33 个 pytest 用例(含前端消费字段全量断言)、ruff、GitHub Actions(ruff+node 语法检查+pytest+月度数据管道含质量门禁)、Docker、Render 部署 |
 
 ## 架构
 
@@ -35,7 +35,7 @@ data/raw/*.csv          链家公开快照(可复现下载 scripts/fetch_data.py
 SQLite 数仓             listings_raw -> listings_all -> listings(窗口去重取最新)
       |                       |
       | sql/03_analysis.sql   v
-      |  (9 个分析查询)   scripts/train.py(4 组实验 + 分位模型)
+      |  (12 个分析查询)  scripts/train.py(实验系列 + 分位模型 + 时间外推评估)
       |                       |
       v                       v  models/ + reports/
 FastAPI(api/main.py)—— /api/predict、/api/analysis/*、静态仪表盘
@@ -56,6 +56,9 @@ python scripts/train.py --model lgbm   --exp-id exp002
 python scripts/train.py --model lgbm   --exp-id exp003 --full-features
 python scripts/train.py --model lgbm   --exp-id exp004 --full-features --tune
 python scripts/train.py --model lgbm   --exp-id exp005 --full-features --community-te
+
+# 时间外推评估(诚实口径):早期训练/后期测试,与随机切分对照
+python scripts/train.py --model lgbm   --exp-id exp007 --full-features --community-te --time-split
 
 # 3) 误差分析(输出 reports/error_analysis.json + PNG)
 python scripts/error_analysis.py
@@ -128,13 +131,15 @@ FROM t ORDER BY snapshot_date;
 
 ## 建模
 
-- 目标取 log(unit_price),指标换算回原尺度;随机 80/20 切分,训练集内 5 折 CV
+- 目标取 log(unit_price),指标换算回原尺度;随机 80/20 切分,训练集内 5 折 CV;
+  另有**时间外推评估**(--time-split:≤2024-03 训练 / ≥2024-04 测试),量化随机切分的乐观偏差
 - 特征 16 个:面积、室/厅、厅室比、总楼层、楼层位置序数、建成年份、房龄(+缺失标记)、
   朝向 4 哑元 + 朝向数、区/商圈/装修(低频类折叠为 __other__)
 - 线性 baseline(ColumnTransformer + OneHot) -> LightGBM -> +商圈 -> 网格调参 -> **小区/商圈目标编码**
 - 目标编码:**折内拟合防泄漏**,平滑系数 k=20(样本少的小区向全局均价收缩),线上未见类别回落先验,
   MAE 6,824 -> 5,641(**-17.3%**,见 EXPERIMENTS.md 结论 5)
-- 预测区间:q10/q90 两个 quantile 目标的 LightGBM,实测覆盖率 75.3%
+- 预测区间:q10/q90 两个 quantile 目标的 LightGBM + **CQR conformal 校准**
+  (留出集对半分校准/评估,独立评估集覆盖率 76.6% -> **79.7%**,名义 80%)
 
 完整实验对比与结论见 [EXPERIMENTS.md](EXPERIMENTS.md)。
 
@@ -155,13 +160,18 @@ uvicorn api.main:app --port 8000
 
 | 端点 | 说明 |
 |---|---|
-| POST /api/predict | 输入房源参数,返回 p10/p50/p90 单价、总价、区间宽度、区/商圈可比均价 |
+| POST /api/predict | 输入房源参数,返回 p10/p50/p90 单价(含 CQR 校准)、总价、区间宽度、区/商圈可比均价、**单房归因**、同区相似在售 |
 | GET /api/analysis/overview | 在售量、各区排名、帕累托份额 |
 | GET /api/analysis/trend | 挂牌均价环比 |
+| GET /api/analysis/trend-all | 全部城市 x 快照均价序列(年份钻取用) |
+| GET /api/analysis/districts-all | 各城市区级排名 |
+| GET /api/analysis/district-trend | 北京各区 x 快照均价序列(区对比用) |
 | GET /api/analysis/deciles | 十分位画像 |
 | GET /api/analysis/price-changes | 调价汇总 + 降价 TOP20 + 城市对比 |
 | GET /api/analysis/errors | 误差分析报告 |
-| GET /api/health | 版本/指标/数据后端(sqlite 或 cache) |
+| GET /api/features/importance | 特征重要性 |
+| GET /api/predictions/stats | 服务用量统计(累计预测数/区间宽度均值/热门区) |
+| GET /api/health | 版本/指标/数据后端(sqlite 或 cache)/数据新鲜度 |
 
 仪表盘(原生 JS + 手写 SVG,无前端依赖):估值表单 + 区间可视化 / 市场分析 /
 模型洞察(特征重要性、分群误差)三个视图。
@@ -174,16 +184,19 @@ peeking 约束与决策规则;统计实现(homevalue/ab.py)经蒙特卡洛验证
 
 ## 工程化
 
-- 测试:30 个 pytest 用例(特征解析/清洗/ETL/SQL/API/A-B 统计),曾实际抓出 ETL 窗口误用与
-  训练-服务特征不一致两个真 bug
-- CI:.github/workflows/ci.yml —— ruff + pytest;手动冒烟任务用合成数据跑通全链路
+- 测试:33 个 pytest 用例(特征解析/清洗/ETL/SQL/API/A-B 统计/**前端消费字段全量断言**),
+  曾实际抓出 ETL 窗口误用与训练-服务特征不一致两个真 bug
+- CI:.github/workflows/ci.yml —— ruff + **node --check 前端语法门禁** + pytest(含字段断言);
+  手动冒烟任务用合成数据跑通全链路;月度数据管道带 **MAE 劣化 >3% 阻断发布**的质量门禁
 - 部署:预训练产物与缓存随仓库走,克隆即可 Docker 部署,见 [DEPLOY.md](DEPLOY.md)
 
 ## 已知局限
 
 - 挂牌价非成交价,存在挂牌偏倚;快照样本受爬虫分页策略影响(各区 3,000 行上限)
-- 无经纬度/地铁距离等空间特征;小区粒度特征未做 target encoding
-- 区间覆盖率 75.3% 略低于名义 80%,可通过 conformal prediction 校准(下一步)
+- 无经纬度/地铁距离等空间特征
+- 线上模型按随机切分口径训练与校准(CQR);时间外推场景(+38.8% MAE)下区间未单独校准
+- 源数据止于 2024-09,模型反映的是当时的市场结构;月度管道只会在上游恢复更新后追加数据
+- 全国视图除北京外样本薄弱(上海 4 期,广州/深圳/杭州各 1 期),仅做城市对比不做估值
 
 ## 目录结构
 
@@ -192,7 +205,7 @@ homevalue/        核心包:features(解析/特征) data_clean db model ab
 scripts/          fetch_data / build_db / train / error_analysis / export_analysis_cache / benchmark_api / make_synth
 sql/              01_schema / 02_etl / 03_analysis
 api/              FastAPI 服务 + static 仪表盘
-tests/            pytest(30 用例)
+tests/            pytest(33 用例,含前端字段断言)
 experiments/      A/B 设计文档 + 蒙特卡洛仿真
 models/ reports/  预训练产物 / 指标台账与误差报告
 ```
