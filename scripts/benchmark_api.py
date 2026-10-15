@@ -38,7 +38,8 @@ def sample_payloads(n: int) -> list[dict]:
     df = read_query(
         engine,
         "SELECT district, bizcircle, rooms, halls, area_sqm, floor_pos, total_floors,"
-        " dir_main, renovation, build_year FROM listings WHERE city = '" + MODEL_CITY + "'",
+        " dir_main, renovation, build_year FROM listings WHERE city = :city",
+        {"city": MODEL_CITY},
     )
     df = df.fillna({"bizcircle": "未知", "total_floors": 6, "build_year": 2005,
                     "floor_pos": "中楼层", "dir_main": "南"})

@@ -90,7 +90,8 @@ def load_data(db_path: Path) -> pd.DataFrame:
     engine = get_engine(db_path)
     df = read_query(
         engine,
-        f"SELECT * FROM listings WHERE city = '{MODEL_CITY}' AND unit_price IS NOT NULL",
+        "SELECT * FROM listings WHERE city = :city AND unit_price IS NOT NULL",
+        {"city": MODEL_CITY},
     )
     df["bizcircle"] = df["bizcircle"].fillna("未知")
     return df
@@ -248,6 +249,29 @@ TIME_TEST_FROM = "2024-04-04"     # 测试:最后出现 >= 此日期(剔除 2024
 TIME_PARTIAL_DATE = "2024-09-26"
 
 
+def _latest_random_split_reference() -> dict | None:
+    """从实验台账取最近一次"全特征+TE、随机切分"的记录作对照;台账缺失/为空返回 None。
+
+    替代曾硬编码在打印里的 exp006 数字——那串数字随每次重训必然过期。
+    """
+    log_path = REPORTS_DIR / "metrics_log.jsonl"
+    if not log_path.exists():
+        return None
+    latest = None
+    try:
+        with log_path.open(encoding="utf-8") as fh:
+            for line in fh:
+                try:
+                    row = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if row.get("features") == "full+te" and row.get("split") != "time":
+                    latest = row
+    except OSError:
+        return None
+    return latest
+
+
 def run_time_split_pipeline(args, df: pd.DataFrame, t0: float) -> int:
     """时间外推评估:训练只用早期快照,在晚于 cutoff 的快照上测试。
 
@@ -276,7 +300,12 @@ def run_time_split_pipeline(args, df: pd.DataFrame, t0: float) -> int:
     pred = np.expm1(model.predict(X_te))
     holdout = metrics(y_te, pred)
     print("时间外推留出集: " + "  ".join(f"{k}={holdout[k]:,.4f}" for k in ("mae", "rmse", "mape_pct", "r2")))
-    print("对照(同参数,随机切分 exp006): MAE 5,743  MAPE 8.29%  R2 0.9242")
+    ref = _latest_random_split_reference()
+    if ref:
+        print(f"对照({ref['exp_id']},同参数随机切分): MAE {ref['holdout_mae']:,.0f}"
+              f"  MAPE {ref['holdout_mape_pct']:.2f}%  R2 {ref['holdout_r2']:.4f}")
+    else:
+        print("对照: 台账中暂无随机切分实验(reports/metrics_log.jsonl),跳过对照输出")
 
     record = {
         "exp_id": args.exp_id,
@@ -385,7 +414,8 @@ def run_te_pipeline(args, df: pd.DataFrame, t0: float) -> int:
         "conformal": q_result["conformal"],
         "cv": cv,
         "holdout": holdout,
-        "quantiles": q_result,
+        # quantiles 副本剔除 conformal:顶层 conformal 是唯一来源,避免双份漂移
+        "quantiles": {k: v for k, v in q_result.items() if k != "conformal"},
         "n_train": int(len(X_tr)),
         "n_test": int(len(X_hold)),
         "age_ref_year": AGE_REF_YEAR,

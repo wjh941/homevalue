@@ -79,8 +79,9 @@ def main() -> int:
     engine = get_engine(DB_PATH)
     listings = read_query(
         engine,
-        f"SELECT hhid, district, bizcircle, area_sqm, build_year, renovation, floor_pos, rooms"
-        f" FROM listings WHERE city = '{MODEL_CITY}'",
+        "SELECT hhid, district, bizcircle, area_sqm, build_year, renovation, floor_pos, rooms"
+        " FROM listings WHERE city = :city",
+        {"city": MODEL_CITY},
     )
     df = preds.merge(listings, on="hhid", how="left")
     df["price_band"] = df["y_true"].map(lambda p: band_of(p, PRICE_BANDS))
