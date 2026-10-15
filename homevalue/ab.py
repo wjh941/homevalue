@@ -57,6 +57,39 @@ def required_n_per_arm(
 
 
 @dataclass(frozen=True)
+class SRMResult:
+    n_control: int
+    n_treatment: int
+    expected_share: float
+    chi2: float
+    p_value: float
+    mismatched: bool
+
+
+def srm_chi_square(
+    n_control: int,
+    n_treatment: int,
+    expected_share: float = 0.5,
+    alpha: float = 0.05,
+) -> SRMResult:
+    """样本比失配(SRM)卡方检验:两臂流量比显著偏离预期,说明分流实现有 bug,
+    此时一切转化率对比都不可信——任何效果分析的前置检查(ab_design.md 的 SRM 约束)。
+
+    卡方拟合优度,自由度 1 时 p = 2(1-Φ(√χ²)),继续零依赖(不用 scipy)。
+    """
+    if n_control < 0 or n_treatment < 0 or (n_control + n_treatment) == 0:
+        raise ValueError("两臂样本数必须 >= 0 且合计 > 0")
+    if not 0 < expected_share < 1:
+        raise ValueError("expected_share 必须在 (0,1)")
+    total = n_control + n_treatment
+    e_c = total * expected_share
+    e_t = total - e_c
+    chi2 = (n_control - e_c) ** 2 / e_c + (n_treatment - e_t) ** 2 / e_t
+    p_value = 2 * (1 - NormalDist().cdf(math.sqrt(chi2))) if chi2 > 0 else 1.0
+    return SRMResult(n_control, n_treatment, expected_share, chi2, p_value, p_value < alpha)
+
+
+@dataclass(frozen=True)
 class ABResult:
     n_control: int
     conv_control: int

@@ -56,6 +56,8 @@ python -c "from homevalue.ab import required_n_per_arm; print(required_n_per_arm
 - 盐值固定为 interval-vs-point-v1,避免与未来实验串扰
 - **SRM 检查**:实验中期校验两臂样本比是否显著偏离 50/50(卡方),
   偏离说明埋点或分流有 bug,先修再谈结论
+  (**已实现**:`homevalue/ab.py` → `srm_chi_square`,零依赖卡方拟合优度,
+  含单元测试与真实分流函数的集成验证)
 
 ## 6. 分析与决策规则
 

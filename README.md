@@ -24,7 +24,7 @@ LightGBM 建模(含校准预测区间与单房归因) -> 时间外推验证 -> F
 | 调价历史 | **50,033 套跨期调价**,95.3% 降价,平均 -3.75%(35 期月度粒度) |
 | 服务 | FastAPI + 3 模型推理;本地基准 100 请求单并发 P95 **264ms**;Render 免费档线上实测(20 请求,reports/api_benchmark.json)P50 875ms / P95 **1,936ms**——冷启动+跨洋延迟,归因批量化(一次推理替代 7 次串行)前更高 |
 | SQL | 12 个含窗口函数/CTE 的分析查询(RANK/LAG/NTILE/ROW_NUMBER/透视/帕累托/多城市钻取) |
-| 工程 | 35 个 pytest 用例(含前端消费字段全量断言、CQR 校准分支单测)、ruff、GitHub Actions(ruff+node 语法检查+pytest+月度数据管道含质量门禁)、Docker、Render 部署 |
+| 工程 | 50 个 pytest 用例(前端字段全量断言、CQR 校准分支、质量门禁、A/B 分流+SRM 卡方)、ruff、GitHub Actions(全量测试+月度数据管道:pytest→质量门禁脚本)、Docker、Render 部署 |
 
 ## 架构
 
@@ -39,6 +39,7 @@ SQLite 数仓             listings_raw -> listings_all -> listings(窗口去重�
       |                       |
       v                       v  models/ + reports/
 FastAPI(api/main.py)—— /api/predict、/api/analysis/*、静态仪表盘
+        (归因与区内典型值在 homevalue/attribution.py,与 export_analysis_cache 共用口径)
 ```
 
 ## 快速开始
