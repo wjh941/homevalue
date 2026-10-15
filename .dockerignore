@@ -1,0 +1,17 @@
+# 构建上下文瘦身:git 历史、本地数据与开发产物不进镜像
+# 注意:models/ 与 reports/ 是"克隆即可部署"的镜像内容(Dockerfile 显式 COPY),不能排除
+.git
+.github
+.venv
+__pycache__
+**/__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+data
+experiments
+tests
+*.db
+*.log
+Dockerfile
+.dockerignore
