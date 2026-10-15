@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
+import sqlite3
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
@@ -26,12 +27,13 @@ from homevalue.config import (
     DB_PATH,
     MODEL_CITY,
     MODEL_VERSION,
-    PREDICTIONS_LOG,
+    PREDICTIONS_DB,
     REPORTS_DIR,
     SQL_DIR,
 )
 from homevalue.db import get_engine, load_queries, read_query
 from homevalue.model import load_artifacts, predict_quantiles
+from homevalue.prediction_store import PredictionStore
 
 logger = logging.getLogger("homevalue.api")
 
@@ -55,13 +57,13 @@ def create_app(
     db_path: Path | str | None = None,
     cache_path: Path | str | None = None,
     errors_path: Path | str | None = None,
-    predictions_log: Path | str | None = None,
+    predictions_db: Path | str | None = None,
 ) -> FastAPI:
     artifacts_dir = Path(artifacts_dir) if artifacts_dir else ARTIFACTS_DIR
     resolved_db = Path(db_path) if db_path else DB_PATH
     cache_path = Path(cache_path) if cache_path else ANALYSIS_CACHE
     errors_path = Path(errors_path) if errors_path else REPORTS_DIR / "error_analysis.json"
-    pred_log_path = Path(predictions_log) if predictions_log else PREDICTIONS_LOG
+    pred_db_path = Path(predictions_db) if predictions_db else PREDICTIONS_DB
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -77,6 +79,13 @@ def create_app(
         app.state.typicals = make_typicals_lookup(
             app.state.engine, app.state.cache.get("district_stats", []), MODEL_CITY
         )
+        app.state.prediction_store = PredictionStore(pred_db_path)
+        # 旧 JSONL 日志一次性导入后改名 .imported(自部署用户的历史数据不丢)
+        for legacy in (REPORTS_DIR / "predictions_log.jsonl", pred_db_path.with_suffix(".jsonl")):
+            try:
+                app.state.prediction_store.import_jsonl(legacy)
+            except OSError:
+                logger.warning("legacy prediction log import failed | %s", legacy, exc_info=True)
         yield
 
     app = FastAPI(title="HomeValue 估值 API", version=MODEL_VERSION, lifespan=lifespan)
@@ -106,13 +115,11 @@ def create_app(
         return sample[:5]
 
     def append_prediction_log(entry: dict[str, Any]) -> None:
-        """逐条预测日志(输入+输出+延迟),写失败只告警不影响主流程。"""
+        """逐条预测日志(SQLite 单表),写失败只告警不影响主流程。"""
         try:
-            pred_log_path.parent.mkdir(parents=True, exist_ok=True)
-            with pred_log_path.open("a", encoding="utf-8") as f:
-                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-        except OSError:
-            logger.warning("prediction log append failed | %s", pred_log_path, exc_info=True)
+            app.state.prediction_store.append(entry)
+        except sqlite3.Error:
+            logger.warning("prediction log append failed | %s", pred_db_path, exc_info=True)
 
     @app.get("/api/health")
     def health() -> dict:
@@ -293,32 +300,8 @@ def create_app(
 
     @app.get("/api/predictions/stats")
     def prediction_stats() -> dict:
-        """预测日志统计(使用量 + 预测分布),是漂移监控与 A/B 分流的数据地基。"""
-        if not pred_log_path.exists():
-            return {"n_total": 0}
-        rows = []
-        for line in pred_log_path.read_text(encoding="utf-8").splitlines():
-            try:
-                rows.append(json.loads(line))
-            except json.JSONDecodeError:
-                continue
-        if not rows:
-            return {"n_total": 0}
-        p50s = sorted(r["p50"] for r in rows if r.get("p50"))
-        widths = [r["interval_width_pct"] for r in rows if r.get("interval_width_pct") is not None]
-        districts: dict[str, int] = {}
-        for r in rows:
-            d = r.get("district") or "?"
-            districts[d] = districts.get(d, 0) + 1
-        top = sorted(districts.items(), key=lambda kv: -kv[1])[:5]
-        return {
-            "n_total": len(rows),
-            "avg_p50": round(sum(p50s) / len(p50s)) if p50s else None,
-            "median_p50": p50s[len(p50s) // 2] if p50s else None,
-            "avg_interval_width_pct": round(sum(widths) / len(widths), 1) if widths else None,
-            "top_districts": [{"district": d, "n": n} for d, n in top],
-            "last_ts": rows[-1].get("ts"),
-        }
+        """预测日志统计(SQL 聚合,不再全量重读文件),是漂移监控与 A/B 分流的数据地基。"""
+        return app.state.prediction_store.stats()
 
     @app.get("/api/analysis/errors")
     def errors() -> dict:
