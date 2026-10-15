@@ -204,11 +204,19 @@ TE_PARAMS = dict(num_leaves=127, learning_rate=0.05, min_child_samples=40)
 
 
 def build_X_te(df_part: pd.DataFrame, te_maps: dict, cat_maps: dict) -> pd.DataFrame:
-    """基础特征 + TE 特征,列序固定。"""
+    """基础特征 + TE 特征,列序固定。
+
+    基础集与 prepare_xy(full=True) 严格同列(NUM_CORE + CAT_FEATURES),
+    保证"只加 TE"的对照实验干净——本函数曾额外带入 build_year,
+    导致 exp005 对 exp004 的增益混入房龄变量(详见 EXPERIMENTS.md);
+    已部署模型按 metadata.feature_cols 裁剪列,不受本次口径修正影响。
+    """
+    base_cols = feature_sets(full=True)[0] + feature_sets(full=True)[1]
     X = build_feature_frame(df_part, cat_maps)
     te = apply_target_maps(df_part, te_maps)
     for col in te.columns:
         X[col] = te[col].to_numpy()
+    X = X[base_cols + list(te.columns)]
     for c in CAT_FEATURES:
         X[c] = X[c].astype("category")
     return X

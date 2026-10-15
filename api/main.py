@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
@@ -17,6 +18,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from homevalue.attribution import attribution_for, make_typicals_lookup
 from homevalue.config import (
     ANALYSIS_CACHE,
     API_STATIC_DIR,
@@ -30,6 +32,8 @@ from homevalue.config import (
 )
 from homevalue.db import get_engine, load_queries, read_query
 from homevalue.model import load_artifacts, predict_quantiles
+
+logger = logging.getLogger("homevalue.api")
 
 
 class PredictIn(BaseModel):
@@ -70,6 +74,9 @@ def create_app(
         app.state.errors = (
             json.loads(errors_path.read_text(encoding="utf-8")) if errors_path.exists() else None
         )
+        app.state.typicals = make_typicals_lookup(
+            app.state.engine, app.state.cache.get("district_stats", []), MODEL_CITY
+        )
         yield
 
     app = FastAPI(title="HomeValue 估值 API", version=MODEL_VERSION, lifespan=lifespan)
@@ -99,105 +106,13 @@ def create_app(
         return sample[:5]
 
     def append_prediction_log(entry: dict[str, Any]) -> None:
-        """逐条预测日志(输入+输出+延迟),失败静默不影响主流程。"""
+        """逐条预测日志(输入+输出+延迟),写失败只告警不影响主流程。"""
         try:
             pred_log_path.parent.mkdir(parents=True, exist_ok=True)
             with pred_log_path.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(entry, ensure_ascii=False) + "\n")
         except OSError:
-            pass
-
-    district_stats_cache: dict[str, dict | None] = {}
-
-    def district_typicals(district: str) -> dict | None:
-        """区内典型值(面积/年代/楼层/户型/装修中位数或众数);sqlite 实时算,缓存模式读导出。"""
-        if district in district_stats_cache:
-            return district_stats_cache[district]
-        stats = None
-        try:
-            if app.state.engine is not None:
-                df = read_query(
-                    app.state.engine,
-                    "SELECT area_sqm, build_year, total_floors, rooms, halls, renovation, floor_pos"
-                    " FROM listings WHERE city = :city AND district = :district",
-                    {"city": MODEL_CITY, "district": district},
-                )
-                if len(df):
-                    def med(col):
-                        s = pd.to_numeric(df[col], errors="coerce").dropna()
-                        return round(float(s.median()), 1) if len(s) else None
-
-                    def mode_val(col, default=None):
-                        s = df[col].dropna()
-                        return (s.mode().iloc[0] if len(s) else default)
-
-                    stats = {
-                        "median_area": med("area_sqm"),
-                        "median_build_year": med("build_year"),
-                        "median_total_floors": med("total_floors"),
-                        "mode_rooms": mode_val("rooms"),
-                        "mode_halls": mode_val("halls"),
-                        "mode_renovation": mode_val("renovation", "简装"),
-                        "mode_floor_pos": mode_val("floor_pos", "中楼层"),
-                    }
-            else:
-                for r in app.state.cache.get("district_stats", []):
-                    if r.get("district") == district:
-                        stats = r
-                        break
-        except Exception:  # noqa: BLE001
-            stats = None
-        district_stats_cache[district] = stats
-        return stats
-
-    def attribution_for(art: dict, row: dict) -> dict | None:
-        """单房归因:以'区内典型房源'为基线,逐因子还原输入,度量对估值的边际影响。"""
-        try:
-            typical = district_typicals(row["district"])
-            if not typical:
-                return None
-            base = dict(row)
-            for k, v in (
-                ("area_sqm", typical.get("median_area")),
-                ("build_year", typical.get("median_build_year")),
-                ("total_floors", typical.get("median_total_floors")),
-                ("rooms", typical.get("mode_rooms")),
-                ("halls", typical.get("mode_halls")),
-                ("renovation", typical.get("mode_renovation")),
-                ("floor_pos", typical.get("mode_floor_pos")),
-            ):
-                base[k] = v
-            base["bizcircle"] = None
-            base["community"] = None
-
-            def p50_of(r: dict) -> float:
-                q = predict_quantiles(art, pd.DataFrame([r]))
-                return float(q["p50"][0])
-
-            p_base = p50_of(base)
-            factors_spec = [
-                ("面积", ["area_sqm"]),
-                ("房龄", ["build_year"]),
-                ("楼层", ["floor_pos", "total_floors"]),
-                ("户型", ["rooms", "halls"]),
-                ("装修", ["renovation"]),
-                ("商圈/小区", ["bizcircle", "community"]),
-            ]
-            factors = []
-            for name, keys in factors_spec:
-                r = dict(base)
-                vals = {k: row.get(k) for k in keys}
-                if all(v is None for v in vals.values()):
-                    continue
-                for k, v in vals.items():
-                    if v is not None:
-                        r[k] = v
-                delta = round(p50_of(r) - p_base)
-                factors.append({"name": name, "delta": delta})
-            factors.sort(key=lambda x: -abs(x["delta"]))
-            return {"baseline_p50": round(p_base), "factors": factors}
-        except Exception:  # noqa: BLE001 - 归因失败不影响主预测
-            return None
+            logger.warning("prediction log append failed | %s", pred_log_path, exc_info=True)
 
     @app.get("/api/health")
     def health() -> dict:
@@ -212,8 +127,8 @@ def create_app(
                 ).to_dict("records")[0]
                 meta = {"first_snapshot": row["first"], "last_snapshot": row["last"],
                         "n_snapshots": row["n"]}
-            except Exception:  # noqa: BLE001
-                pass
+            except Exception:  # noqa: BLE001 - 健康检查的元信息失败不改变健康结论
+                logger.warning("health meta query failed", exc_info=True)
         return {
             "status": "ok",
             "model_version": app.state.art["metadata"]["model_version"],
@@ -242,7 +157,8 @@ def create_app(
                     for r in app.state.cache.get("districts_rank_all", []):
                         if r.get("city") == MODEL_CITY:
                             ds.add(r["district"])
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001 - 区名清单失败只影响未知区拦截,不阻塞预测
+                logger.warning("known districts query failed", exc_info=True)
                 ds = set()
             known_districts = ds
         return known_districts
@@ -285,12 +201,14 @@ def create_app(
                     if r["district"] == row["district"]:
                         comps["district_avg_price"] = r["avg_unit_price"]
                         break
-        except Exception:  # noqa: BLE001 - 可比参照失败不影响主预测
+        except Exception:  # noqa: BLE001 - 可比参照失败不影响主预测,但必须可见
+            logger.warning("comparables failed | district=%s", row["district"], exc_info=True)
             comps = {"error": "comparables unavailable"}
 
         try:
             similar = similar_rows(row["district"], row["area_sqm"])
         except Exception:  # noqa: BLE001
+            logger.warning("similar rows failed | district=%s", row["district"], exc_info=True)
             similar = []
 
         append_prediction_log({
@@ -317,7 +235,7 @@ def create_app(
             "interval_width_pct": round((p90 - p10) / p50 * 100, 1) if p50 else None,
             "comparables": comps,
             "similar": similar,
-            "attribution": attribution_for(art, row),
+            "attribution": attribution_for(art, row, app.state.typicals),
         }
 
     @app.get("/api/analysis/overview")

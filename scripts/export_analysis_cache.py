@@ -19,6 +19,7 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
+from homevalue.attribution import typical_stats  # noqa: E402
 from homevalue.config import ANALYSIS_CACHE, DB_PATH, SQL_DIR  # noqa: E402
 from homevalue.db import get_engine, load_queries, read_query  # noqa: E402
 
@@ -43,7 +44,11 @@ SIMILAR_SAMPLE_SQL = (
 
 
 def export_district_stats(engine) -> list[dict]:
-    """每区典型值(中位数/众数),供单房归因解释的基线。"""
+    """每区典型值(中位数/众数),供单房归因解释的基线。
+
+    口径与线上归因共用 homevalue.attribution.typical_stats,保证
+    "预计算缓存"与"sqlite 实时计算"两条路径永不漂移。
+    """
     df = read_query(
         engine,
         "SELECT district, area_sqm, build_year, total_floors, rooms, halls, renovation, floor_pos"
@@ -51,25 +56,8 @@ def export_district_stats(engine) -> list[dict]:
     )
     out = []
     for district, g in df.groupby("district"):
-        def med(col, _g=g):
-            s = pd.to_numeric(_g[col], errors="coerce").dropna()
-            return round(float(s.median()), 1) if len(s) else None
-
-        def mode_val(col, _g=g, default=None):
-            s = _g[col].dropna()
-            return (s.mode().iloc[0] if len(s) else default)
-
-        out.append({
-            "district": district,
-            "n": int(len(g)),
-            "median_area": med("area_sqm"),
-            "median_build_year": med("build_year"),
-            "median_total_floors": med("total_floors"),
-            "mode_rooms": mode_val("rooms"),
-            "mode_halls": mode_val("halls"),
-            "mode_renovation": mode_val("renovation", default="简装"),
-            "mode_floor_pos": mode_val("floor_pos", default="中楼层"),
-        })
+        stats = typical_stats(g) or {}
+        out.append({"district": district, "n": int(len(g)), **stats})
     return to_records(pd.DataFrame(out))
 
 
