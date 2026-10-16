@@ -26,6 +26,14 @@ LightGBM 建模(含校准预测区间与单房归因) -> 时间外推验证 -> F
 | SQL | 12 个含窗口函数/CTE 的分析查询(RANK/LAG/NTILE/ROW_NUMBER/透视/帕累托/多城市钻取) |
 | 工程 | 50 个 pytest 用例(前端字段全量断言、CQR 校准分支、质量门禁、A/B 分流+SRM 卡方)、ruff、GitHub Actions(全量测试+月度数据管道:pytest→质量门禁脚本)、Docker、Render 部署 |
 
+## 🖼️ 界面预览
+
+**估值工作台** —— 左侧填写房源信息，一键输出 p10/p50/p90 置信区间估值；顶部指标（在售 287,105 套 / MAE 5,769 / R² 0.924）由后端直接从 SQLite 数仓与模型产物实时读取，页面与 API 完全同源：
+
+![估值工作台](docs/images/dashboard.png)
+
+另有 **市场分析**（12 个 SQL 分析查询的可视化）与 **模型洞察**（特征重要性/误差分布）两个页签，数据来自 `reports/analysis_cache.json`。
+
 ## 架构
 
 ```text
