@@ -112,29 +112,61 @@ function barChart(items, opts = {}) {
 }
 
 function lineChart(points, opts = {}) {
-  if (!points || points.length < 2) return document.createTextNode("该年份窗口内快照不足 2 期,切回「全部」查看完整走势");
+  if (!points || points.length < 2) return document.createTextNode(opts.emptyText || "该年份窗口内快照不足 2 期,切回「全部」查看完整走势");
   const width = opts.width || 520, height = opts.height || 300;
   const padL = 62, padR = 14, padT = 14, padB = 60;
   const vals = points.map((p) => p.value);
   const min = Math.min(...vals) * 0.96, max = Math.max(...vals) * 1.02;
   const xs = (i) => padL + (i / (points.length - 1)) * (width - padL - padR);
   const ys = (v) => padT + (1 - (v - min) / (max - min || 1)) * (height - padT - padB);
+  const yFmt = opts.yFormatter || ((v) => (v / 10000).toFixed(2) + "万");
   const svg = svgEl("svg", { viewBox: "0 0 " + width + " " + height, class: "line-chart" });
   for (let g = 0; g <= 3; g++) {
     const v = min + ((max - min) * g) / 3;
     svg.appendChild(svgEl("line", { x1: padL, x2: width - padR, y1: ys(v), y2: ys(v), stroke: "#24304f", "stroke-width": 1 }));
     const t = svgEl("text", { x: padL - 6, y: ys(v) + 3, "text-anchor": "end" });
-    t.textContent = (v / 10000).toFixed(2) + "万";
+    t.textContent = yFmt(v);
     svg.appendChild(t);
   }
   const path = points.map((p, i) => (i ? "L" : "M") + xs(i).toFixed(1) + "," + ys(p.value).toFixed(1)).join(" ");
   svg.appendChild(svgEl("path", { d: path, fill: "none", stroke: "#34d399", "stroke-width": 2 }));
   points.forEach((p, i) => {
     const dot = svgEl("circle", { cx: xs(i), cy: ys(p.value), r: 3.5, fill: "#34d399" });
-    dot.appendChild(svgTitle(p.label + " · " + fmt(p.value) + " 元/㎡" + (p.mom != null ? " · 环比 " + p.mom + "%" : "")));
+    dot.appendChild(svgTitle(opts.tipFormatter ? opts.tipFormatter(p) : p.label + " · " + fmt(p.value) + " 元/㎡" + (p.mom != null ? " · 环比 " + p.mom + "%" : "")));
     svg.appendChild(dot);
   });
   drawDateAxis(svg, points.map((p) => p.label), xs, { width, height, padL, padR });
+  return svg;
+}
+
+// 分组条形图(同类别多序列对比):items = [{label, values:[v1, v2, ...]}]
+// 同一组内各序列条形上下并排,复用 barChart 的标签/悬浮/数值标注画法
+function groupedBarChart(items, opts = {}) {
+  if (!items || !items.length) return document.createTextNode("暂无数据");
+  const width = opts.width || 520;
+  const nSeries = (opts.seriesNames || items[0].values).length;
+  const barH = nSeries > 1 ? 12 : 15; // 每组:条形 + 3px 间隙,数值标注基线间隔 15px
+  const rowH = nSeries * (barH + 3) + 10;
+  const padL = 90, padR = 70, padT = 8, padB = 8;
+  const height = padT + padB + items.length * rowH;
+  const max = Math.max(...items.flatMap((d) => d.values)) || 1;
+  const colors = opts.colors || ["#4f8cff", "#34d399"];
+  const formatter = opts.formatter || fmt;
+  const svg = svgEl("svg", { viewBox: "0 0 " + width + " " + height, class: "bar-chart" });
+  items.forEach((d, i) => {
+    const yTop = padT + i * rowH;
+    svg.appendChild(svgEl("text", { x: padL - 8, y: yTop + rowH / 2 + 4, "text-anchor": "end", class: "bar-label" })).textContent = d.label;
+    d.values.forEach((v, k) => {
+      const y = yTop + k * (barH + 3);
+      const w = Math.max(2, (v / max) * (width - padL - padR));
+      const rect = svgEl("rect", { x: padL, y, width: w, height: barH, rx: 2, fill: colors[k % colors.length] });
+      rect.appendChild(svgTitle(d.label + " · " + ((opts.seriesNames || [])[k] || k) + ": " + formatter(v)));
+      svg.appendChild(rect);
+      const t = svgEl("text", { x: padL + w + 6, y: y + barH, class: "bar-value" });
+      t.textContent = formatter(v);
+      svg.appendChild(t);
+    });
+  });
   return svg;
 }
 
@@ -624,11 +656,97 @@ async function loadModel() {
   }
 }
 
+/* ---------------- 漂移监控 ---------------- */
+
+async function loadDrift() {
+  const d = await jget("/api/drift/summary");
+  const days = d.predictions_by_day || [];
+  const maeHist = d.mae_history || [];
+  const shift = d.district_shift || {};
+  const lastDay = days[days.length - 1];
+  const lastMae = maeHist[maeHist.length - 1];
+  const firstMae = maeHist[0];
+  const maeDelta = firstMae && lastMae && firstMae.mae
+    ? (((lastMae.mae - firstMae.mae) / firstMae.mae) * 100).toFixed(1) : null;
+
+  $("drift-kpis").innerHTML = [
+    kpiCard(fmt(d.n_predictions || 0), "累计预测次数"),
+    kpiCard(lastDay ? lastDay.day : "--", days.length ? "最近预测日 · 当日 " + fmt(lastDay.n) + " 次" : "暂无预测记录"),
+    kpiCard(shift.p_value != null ? "p=" + shift.p_value : "--",
+      "区分布卡方检验" + (shift.dof != null ? "(χ²=" + shift.chi2 + ", 自由度 " + shift.dof + ")" : "")),
+    kpiCard(lastMae ? fmt(lastMae.mae) + " 元/㎡" : "--",
+      "最新 holdout MAE" + (maeDelta != null ? "(较首次 " + (maeDelta > 0 ? "+" : "") + maeDelta + "%)" : "")),
+  ].join("");
+
+  // 结论卡:区分布卡方检验的自动判读
+  const verdict = $("drift-verdict");
+  const v = $("drift-verdict-text");
+  verdict.classList.remove("warn");
+  if (shift.p_value == null) {
+    v.className = "empty";
+    v.textContent = d.n_predictions
+      ? "缺少训练集区分布,无法做卡方检验。"
+      : "暂无预测数据,发起几次估值后即可生成漂移报告。";
+  } else if (shift.significant) {
+    v.className = "error";
+    v.textContent = "⚠ 区分布显著偏移(χ²=" + shift.chi2 + ", p=" + shift.p_value +
+      "):线上预测的区构成与训练集差异显著,建议核查(新区域涌入 / 输入分布变化 / 上游数据问题)。";
+    verdict.classList.add("warn");
+  } else {
+    v.className = "";
+    v.textContent = "✓ 预测区分布与训练集无显著偏移(χ²=" + shift.chi2 + ", p=" + shift.p_value + ")";
+  }
+
+  $("chart-drift-volume").replaceChildren(
+    lineChart(days.map((r) => ({ label: r.day, value: r.n })), {
+      height: 260,
+      yFormatter: fmt,
+      tipFormatter: (p) => p.label + " · 预测 " + fmt(p.value) + " 次",
+      emptyText: "预测天数不足 2 天,暂不能画趋势(悬浮见 KPI 中的当日量)",
+    })
+  );
+  $("chart-drift-p50").replaceChildren(
+    lineChart(days.filter((r) => r.avg_p50 != null).map((r) => ({ label: r.day, value: r.avg_p50 })), {
+      height: 260,
+      emptyText: "预测天数不足 2 天,暂不能画趋势",
+    })
+  );
+
+  const predMix = d.district_mix || [];
+  const trainMix = d.train_mix || [];
+  const districts = [...new Set([...predMix, ...trainMix].map((r) => r.district))].sort();
+  const predN = Object.fromEntries(predMix.map((r) => [r.district, r.n]));
+  const trainN = Object.fromEntries(trainMix.map((r) => [r.district, r.n]));
+  const pct = (x, total) => (total ? (x / total) * 100 : 0);
+  $("chart-drift-mix").replaceChildren(
+    groupedBarChart(
+      districts.map((dist) => ({
+        label: dist,
+        values: [pct(trainN[dist] || 0, shift.n_train), pct(predN[dist] || 0, d.n_predictions || 0)],
+      })),
+      { seriesNames: ["训练集", "线上预测"], formatter: (x) => x.toFixed(1) + "%", width: 520 }
+    )
+  );
+
+  $("chart-drift-mae").replaceChildren(
+    lineChart(
+      maeHist.map((r) => ({ label: r.ts ? String(r.ts).slice(0, 10) : r.exp_id, value: r.mae, exp: r.exp_id })),
+      {
+        height: 260,
+        yFormatter: fmt,
+        tipFormatter: (p) => p.label + " · " + (p.exp || "--") + " · MAE " + fmt(p.value) + " 元/㎡",
+        emptyText: "台账为空:跑一次训练生成 reports/metrics_log.jsonl 后可看趋势",
+      }
+    )
+  );
+}
+
 /* ---------------- Tab 切换 ---------------- */
 
 const loaders = {
   market: () => loadMarket().catch(showErr),
   model: () => loadModel().catch(showErr),
+  drift: () => loadDrift().catch(showErr),
 };
 const loadedOnce = new Set();
 

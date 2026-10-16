@@ -23,6 +23,7 @@
   <button class="tab active" data-view="predict">估值</button>
   <button class="tab" data-view="market">市场分析</button>
   <button class="tab" data-view="model">模型洞察</button>
+  <button class="tab" data-view="drift">漂移监控</button>
 </nav>
 
 <main>
@@ -159,6 +160,29 @@
       </div>
     </div>
     <div class="card"><h2>服务用量(本实例累计)</h2><div id="usage-box" class="empty">暂无预测记录</div></div>
+  </section>
+
+  <!-- ===================== 漂移监控 ===================== -->
+  <section id="view-drift" class="view">
+    <div class="kpi-cards" id="drift-kpis"></div>
+    <div class="card" id="drift-verdict">
+      <h2>结论</h2>
+      <p id="drift-verdict-text" class="empty">加载中...</p>
+      <p class="hint">卡方拟合优度检验(α=0.05):线上预测的区分布相对训练集分布是否显著偏离;
+      holdout MAE 来自每次训练追加的实验台账(reports/metrics_log.jsonl)。</p>
+    </div>
+    <div class="grid-2">
+      <div class="card"><h2>每日预测量</h2><div id="chart-drift-volume"></div></div>
+      <div class="card"><h2>预测 p50 均值走势</h2><div id="chart-drift-p50"></div>
+        <p class="hint">按天聚合预测日志的 p50 均值(元/㎡);口径突变往往是输入分布或模型版本变化。</p></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><h2>区分布对比:训练 vs 线上</h2>
+        <div class="legend"><span><i style="background:#4f8cff"></i>训练集占比</span><span><i style="background:#34d399"></i>线上预测占比</span></div>
+        <div id="chart-drift-mix"></div></div>
+      <div class="card"><h2>holdout MAE 历史(实验台账)</h2><div id="chart-drift-mae"></div>
+        <p class="hint">每个点对应一次训练;MAE 持续上行是模型漂移的重训信号。</p></div>
+    </div>
   </section>
 </main>
 
