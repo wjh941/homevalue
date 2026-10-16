@@ -76,6 +76,37 @@ class PredictionStore:
             "last_ts": last_ts[0] if last_ts else None,
         }
 
+    def drift_summary(self) -> dict[str, Any]:
+        """漂移监控聚合:按天预测量与 p50 均值 + 当前区分布,全部走 SQL。
+
+        predictions_by_day 按天升序(district_mix 按预测量降序);
+        空库返回 n=0 的空结构,由 /api/drift/summary 拼装完整漂移报告。
+        """
+        n_total = self._conn.execute("SELECT COUNT(*) FROM predictions").fetchone()[0]
+        by_day = self._conn.execute(
+            "SELECT SUBSTR(ts, 1, 10) AS day, COUNT(*) AS n, AVG(p50) AS avg_p50,"
+            " AVG(interval_width_pct) AS avg_width FROM predictions"
+            " WHERE day IS NOT NULL AND day != ''"
+            " GROUP BY day ORDER BY day"
+        ).fetchall()
+        mix = self._conn.execute(
+            "SELECT district, COUNT(*) AS n FROM predictions WHERE district IS NOT NULL"
+            " GROUP BY district ORDER BY n DESC, district"
+        ).fetchall()
+        return {
+            "n_total": n_total,
+            "predictions_by_day": [
+                {
+                    "day": day,
+                    "n": n,
+                    "avg_p50": round(avg_p50) if avg_p50 is not None else None,
+                    "avg_interval_width_pct": round(w, 1) if w is not None else None,
+                }
+                for day, n, avg_p50, w in by_day
+            ],
+            "district_mix": [{"district": d, "n": n} for d, n in mix],
+        }
+
     def import_jsonl(self, jsonl_path: Path) -> int:
         """一次性导入旧 JSONL 日志并把它改名 .imported;返回导入条数。"""
         if not jsonl_path.exists():

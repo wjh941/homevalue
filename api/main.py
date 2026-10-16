@@ -19,6 +19,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from homevalue.ab import chi_square_gof
 from homevalue.attribution import attribution_for, make_typicals_lookup
 from homevalue.config import (
     ANALYSIS_CACHE,
@@ -32,6 +33,7 @@ from homevalue.config import (
     SQL_DIR,
 )
 from homevalue.db import get_engine, load_queries, read_query
+from homevalue.metrics_log import read_mae_history
 from homevalue.model import load_artifacts, predict_quantiles
 from homevalue.prediction_store import PredictionStore
 
@@ -58,12 +60,14 @@ def create_app(
     cache_path: Path | str | None = None,
     errors_path: Path | str | None = None,
     predictions_db: Path | str | None = None,
+    metrics_log: Path | str | None = None,
 ) -> FastAPI:
     artifacts_dir = Path(artifacts_dir) if artifacts_dir else ARTIFACTS_DIR
     resolved_db = Path(db_path) if db_path else DB_PATH
     cache_path = Path(cache_path) if cache_path else ANALYSIS_CACHE
     errors_path = Path(errors_path) if errors_path else REPORTS_DIR / "error_analysis.json"
     pred_db_path = Path(predictions_db) if predictions_db else PREDICTIONS_DB
+    metrics_log_path = Path(metrics_log) if metrics_log else REPORTS_DIR / "metrics_log.jsonl"
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -113,6 +117,21 @@ def create_app(
         sample = [r for r in app.state.cache.get("similar_sample", []) if r.get("district") == district]
         sample.sort(key=lambda r: abs((r.get("area_sqm") or 0) - area_sqm))
         return sample[:5]
+
+    def train_district_mix() -> list[dict[str, Any]]:
+        """训练集区分布(DB 实时优先,库不在如仅部署产物时读预计算缓存)。"""
+        if app.state.engine is not None:
+            return read_query(
+                app.state.engine,
+                "SELECT district, COUNT(*) AS n FROM listings"
+                " WHERE city = :city GROUP BY district ORDER BY n DESC",
+                {"city": MODEL_CITY},
+            ).to_dict("records")
+        return [
+            {"district": r["district"], "n": r["n_listings"]}
+            for r in app.state.cache.get("districts_rank_all", [])
+            if r.get("city") == MODEL_CITY
+        ]
 
     def append_prediction_log(entry: dict[str, Any]) -> None:
         """逐条预测日志(SQLite 单表),写失败只告警不影响主流程。"""
@@ -302,6 +321,53 @@ def create_app(
     def prediction_stats() -> dict:
         """预测日志统计(SQL 聚合,不再全量重读文件),是漂移监控与 A/B 分流的数据地基。"""
         return app.state.prediction_store.stats()
+
+    @app.get("/api/drift/summary")
+    def drift_summary() -> dict:
+        """漂移监控一页数据:预测量/p50 日趋势、线上 vs 训练集区分布卡方、holdout MAE 历史。
+
+        无数据时各字段返回空结构(n=0),不报错。
+        """
+        agg = app.state.prediction_store.drift_summary()
+        pred_mix: list[dict[str, Any]] = agg["district_mix"]
+        train_rows = train_district_mix()
+        shift: dict[str, Any] = {
+            "n_train": int(sum(r["n"] for r in train_rows)),
+            "n_pred": agg["n_total"],
+            "chi2": None,
+            "dof": None,
+            "p_value": None,
+            "significant": False,
+        }
+        if pred_mix and train_rows:
+            pred_n = {r["district"]: r["n"] for r in pred_mix}
+            train_n = {r["district"]: r["n"] for r in train_rows}
+            cats = sorted(set(pred_n) | set(train_n))
+            gof = chi_square_gof(
+                [pred_n.get(c, 0) for c in cats],
+                [train_n.get(c, 0) for c in cats],
+            )
+            train_total = sum(train_n.values())
+            shift.update(
+                {
+                    "categories": cats,
+                    "observed": list(gof.observed),
+                    "expected_share": [round(e / gof.n_observed, 4) for e in gof.expected],
+                    "train_share": [round(train_n.get(c, 0) / train_total, 4) for c in cats],
+                    "chi2": round(gof.chi2, 3),
+                    "dof": gof.dof,
+                    "p_value": round(gof.p_value, 4),
+                    "significant": gof.significant,
+                }
+            )
+        return {
+            "n_predictions": agg["n_total"],
+            "predictions_by_day": agg["predictions_by_day"],
+            "district_mix": pred_mix,
+            "train_mix": train_rows,
+            "district_shift": shift,
+            "mae_history": read_mae_history(metrics_log_path),
+        }
 
     @app.get("/api/analysis/errors")
     def errors() -> dict:

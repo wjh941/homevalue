@@ -120,6 +120,7 @@ def api_client(tmp_path: Path, micro_artifacts: Path, tiny_db: Path):
         cache_path=cache,
         errors_path=tmp_path / "errors_none.json",
         predictions_db=tmp_path / "predictions.db",
+        metrics_log=tmp_path / "metrics_log.jsonl",
     )
     with TestClient(app) as client:
         yield client

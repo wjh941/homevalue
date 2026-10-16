@@ -24,7 +24,7 @@ LightGBM 建模(含校准预测区间与单房归因) -> 时间外推验证 -> F
 | 调价历史 | **50,033 套跨期调价**,95.3% 降价,平均 -3.75%(35 期月度粒度) |
 | 服务 | FastAPI + 3 模型推理;本地基准 100 请求单并发 P95 **264ms**;Render 免费档线上实测(20 请求,reports/api_benchmark.json)P50 875ms / P95 **1,936ms**——冷启动+跨洋延迟,归因批量化(一次推理替代 7 次串行)前更高 |
 | SQL | 12 个含窗口函数/CTE 的分析查询(RANK/LAG/NTILE/ROW_NUMBER/透视/帕累托/多城市钻取) |
-| 工程 | 50 个 pytest 用例(前端字段全量断言、CQR 校准分支、质量门禁、A/B 分流+SRM 卡方)、ruff、GitHub Actions(全量测试+月度数据管道:pytest→质量门禁脚本)、Docker、Render 部署 |
+| 工程 | 67 个 pytest 用例(前端字段全量断言、CQR 校准分支、质量门禁、A/B 分流+SRM 卡方、漂移监控)、ruff、GitHub Actions(全量测试+月度数据管道:pytest→质量门禁脚本)、Docker、Render 部署 |
 
 ## 🖼️ 界面预览
 
@@ -32,7 +32,9 @@ LightGBM 建模(含校准预测区间与单房归因) -> 时间外推验证 -> F
 
 ![估值工作台](docs/images/dashboard.png)
 
-另有 **市场分析**（12 个 SQL 分析查询的可视化）与 **模型洞察**（特征重要性/误差分布）两个页签，数据来自 `reports/analysis_cache.json`。
+另有 **市场分析**（12 个 SQL 分析查询的可视化）、**模型洞察**（特征重要性/误差分布）
+与 **漂移监控**（预测日志/训练集分布/实验台账的可视化巡检）三个页签，数据来自
+`reports/analysis_cache.json` 与 `/api/drift/summary`。
 
 ## 架构
 
@@ -183,10 +185,14 @@ uvicorn api.main:app --port 8000
 | GET /api/analysis/errors | 误差分析报告 |
 | GET /api/features/importance | 特征重要性 |
 | GET /api/predictions/stats | 服务用量统计(累计预测数/区间宽度均值/热门区) |
+| GET /api/drift/summary | 漂移监控:预测量/p50 日趋势、训练 vs 线上区分布卡方检验(p 值)、holdout MAE 历史 |
 | GET /api/health | 版本/指标/数据后端(sqlite 或 cache)/数据新鲜度 |
 
 仪表盘(原生 JS + 手写 SVG,无前端依赖):估值表单 + 区间可视化 / 市场分析 /
-模型洞察(特征重要性、分群误差)三个视图。
+模型洞察(特征重要性、分群误差)/ **漂移监控** 四个视图。漂移监控页签把三块数据资产
+(预测日志 SQLite、训练集区分布、实验台账 metrics_log.jsonl)串成一页可视化报告:
+预测量与 p50 按天趋势、区分布对比(训练 vs 线上)、holdout MAE 历史折线,并自动给出结论卡
+——区分布卡方拟合优度检验无显著偏移时显示 p 值,显著偏离(p<0.05)时高亮建议核查。
 
 ## A/B 实验设计
 
@@ -196,7 +202,7 @@ peeking 约束与决策规则;统计实现(homevalue/ab.py)经蒙特卡洛验证
 
 ## 工程化
 
-- 测试:33 个 pytest 用例(特征解析/清洗/ETL/SQL/API/A-B 统计/**前端消费字段全量断言**),
+- 测试:67 个 pytest 用例(特征解析/清洗/ETL/SQL/API/A-B 统计/漂移监控/**前端消费字段全量断言**),
   曾实际抓出 ETL 窗口误用与训练-服务特征不一致两个真 bug
 - CI:.github/workflows/ci.yml —— ruff + **node --check 前端语法门禁** + pytest(含字段断言);
   手动冒烟任务用合成数据跑通全链路;月度数据管道带 **MAE 劣化 >3% 阻断发布**的质量门禁
@@ -213,11 +219,11 @@ peeking 约束与决策规则;统计实现(homevalue/ab.py)经蒙特卡洛验证
 ## 目录结构
 
 ```text
-homevalue/        核心包:features(解析/特征) data_clean db model ab
+homevalue/        核心包:features(解析/特征) data_clean db model ab metrics_log prediction_store
 scripts/          fetch_data / build_db / train / error_analysis / export_analysis_cache / benchmark_api / make_synth
 sql/              01_schema / 02_etl / 03_analysis
 api/              FastAPI 服务 + static 仪表盘
-tests/            pytest(33 用例,含前端字段断言)
+tests/            pytest(67 用例,含前端字段断言)
 experiments/      A/B 设计文档 + 蒙特卡洛仿真
 models/ reports/  预训练产物 / 指标台账与误差报告
 ```
