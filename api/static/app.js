@@ -565,24 +565,19 @@ function renderConclusions() {
   $("conclusion-list").innerHTML = items.map((s) => "<li>" + s + "</li>").join("");
 }
 
-function buildDistrictSwitch() {
-  // 首次渲染由 renderDistrictCompare 生成;此函数仅占位保持加载顺序清晰
-}
-
 async function loadMarket() {
-  const [overview, trend, deciles, changes, trendAll, districtsAll, districtTrend] = await Promise.all([
+  // 注:不拉 /api/analysis/trend——前端只用 trendAll,拉了也从未被读取(首轮评审发现的死代码)
+  const [overview, deciles, changes, trendAll, districtsAll, districtTrend] = await Promise.all([
     jget("/api/analysis/overview"),
-    jget("/api/analysis/trend"),
     jget("/api/analysis/deciles"),
     jget("/api/analysis/price-changes"),
     jget("/api/analysis/trend-all"),
     jget("/api/analysis/districts-all"),
     jget("/api/analysis/district-trend"),
   ]);
-  Object.assign(marketState, { overview, trend, deciles, changes, trendAll, districtsAll, districtTrend });
+  Object.assign(marketState, { overview, deciles, changes, trendAll, districtsAll, districtTrend });
   marketState.cityCompare = changes.city_compare || [];
 
-  buildDistrictSwitch();
   renderInsights();
   renderCityView();
 
