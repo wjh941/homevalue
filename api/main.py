@@ -8,7 +8,12 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import sqlite3
+
+# LightGBM 推理在 Web 线程池里运行;限制 OpenMP 线程数,
+# 规避多线程嵌套可能触发的 OpenMP 死锁类问题(2026-10-19 压测:顺序 0.28s / 并发 0.39s 无异常)
+os.environ.setdefault("OMP_NUM_THREADS", "1")
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
