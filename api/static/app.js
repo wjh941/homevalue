@@ -358,6 +358,22 @@ function renderResult(res) {
     $("r-attribution").innerHTML = "";
   }
 
+  const recent = Array.isArray(res.recent) ? res.recent.slice(0, 5) : [];
+  if (recent.length > 1) {
+    const rows = recent.map((x) => {
+      const isCurrent = x.ts === res.recent[0].ts && x.area_sqm === res.recent[0].area_sqm;
+      return "<tr" + (isCurrent ? ' class="current"' : "") + "><td>" + x.district +
+        (x.community ? " · " + x.community : "") + "</td><td>" + x.area_sqm +
+        "㎡</td><td>" + (x.p50 ? fmt(x.p50) : "—") + "</td><td>" +
+        String(x.ts || "").slice(5, 16).replace("T", " ") + "</td></tr>";
+    }).join("");
+    $("r-recent").innerHTML =
+      '<p class="hint" style="margin-top:12px">最近估过的房(含本次):</p><table class="similar recent"><thead><tr><th>位置</th><th>面积</th><th>p50 单价</th><th>时间</th></tr></thead><tbody>' +
+      rows + "</tbody></table>";
+  } else {
+    $("r-recent").innerHTML = "";
+  }
+
   $("r-meta").textContent = "模型 " + res.model_version + " · 目标为单价,总价 = 单价 × 面积";
 }
 

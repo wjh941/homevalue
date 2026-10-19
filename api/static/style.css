@@ -192,3 +192,5 @@ svg { width: 100%; height: auto; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
 
 footer { padding: 18px 28px 30px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); }
+
+table.recent tr.current td { color: var(--accent, #58a6ff); font-weight: 600; }
