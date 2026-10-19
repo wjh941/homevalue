@@ -1,6 +1,6 @@
 # HomeValue · 房价预测与估值平台
 
-> **“所有模型都是错的，但有些是有用的。”** —— George Box · 统计学家
+> 🎬 **使用场景**：在北京买房前，中介报价参差不齐、挂牌价虚高，怎么知道一套房到底值多少钱？HomeValue 用 186 万行真实链家挂牌数据训练模型，给出带置信区间的参考价，并解释"为什么是这个价"。
 
 [![CI](https://github.com/wjh941/homevalue/actions/workflows/ci.yml/badge.svg)](https://github.com/wjh941/homevalue/actions/workflows/ci.yml)
 
