@@ -1,5 +1,7 @@
 # HomeValue · 房价预测与估值平台
 
+> **“所有模型都是错的，但有些是有用的。”** —— George Box · 统计学家
+
 [![CI](https://github.com/wjh941/homevalue/actions/workflows/ci.yml/badge.svg)](https://github.com/wjh941/homevalue/actions/workflows/ci.yml)
 
 **在线演示(免费实例,15 分钟无访问会休眠,首次打开约 50 秒冷启动):**
@@ -165,6 +167,10 @@ FROM t ORDER BY snapshot_date;
 - 区域上高单价老城区误差率最高(MAPE ~9.1%)
 
 ## 服务与仪表盘
+
+> 估值响应自带 `recent` 字段（最近 5 条预测记录，借鉴 Zillow 的 recently-viewed 交互），便于前后几次估价对比。
+
+
 
 **线上环境**:https://homevalue-wv6h.onrender.com(Render Blueprint 部署,免费档)
 
