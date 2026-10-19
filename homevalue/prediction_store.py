@@ -49,6 +49,18 @@ class PredictionStore:
         )
         self._conn.commit()
 
+    def recent(self, limit: int = 5) -> list[dict[str, Any]]:
+        """最近 N 条预测记录（新→旧），供估值响应回显"最近估过的房"。"""
+        rows = self._conn.execute(
+            "SELECT ts, district, bizcircle, community, area_sqm, rooms, p50,"
+            " interval_width_pct, model_version FROM predictions"
+            " ORDER BY rowid DESC LIMIT ?",
+            (int(limit),),
+        ).fetchall()
+        keys = ["ts", "district", "bizcircle", "community", "area_sqm", "rooms",
+                "p50", "interval_width_pct", "model_version"]
+        return [dict(zip(keys, r, strict=True)) for r in rows]
+
     def stats(self) -> dict[str, Any]:
         row = self._conn.execute(
             "SELECT COUNT(*), AVG(p50), AVG(interval_width_pct) FROM predictions"

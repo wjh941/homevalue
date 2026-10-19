@@ -249,7 +249,15 @@ def create_app(
             "model_version": art["metadata"]["model_version"],
         })
 
+        # "最近估过的房"：含本次在内最近 5 条（借鉴 Zillow 的 recently viewed 交互）
+        try:
+            recent = app.state.prediction_store.recent(limit=5)
+        except sqlite3.Error:
+            logger.warning("recent predictions read failed", exc_info=True)
+            recent = []
+
         return {
+            "recent": recent,
             "model_version": art["metadata"]["model_version"],
             "input": row,
             "unit_price": {"p10": round(p10), "p50": round(p50), "p90": round(p90)},
